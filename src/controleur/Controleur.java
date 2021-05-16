@@ -1,4 +1,4 @@
 package controleur;
 
-public class Controleur {
+public class Controleur implements CollecteurEvenements {
 }
