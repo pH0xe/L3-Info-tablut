@@ -1,2 +1,5 @@
-package modele;public enum TypeJoueur {
+package modele;
+
+public enum TypeJoueur {
+    BLANC,NOIR
 }

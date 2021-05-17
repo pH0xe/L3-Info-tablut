@@ -1,2 +1,5 @@
-package modele;public enum EtatPion {
+package modele;
+
+public enum EtatPion {
+    ACTIF, INACTIF
 }

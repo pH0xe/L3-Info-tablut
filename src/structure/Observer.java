@@ -1,2 +1,5 @@
-package structure;public class Observer {
+package structure;
+
+public interface Observer {
+    void update();
 }
