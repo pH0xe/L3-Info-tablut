@@ -25,6 +25,10 @@ public class Pion {
         etat = EtatPion.INACTIF;
     }
 
+    public void changerEtat(EtatPion etat){
+        this.etat = etat;
+    }
+
     public boolean deplacerPion(int l, int c){
         try{
             this.position.setL(l);
@@ -48,4 +52,6 @@ public class Pion {
     public Point getPosition(){
         return position;
     }
+
+
 }

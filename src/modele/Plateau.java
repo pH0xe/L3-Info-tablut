@@ -25,6 +25,8 @@ public class Plateau extends Observable {
 
     public Plateau(Jeu jeu){
         this.jeu = jeu;
+        noirs = new ArrayList<>();
+        blancs =  new ArrayList<>();
         initPions();
         initPlateau();
 
@@ -124,18 +126,39 @@ public class Plateau extends Observable {
         try{
             if (pion.getType() == TypePion.BLANC){
                 this.blancs.remove(pion);
+                cases[pion.getPosition().getL()][pion.getPosition().getC()] = VIDE;
                 pion.getPosition().setL(l);
                 pion.getPosition().setC(c);
+                cases[pion.getPosition().getL()][pion.getPosition().getC()] = BLANC;
                 this.blancs.add(pion);
             }else{
                 this.noirs.remove(pion);
+                cases[pion.getPosition().getL()][pion.getPosition().getC()] = VIDE;
                 pion.getPosition().setL(l);
                 pion.getPosition().setC(c);
+                cases[pion.getPosition().getL()][pion.getPosition().getC()] = NOIR;
                 this.noirs.add(pion);
             }
             return true;
         }catch(Exception e){
             return false;
+        }
+    }
+
+    public void affichePlateau(){
+        for(int i =0; i < nbLigne; i++){
+            for(int j  = 0; j < nbColonne;j++){
+                if(cases[i][j] == VIDE) {
+                    System.out.print(".");
+                }else if(cases[i][j] == BLANC){
+                    System.out.print("B");
+                }else if(cases[i][j] == ROI){
+                    System.out.print("R");
+                }else{
+                    System.out.print("N");
+                }
+            }
+            System.out.println();
         }
     }
 }

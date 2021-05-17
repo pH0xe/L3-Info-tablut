@@ -26,4 +26,11 @@ public class Point {
         this.c = c ;
     }
 
+    @Override
+    public String toString() {
+        return "{" +
+                "l=" + l +
+                ", c=" + c +
+                '}';
+    }
 }
