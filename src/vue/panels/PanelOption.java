@@ -9,12 +9,12 @@ import vue.utils.ConstraintBuilder;
 import javax.swing.*;
 import java.awt.*;
 
-public class PanelAccueil extends JPanel {
+public class PanelOption extends JPanel {
 
     private final CollecteurEvenements controleur;
-    private JButton btnJouer, btnTuto, btnOptions, btnSauv, btnQuit;
+    private JButton btnMusic, btnSon;
 
-    public PanelAccueil(CollecteurEvenements c) {
+    public PanelOption(CollecteurEvenements c) {
         controleur = c;
         setLayout(new GridBagLayout());
         setBackground(Constants.BACKGROUND_COLOR);
@@ -36,11 +36,7 @@ public class PanelAccueil extends JPanel {
     }
 
     private void initButtonAdapter() {
-        btnJouer.addMouseListener(new ButtonPlayAdapter(controleur));
-        btnSauv.addMouseListener(new ButtonSavesAdapter(controleur));
-        btnTuto.addMouseListener(new ButtonTutoAdapter(controleur));
-        btnOptions.addMouseListener(new ButtonOptionAdapter(controleur));
-        btnQuit.addMouseListener(new ButtonQuitAdapter(controleur));
+
     }
 
     private JLabel initTitle() {
@@ -70,24 +66,12 @@ public class PanelAccueil extends JPanel {
                 .setIpady(20)
                 .setAnchor(GridBagConstraints.PAGE_START);
 
-        btnJouer = new ButtonBuilder().setBackground(Constants.BUTTON_BACKGROUND).setForeground(Constants.BUTTON_FOREGROUND).setText("Jouer").toJButton();
-        panel.add(btnJouer, btnConstraints.toConstraints());
+        btnMusic = new ButtonBuilder().setBackground(Constants.BUTTON_BACKGROUND).setForeground(Constants.BUTTON_FOREGROUND).setText("On").toJButton();
+        panel.add(btnMusic, btnConstraints.toConstraints());
 
         btnConstraints.setGridy(1);
-        btnSauv = new ButtonBuilder().setBackground(Constants.BUTTON_BACKGROUND).setForeground(Constants.BUTTON_FOREGROUND).setText("Sauvegardes").toJButton();
-        panel.add(btnSauv, btnConstraints.toConstraints());
-
-        btnConstraints.setGridy(2);
-        btnTuto = new ButtonBuilder().setBackground(Constants.BUTTON_BACKGROUND).setForeground(Constants.BUTTON_FOREGROUND).setText("Didacticiel").toJButton();
-        panel.add(btnTuto, btnConstraints.toConstraints());
-
-        btnConstraints.setGridy(3);
-        btnOptions = new ButtonBuilder().setBackground(Constants.BUTTON_BACKGROUND).setForeground(Constants.BUTTON_FOREGROUND).setText("Options").toJButton();
-        panel.add(btnOptions, btnConstraints.toConstraints());
-
-        btnConstraints.setGridy(4);
-        btnQuit = new ButtonBuilder().setBackground(Constants.BUTTON_BACKGROUND).setForeground(Constants.BUTTON_FOREGROUND).setText("Quitter").toJButton();
-        panel.add(btnQuit, btnConstraints.toConstraints());
+        btnSon = new ButtonBuilder().setBackground(Constants.BUTTON_BACKGROUND).setForeground(Constants.BUTTON_FOREGROUND).setText("On").toJButton();
+        panel.add(btnSon, btnConstraints.toConstraints());
 
         return panel;
     }

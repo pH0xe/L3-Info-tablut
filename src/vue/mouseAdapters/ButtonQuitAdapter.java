@@ -15,6 +15,7 @@ public class ButtonQuitAdapter extends MouseAdapter {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        Configuration.instance().logger().severe("Non implémenté");
+        Configuration.instance().logger().info("Arrêt propre");
+        System.exit(0);
     }
 }

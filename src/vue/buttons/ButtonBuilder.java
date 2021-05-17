@@ -37,7 +37,7 @@ public class ButtonBuilder {
     }
 
     public JButton toJButton() {
-        button.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        button.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
         button.setUI(new ButtonStyle());
         return button;
     }
