@@ -1,4 +1,4 @@
-package vue.buttons;
+package vue.customComponent;
 
 import javax.swing.*;
 import javax.swing.border.Border;
