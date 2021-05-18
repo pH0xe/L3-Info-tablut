@@ -26,9 +26,12 @@ public class InterfaceGraphique implements Runnable {
         frame =  new JFrame("Tablut");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 600);
+        frame.setMinimumSize(new Dimension(600,600));
         frame.setLocationRelativeTo(null);
 
-        frame.add(new PanelOption(controleur));
+        panelAccueil = new PanelAccueil(controleur);
+        panelOption = new PanelOption(controleur);
+        frame.add(panelOption);
 
         frame.setVisible(true);
     }
