@@ -22,7 +22,6 @@ public class Controleur implements CollecteurEvenements {
     }
 
     @Override
-    public void demarrerJeu(int l, int c, String player1, String player2) {
-
+    public void demarrerJeu() {
     }
 }
