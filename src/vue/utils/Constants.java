@@ -20,6 +20,6 @@ public class Constants {
     public static final Color TEXTFIELD_DISABLE = new Color(109, 109, 109);
 
     public static final Font DEFAULT_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
-    public static final Font BOLD_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
+    public static final Font BOLD_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 14);
     public static final Font ITALIC_FONT = new Font(Font.SANS_SERIF, Font.ITALIC,14);
 }

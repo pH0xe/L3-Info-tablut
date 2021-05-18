@@ -1,5 +1,7 @@
 package vue.customComponent;
 
+import vue.utils.Constants;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
@@ -40,7 +42,7 @@ public class ButtonBuilder {
     }
 
     public JButton toJButton() {
-        button.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+        button.setFont(Constants.BOLD_FONT);
         button.setUI(new ButtonStyle());
         return button;
     }

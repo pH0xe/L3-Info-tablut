@@ -44,7 +44,7 @@ public class PanelOption extends JPanel {
 
     private JLabel initTitle() {
         JLabel title = new JLabel("Tablut - Options de jeu");
-        title.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
+        title.setFont(Constants.BOLD_FONT.deriveFont(30f));
         title.setHorizontalAlignment(SwingConstants.CENTER);
         return title;
     }

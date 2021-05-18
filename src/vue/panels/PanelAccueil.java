@@ -46,7 +46,7 @@ public class PanelAccueil extends JPanel {
 
     private JLabel initTitle() {
         JLabel title = new JLabel("Tablut");
-        title.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 60));
+        title.setFont(Constants.BOLD_FONT.deriveFont(60f));
         title.setHorizontalAlignment(SwingConstants.CENTER);
         return title;
     }

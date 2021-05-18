@@ -23,7 +23,7 @@ public class CustomComboBox extends JComboBox{
             JComboBox box = (JComboBox) c;
             box.setRenderer(new CustomRenderer());
             box.setEditable(false);
-            box.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+            box.setFont(Constants.BOLD_FONT);
             box.setCursor(new Cursor(Cursor.HAND_CURSOR));
         }
 
