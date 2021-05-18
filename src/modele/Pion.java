@@ -21,9 +21,9 @@ public class Pion {
         return etat == EtatPion.INACTIF;
     }
 
-    public void changerEtat(){
-        etat = EtatPion.INACTIF;
-    }
+//    public void changerEtat(){
+//        etat = EtatPion.INACTIF;
+//    }
 
     public void changerEtat(EtatPion etat){
         this.etat = etat;
