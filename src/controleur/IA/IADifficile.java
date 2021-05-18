@@ -11,8 +11,39 @@ public class IADifficile {
         else if(p.roiCapture()){
             return 1000;
         }
-        return 1;
-    }
+        int autourRoi = 0;
+        int heuristique = 0;
+        Pion roi = p.getRoi();
+        int lRoi = roi.getPosition().getL();
+        int cRoi = roi.getPosition().getC();
+
+
+        if(( lRoi+1 == 4 && cRoi == 4) || p.getCases()[lRoi+1][cRoi] == NOIR){
+            autourRoi++;
+        }
+
+        if(( lRoi-1 == 4 && cRoi == 4) || p.getCases()[lRoi-1][cRoi] == NOIR){
+            autourRoi++;
+        }
+
+        if(( lRoi == 4 && cRoi+1 == 4) || p.getCases()[lRoi][cRoi+1] == NOIR){
+            autourRoi++;
+        }
+
+        if(( lRoi == 4 && cRoi-1 == 4) || p.getCases()[lRoi][cRoi-1] == NOIR){
+            autourRoi++;
+        }
+
+        heuristique += 5*autourRoi;
+
+        /****FIN ENCERCLEMENT ***/
+
+        heuristique -= 8*p.getBlancs().size();
+        heuristique += 4*p.getNoirs().size();
+
+
+        return heuristique;
+          }
 
     //Configuration.instance.logger
 
