@@ -25,7 +25,7 @@ public class PanelInfoJeu extends JPanel {
         this.controleur = controleur;
         this.jeu = jeu;
         setOpaque(true);
-        setBackground(Color.RED.darker());
+        setBackground(Color.gray);
 
         setLayout(new GridBagLayout());
 

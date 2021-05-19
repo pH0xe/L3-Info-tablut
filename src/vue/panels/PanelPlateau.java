@@ -17,8 +17,7 @@ public class PanelPlateau extends JPanel {
     public PanelPlateau(CollecteurEvenements controleur, Jeu jeu) {
         this.controleur = controleur;
         this.jeu = jeu;
-        setOpaque(true);
-        setBackground(Color.RED);
+        setOpaque(false);
     }
 
     @Override
