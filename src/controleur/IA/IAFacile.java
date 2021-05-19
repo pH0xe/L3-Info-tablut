@@ -1,16 +1,26 @@
 package controleur.IA;
 
+import modele.*;
+
 import java.util.*;
 
-public class IAFacile {
-    public int heuristique(Plateau p){
+public class IAFacile extends IA{
+    public int heuristique(Jeu j){
         return 1;
     }
-
-    public Point iaJoue(Jeu j){
+    public int Minimax(Jeu j, TypeJoueur tj, int profondeur, List<Coup> cp){
+        return 0;
+    }
+    public Coup iaJoue(Jeu j){
         Plateau p = j.getPlateau();
-        List<Point> jouables = p.getCasesAccessibles(p.getPion());
         Random r = new Random();
-        return jouables.get(r.nextInt(jouables.size()));
+        List<Pion> ps = j.getPionCourant();
+        List<Point> jouables;
+        Pion aJouer;
+        do {
+            aJouer = ps.get(r.nextInt(ps.size()));
+            jouables = p.getCasesAccessibles(aJouer);
+        }while(jouables.isEmpty());
+        return new Coup(aJouer, jouables.get(r.nextInt(jouables.size())));
     }
 }

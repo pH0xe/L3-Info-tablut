@@ -1,45 +1,58 @@
 package controleur.IA;
 
-import java.util.ArrayList;
-import java.util.List;
+import global.Configuration;
+import modele.*;
 
-public class IADifficile {
-    public int heuristique(Plateau p){
-        if(p.roiSorti()){
-            return -1000;
+import java.util.*;
+
+public class IADifficile extends IA{
+    Map<ConfigJeu, List<Coup>> returnVal;
+
+    public IADifficile(){
+        returnVal = new HashMap<>();
+    }
+
+    public int heuristique(Jeu j){
+        Plateau p = j.getPlateau();
+        Pion roi = p.getRoi();
+        //System.out.println("Roi : " + roi);
+        if(j.roiSorti()){
+            System.out.println("Roi Sorti");
+            return 100000;
         }
-        else if(p.roiCapture()){
-            return 1000;
+        else if(j.roiCapture()){
+            System.out.println("Roi Capture");
+            return -100000;
         }
         int autourRoi = 0;
         int heuristique = 0;
-        Pion roi = p.getRoi();
+
         int lRoi = roi.getPosition().getL();
         int cRoi = roi.getPosition().getC();
 
 
-        if(( lRoi+1 == 4 && cRoi == 4) || p.getCases()[lRoi+1][cRoi] == NOIR){
+        if(( lRoi+1 == 4 && cRoi == 4) || p.getCases()[lRoi+1][cRoi] == p.NOIR){
             autourRoi++;
         }
 
-        if(( lRoi-1 == 4 && cRoi == 4) || p.getCases()[lRoi-1][cRoi] == NOIR){
+        if(( lRoi-1 == 4 && cRoi == 4) || p.getCases()[lRoi-1][cRoi] == p.NOIR){
             autourRoi++;
         }
 
-        if(( lRoi == 4 && cRoi+1 == 4) || p.getCases()[lRoi][cRoi+1] == NOIR){
+        if(( lRoi == 4 && cRoi+1 == 4) || p.getCases()[lRoi][cRoi+1] == p.NOIR){
             autourRoi++;
         }
 
-        if(( lRoi == 4 && cRoi-1 == 4) || p.getCases()[lRoi][cRoi-1] == NOIR){
+        if(( lRoi == 4 && cRoi-1 == 4) || p.getCases()[lRoi][cRoi-1] == p.NOIR){
             autourRoi++;
         }
 
-        heuristique += 5*autourRoi;
+        heuristique -= 5*autourRoi;
 
         /****FIN ENCERCLEMENT ***/
 
-        heuristique -= 8*p.getBlancs().size();
-        heuristique += 4*p.getNoirs().size();
+        heuristique += 8*p.getBlancs().size();
+        heuristique -= 16*p.getNoirs().size();
 
 
         return heuristique;
@@ -47,38 +60,78 @@ public class IADifficile {
 
     //Configuration.instance.logger
 
-    public int Minimax(Plateau p, TypeJoueur j, int profondeur){
-        if(profondeur==0 || p.roiSorti() || p.roiCapture()){
-            return heuristique(p);
+    public int Minimax(Jeu j, TypeJoueur tj, int profondeur, List<Coup> prec){
+
+        if(profondeur==0 || j.roiSorti() || j.roiCapture()){
+            return heuristique(j);
         }
+        Plateau p = j.getPlateau();
         List<Coup> C = new ArrayList<>();
-        List<Pion> jouables = p.getPionsCourant();
+        List<Pion> jouables = j.getPionCourant();
         for (Pion pi: jouables) {
             List<Point> accessibles = p.getCasesAccessibles(pi);
             for (Point pt: accessibles) {
                 C.add(new Coup(pi, pt));
             }
         }
-        int val = 0;
-        if (j.equals(TypeJoueur.BLANC)){
-            val = 100000;
+        Configuration.instance().logger().warning("Liste coups: ");
+        for(Coup cp:C){
+            if(cp.getPion().getType().equals(TypePion.ROI)){
+                Configuration.instance().logger().warning(cp.toString());
+            }
         }
-        else{
+        int val;
+        if (tj.equals(TypeJoueur.BLANC)){
             val = -100000;
         }
+        else{
+            val = 100000;
+        }
+        int borne;
+        List<Coup> coups = new ArrayList<>();
+        Coup meilleur = null;
         for (Coup cp: C) {
-            if (j.equals(TypeJoueur.BLANC)){
-                val = min(val, Minimax(p.joueCoup(cp),TypeJoueur.NOIR, profondeur-1));
+            prec.add(cp);
+            int dL = cp.getPion().getPosition().getL();
+            int dC = cp.getPion().getPosition().getC();
+            if (tj.equals(TypeJoueur.BLANC)){
+                borne =  Minimax(j.joueCoupDuplique(cp),TypeJoueur.NOIR, profondeur-1, prec);
+                if(borne > val){
+                    val = borne;
+                    meilleur = cp;
+                    coups.clear();
+                }else if(borne == val){
+                    coups.add(cp);
+                }
             }
             else{
-                val = max(val, Minimax(p.joueCoup(cp),TypeJoueur.BLANC, profondeur-1));
+                borne =  Minimax(j.joueCoupDuplique(cp),TypeJoueur.BLANC, profondeur-1, prec);
+                if(borne < val){
+                    val = borne;
+                    meilleur = cp;
+                    coups.clear();
+                }else if(borne == val){
+                    coups.add(cp);
+                }
             }
+            j.annulerCoup(prec, dL, dC);
+        }
+        if(meilleur == null){
+            Configuration.instance().logger().severe("Pas de coups jouables");
+        }else{
+            coups.add(meilleur);
+            ConfigJeu cj = new ConfigJeu(j.joueurCourant(), j.getPlateau());
+            returnVal.put(cj,coups);
         }
         return val;
     }
 
 
-    public Point iaJoue(){
-        return null;
+    public Coup iaJoue(Jeu j){
+        Plateau p = j.getPlateau();
+        Random r = new Random();
+        ConfigJeu cj = new ConfigJeu(j.joueurCourant(), p);
+        List<Coup> cps = returnVal.get(cj);
+        return cps.get(r.nextInt(cps.size()));
     }
 }

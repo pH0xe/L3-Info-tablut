@@ -1,5 +1,7 @@
 package modele;
 
+import java.util.Objects;
+
 public class Pion {
     private TypePion type;
     private EtatPion etat;
@@ -53,5 +55,25 @@ public class Pion {
         return position;
     }
 
+    @Override
+    public String toString() {
+        return "Pion{" +
+                "type=" + type +
+                ", etat=" + etat +
+                ", position=" + position +
+                '}';
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pion pion = (Pion) o;
+        return type == pion.type && etat == pion.etat && Objects.equals(position, pion.position);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, etat, position);
+    }
 }

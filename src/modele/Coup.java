@@ -13,4 +13,11 @@ public class Coup {
 
     public Point getDestination() {return caseADeplacer;}
 
+    @Override
+    public String toString() {
+        return "Coup{" +
+                "pion=" + pion +
+                ", caseADeplacer=" + caseADeplacer +
+                '}';
+    }
 }
