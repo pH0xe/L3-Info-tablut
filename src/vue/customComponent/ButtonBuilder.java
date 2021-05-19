@@ -1,11 +1,11 @@
-package vue.buttons;
+package vue.customComponent;
+
+import vue.utils.Constants;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class ButtonBuilder {
     private final JButton button;
@@ -36,8 +36,13 @@ public class ButtonBuilder {
         return this;
     }
 
+    public ButtonBuilder setName(String name) {
+        button.setName(name);
+        return this;
+    }
+
     public JButton toJButton() {
-        button.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        button.setFont(Constants.BOLD_FONT);
         button.setUI(new ButtonStyle());
         return button;
     }
@@ -50,6 +55,7 @@ public class ButtonBuilder {
             AbstractButton btn = (AbstractButton) c;
             btn.setOpaque(false);
             btn.setBorder(new EmptyBorder(5,15,5,15));
+            btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         }
 
         @Override
