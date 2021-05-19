@@ -1,5 +1,5 @@
-import vue.InterfaceGraphique;
 import controleur.Controleur;
+import vue.InterfaceGraphique;
 
 public class Main {
 
