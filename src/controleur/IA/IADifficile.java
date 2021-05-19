@@ -54,6 +54,7 @@ public class IADifficile extends IA{
         heuristique += 8*p.getBlancs().size();
         heuristique -= 16*p.getNoirs().size();
 
+        heuristique += 32 * j.getPlateau().getCasesAccessibles(roi).size();
 
         return heuristique;
           }
