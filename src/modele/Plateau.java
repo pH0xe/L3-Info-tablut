@@ -16,10 +16,10 @@ public class Plateau extends Observable {
     public final int ROI = 3;
 
 
-    public int[][] cases;
-    public Pion roi;
-    public List<Pion> noirs;
-    public List<Pion> blancs;
+    private int[][] cases;
+    private Pion roi;
+    private List<Pion> noirs;
+    private List<Pion> blancs;
 
 
     public Plateau() {
@@ -61,6 +61,8 @@ public class Plateau extends Observable {
         this.noirs.add(new Pion(TypePion.NOIR, new Point(8, 4)));
         this.noirs.add(new Pion(TypePion.NOIR, new Point(8, 5)));
 
+        this.roi = new Pion(TypePion.ROI, new Point(4, 4));
+        this.blancs.add(this.roi);
 
     }
 
@@ -73,7 +75,6 @@ public class Plateau extends Observable {
             }
         }
 
-        this.roi = new Pion(TypePion.ROI, new Point(4, 4));
 
         //Placement roi
         cases[roi.getPosition().getL()][roi.getPosition().getL()] = ROI;
@@ -165,9 +166,15 @@ public class Plateau extends Observable {
             return null;
         else {
             switch (cases[l][c]) {
-                case NOIR -> res = TypePion.NOIR;
-                case BLANC -> res = TypePion.BLANC;
-                case ROI -> res = TypePion.ROI;
+                case NOIR:
+                    res = TypePion.NOIR;
+                    break;
+                case BLANC:
+                    res = TypePion.BLANC;
+                    break;
+                case ROI:
+                    res = TypePion.ROI;
+                    break;
             }
             return res;
         }
@@ -188,5 +195,21 @@ public class Plateau extends Observable {
             }
             System.out.println();
         }
+    }
+
+    public int[][] getCases() {
+        return cases;
+    }
+
+    public List<Pion> getBlancs() {
+        return blancs;
+    }
+
+    public List<Pion> getNoirs() {
+        return noirs;
+    }
+
+    public Pion getRoi() {
+        return roi;
     }
 }

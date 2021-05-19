@@ -35,7 +35,9 @@ public class Configuration {
 
     private void setLogger() {
         logger = Logger.getLogger("tablut.logger");
-        logger.setLevel(Level.parse(getConfig("logLevel")));
+        String logLevel = getConfig("logLevel");
+        logger.setLevel(Level.parse(logLevel));
+        if (logLevel.equals("OFF")) return;
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MMM-yyyy_HH-mm-ss");
         LocalDateTime now = LocalDateTime.now();

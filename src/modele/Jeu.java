@@ -31,9 +31,9 @@ public class Jeu {
 
     public List<Pion> getPionCourant() {
         if (joueurCourant().getType() == TypeJoueur.BLANC) {
-            return pt.blancs;
+            return pt.getBlancs();
         } else {
-            return pt.noirs;
+            return pt.getNoirs();
         }
     }
 
@@ -47,26 +47,26 @@ public class Jeu {
     }
 
     public boolean roiSorti() {
-        Point roiPos = pt.roi.getPosition();
+        Point roiPos = pt.getRoi().getPosition();
         int roiC = roiPos.getC();
         int roiL = roiPos.getL();
         return ((roiC == 0 && roiL == 0) || (roiC == 0 && roiL == 8) || (roiC == 8 && roiL == 0) || (roiC == 8 && roiL == 8));
     }
 
     public boolean roiCapture() {
-        Point roiPos = pt.roi.getPosition();
+        Point roiPos = pt.getRoi().getPosition();
         int roiC = roiPos.getC();
         int roiL = roiPos.getL();
         if(roiC == 3 && roiL == 4)
-            return (pt.cases[roiPos.getC() - 1][roiPos.getL()] == pt.NOIR && pt.cases[roiPos.getC()][roiPos.getL() + 1] == pt.NOIR && pt.cases[roiPos.getC()][roiPos.getL() - 1] == pt.NOIR);
+            return (pt.getCases()[roiPos.getC() - 1][roiPos.getL()] == pt.NOIR && pt.getCases()[roiPos.getC()][roiPos.getL() + 1] == pt.NOIR && pt.getCases()[roiPos.getC()][roiPos.getL() - 1] == pt.NOIR);
         if(roiC == 5 && roiL == 4)
-            return (pt.cases[roiPos.getC() + 1][roiPos.getL()] == pt.NOIR && pt.cases[roiPos.getC()][roiPos.getL() + 1] == pt.NOIR && pt.cases[roiPos.getC()][roiPos.getL() - 1] == pt.NOIR);
+            return (pt.getCases()[roiPos.getC() + 1][roiPos.getL()] == pt.NOIR && pt.getCases()[roiPos.getC()][roiPos.getL() + 1] == pt.NOIR && pt.getCases()[roiPos.getC()][roiPos.getL() - 1] == pt.NOIR);
         if(roiC == 4 && roiL == 3)
-            return (pt.cases[roiPos.getC() + 1][roiPos.getL()] == pt.NOIR && pt.cases[roiPos.getC() - 1][roiPos.getL()] == pt.NOIR && pt.cases[roiPos.getC()][roiPos.getL() - 1] == pt.NOIR);
+            return (pt.getCases()[roiPos.getC() + 1][roiPos.getL()] == pt.NOIR && pt.getCases()[roiPos.getC() - 1][roiPos.getL()] == pt.NOIR && pt.getCases()[roiPos.getC()][roiPos.getL() - 1] == pt.NOIR);
         if(roiC == 4 && roiL == 5)
-            return (pt.cases[roiPos.getC() + 1][roiPos.getL()] == pt.NOIR && pt.cases[roiPos.getC() - 1][roiPos.getL()] == pt.NOIR && pt.cases[roiPos.getC()][roiPos.getL() + 1] == pt.NOIR);
+            return (pt.getCases()[roiPos.getC() + 1][roiPos.getL()] == pt.NOIR && pt.getCases()[roiPos.getC() - 1][roiPos.getL()] == pt.NOIR && pt.getCases()[roiPos.getC()][roiPos.getL() + 1] == pt.NOIR);
         try {
-            return (pt.cases[roiPos.getC() + 1][roiPos.getL()] == pt.NOIR && pt.cases[roiPos.getC() - 1][roiPos.getL()] == pt.NOIR && pt.cases[roiPos.getC()][roiPos.getL() + 1] == pt.NOIR && pt.cases[roiPos.getC()][roiPos.getL() - 1] == pt.NOIR);
+            return (pt.getCases()[roiPos.getC() + 1][roiPos.getL()] == pt.NOIR && pt.getCases()[roiPos.getC() - 1][roiPos.getL()] == pt.NOIR && pt.getCases()[roiPos.getC()][roiPos.getL() + 1] == pt.NOIR && pt.getCases()[roiPos.getC()][roiPos.getL() - 1] == pt.NOIR);
         } catch (Exception e){
             return false;
         }
@@ -79,31 +79,35 @@ public class Jeu {
 //
         if(pion.getType() == TypePion.BLANC){
             try {
-                if(pt.cases[pionC - 1][pionL] == pt.NOIR && pt.cases[pionC + 1][pionL] == pt.NOIR)
+                if(pt.getCases()[pionC - 1][pionL] == pt.NOIR && pt.getCases()[pionC + 1][pionL] == pt.NOIR)
                     return true;
             } catch (Exception e){
                 return false;
             }
             try {
-                if(pt.cases[pionC][pionL - 1] == pt.NOIR && pt.cases[pionC][pionL + 1] == pt.NOIR)
+                if(pt.getCases()[pionC][pionL - 1] == pt.NOIR && pt.getCases()[pionC][pionL + 1] == pt.NOIR)
                     return true;
             } catch (Exception e){
                 return false;
             }
         } else if(pion.getType() == TypePion.NOIR){
             try {
-                if((pt.cases[pionC - 1][pionL] == pt.BLANC || pt.cases[pionC - 1][pionL] == pt.ROI) && (pt.cases[pionC + 1][pionL] == pt.BLANC || pt.cases[pionC + 1][pionL] == pt.ROI))
+                if((pt.getCases()[pionC - 1][pionL] == pt.BLANC || pt.getCases()[pionC - 1][pionL] == pt.ROI) && (pt.getCases()[pionC + 1][pionL] == pt.BLANC || pt.getCases()[pionC + 1][pionL] == pt.ROI))
                     return true;
             } catch (Exception e){
                 return false;
             }
             try {
-                if((pt.cases[pionC][pionL - 1] == pt.BLANC || pt.cases[pionC][pionL - 1] == pt.ROI) && (pt.cases[pionC][pionL + 1] == pt.BLANC || pt.cases[pionC][pionL + 1] == pt.ROI))
+                if((pt.getCases()[pionC][pionL - 1] == pt.BLANC || pt.getCases()[pionC][pionL - 1] == pt.ROI) && (pt.getCases()[pionC][pionL + 1] == pt.BLANC || pt.getCases()[pionC][pionL + 1] == pt.ROI))
                     return true;
             } catch (Exception e){
                 return false;
             }
         }
         return false;
+    }
+
+    public Plateau getPlateau() {
+        return pt;
     }
 }
