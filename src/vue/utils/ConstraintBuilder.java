@@ -32,6 +32,16 @@ public class ConstraintBuilder {
         return this;
     }
 
+    public ConstraintBuilder incrGridy(){
+        constraints.gridy += 1;
+        return this;
+    }
+
+    public ConstraintBuilder incrGridx(){
+        constraints.gridx += 1;
+        return this;
+    }
+
     public ConstraintBuilder fillHorizontal() {
         constraints.fill = GridBagConstraints.HORIZONTAL;
         return this;

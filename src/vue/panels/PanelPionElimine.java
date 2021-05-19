@@ -11,8 +11,6 @@ public class PanelPionElimine extends JPanel {
     private int pionN, pionB;
 
     public PanelPionElimine() {
-        setBackground(Color.LIGHT_GRAY);
-        setOpaque(true);
         pionN = 0;
         pionB = 0;
     }
@@ -24,11 +22,13 @@ public class PanelPionElimine extends JPanel {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setFont(Constants.BOLD_FONT);
 
-        int x = 10;
-        int y = 10;
-
         int size = getWidth() / 7;
-        int fontOffset = (int) (size*0.9);
+        int fontOffset = (int) (size*0.8);
+        int totalSize = (int) (size + size*1.5);
+
+        int x = 10;
+        int y = (getHeight() - totalSize) /2;
+
 
         g2.setFont(Constants.BOLD_FONT.deriveFont(25f));
         g2.drawImage(Images.PION_BLANC, x, y, size, size, null);

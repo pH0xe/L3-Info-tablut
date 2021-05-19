@@ -1,7 +1,8 @@
 package vue.panels;
 
 import controleur.CollecteurEvenements;
-import modele.Jeu;
+import modele.*;
+import modele.Point;
 import vue.utils.Constants;
 import vue.utils.Images;
 
@@ -44,13 +45,22 @@ public class PanelPlateau extends JPanel {
             y += sizeCase;
         }
 
-        drawPion(g2,0,0, Images.PION_BLANC, false);
-        drawPion(g2,8,7, Images.PION_NOIR, false);
-        drawPion(g2,4,4, Images.PION_ROI, false);
 
-        drawPion(g2,0,1, Images.PION_BLANC, true);
-        drawPion(g2,8,8, Images.PION_NOIR, true);
-        drawPion(g2,4,5, Images.PION_ROI, true);
+        java.util.List<Pion> blancs = jeu.getPlateau().getBlancs();
+        java.util.List<Pion> noirs = jeu.getPlateau().getNoirs();
+
+        boolean tourBlanc = jeu.joueurCourant().getType() == TypeJoueur.BLANC;
+
+        for (Pion pion : blancs) {
+            if (pion.getType() == TypePion.ROI)
+                drawPion(g2,pion.getPosition().getL(),pion.getPosition().getC(), Images.PION_ROI, tourBlanc);
+            else
+                drawPion(g2,pion.getPosition().getL(),pion.getPosition().getC(), Images.PION_BLANC, tourBlanc);
+        }
+
+        for (Pion pion : noirs) {
+            drawPion(g2,pion.getPosition().getL(),pion.getPosition().getC(), Images.PION_NOIR, !tourBlanc);
+        }
     }
 
     private void drawPion(Graphics2D g2, int l, int c, Image img, boolean estClickable) {
@@ -73,15 +83,14 @@ public class PanelPlateau extends JPanel {
         }
     }
 
-    // deja check - Fonctionne
-    // TODO Remplacer par une class Point
-    public int[] getCoord(int x, int y) {
+
+    public Point getCoord(int x, int y) {
         int taillePlateau = sizeCase * 9;
         if (x >= initX + taillePlateau || x <= initX || y >= initY + taillePlateau || y <= initY)
-            return new int[]{-1, -1};
+            return new Point(-1, -1);
 
         int c = (x - initX) / sizeCase;
         int l = (y - initY) / sizeCase;
-        return new int[]{c, l};
+        return new Point(l,c);
     }
 }
