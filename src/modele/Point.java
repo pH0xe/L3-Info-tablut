@@ -1,5 +1,7 @@
 package modele;
 
+import java.util.Objects;
+
 public class Point {
     private int l;
     private int c;
@@ -32,5 +34,18 @@ public class Point {
                 "l=" + l +
                 ", c=" + c +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Point point = (Point) o;
+        return l == point.l && c == point.c;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(l, c);
     }
 }

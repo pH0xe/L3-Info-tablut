@@ -1,4 +1,4 @@
-package vue.mouseAdapters;
+package vue.adapters.mouseAdapters;
 
 import controleur.CollecteurEvenements;
 import global.Configuration;
@@ -20,7 +20,8 @@ public class AccueilAdapteur extends MouseAdapter {
         JButton source = (JButton) e.getSource();
         switch (source.getText()) {
             case (Labels.ACCUEIL_JOUER):
-                Configuration.instance().logger().warning("[Jouer] Non implémenté");
+                Configuration.instance().logger().info("[Jouer]");
+                controleur.demarrerJeu();
                 break;
             case (Labels.ACCUEIL_DIDAC):
                 Configuration.instance().logger().warning("[Didacticiel] Non implémenté");
@@ -32,10 +33,12 @@ public class AccueilAdapteur extends MouseAdapter {
                 Configuration.instance().logger().warning("[Meilleurs joueur] Non implémenté");
                 break;
             case (Labels.ACCUEIL_OPTIO):
-                Configuration.instance().logger().warning("[Options] Non implémenté");
+                Configuration.instance().logger().info("[Options]");
+                controleur.ouvrirOption();
                 break;
             case (Labels.ACCUEIL_QUITT):
-                Configuration.instance().logger().warning("[Quitter] Non implémenté");
+                Configuration.instance().logger().info("[quitter]");
+                System.exit(0);
                 break;
             default:
                 Configuration.instance().logger().severe("Commande inconnue : " + source.getName());

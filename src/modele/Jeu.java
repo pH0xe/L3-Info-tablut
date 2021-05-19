@@ -1,20 +1,26 @@
 package modele;
 
 import global.Configuration;
+import structure.Observable;
 
 import java.util.List;
+import java.util.Stack;
 
-public class Jeu {
+public class Jeu extends Observable {
     private Joueur joueurCourant;
     private final Joueur j1;
     private final Joueur j2;
     private Plateau pt;
+    private final Stack<Coup> coupsPrecedant, coupsSuivant;
+    private Pion pionSelect;
 
     public Jeu(Joueur j1, Joueur j2){
         this.j1 = j1;
         this.j2 = j2;
         this.joueurCourant = j1; // j1 = blancs
         pt = new Plateau();
+        coupsPrecedant = new Stack<>();
+        coupsSuivant = new Stack<>();
     }
 
     public Joueur joueurCourant(){
@@ -40,9 +46,14 @@ public class Jeu {
     public void joueCoup(Coup c){
         Pion pion = c.getPion();
         Point destination = c.getDestination();
-        if(pt.peutDeplacer(pion, destination.getL(), destination.getC()))
+        if(pt.peutDeplacer(pion, destination)) {
+            System.out.println("deplacement");
             pt.deplacerPion(pion, destination.getL(), destination.getC());
-        else
+            coupsPrecedant.push(c);
+            coupsSuivant.clear();
+            joueurSuivant();
+            update();
+        } else
             Configuration.instance().logger().severe("Deplacement impossible : ( " + pion.getType() + ":" + pion.getPosition().getC() + "," + pion.getPosition().getL() + ") -> " + destination.getL() + "," + destination.getC());
     }
 
@@ -109,5 +120,66 @@ public class Jeu {
 
     public Plateau getPlateau() {
         return pt;
+    }
+
+    public void annulerCoup() {
+        // TODO annuler le coup dans jeu
+        Coup c = coupsPrecedant.pop();
+        coupsSuivant.push(c);
+    }
+
+    public void refaireCoup() {
+        Coup c = coupsSuivant.pop();
+
+        Pion pion = c.getPion();
+        Point destination = c.getDestination();
+        if(pt.peutDeplacer(pion, destination)) {
+            pt.deplacerPion(pion, destination.getL(), destination.getC());
+            coupsPrecedant.push(c);
+        } else
+            Configuration.instance().logger().severe("Deplacement impossible : ( " + pion.getType() + ":" + pion.getPosition().getC() + "," + pion.getPosition().getL() + ") -> " + destination.getL() + "," + destination.getC());
+    }
+
+    public void setSelectionner(Point point) {
+        Pion tmp = pt.trouverPion(point, joueurCourant);
+        if (tmp != pionSelect)
+            pionSelect = tmp;
+        else
+            pionSelect = null;
+        update();
+    }
+
+    public Pion getSelectionne() {
+        return pionSelect;
+    }
+
+    public List<Point> getClickable() {
+        return pt.getCasesAccessibles(pionSelect);
+    }
+
+    public void verifierPion(Point point) {
+        if (deMemeCouleur(point))
+            setSelectionner(point);
+    }
+
+    private boolean deMemeCouleur(Point point) {
+        return (pt.getPion(point) == TypePion.BLANC && joueurCourant.getType() == TypeJoueur.BLANC)
+                || (pt.getPion(point) == TypePion.ROI && joueurCourant.getType() == TypeJoueur.BLANC)
+                || (pt.getPion(point) == TypePion.NOIR && joueurCourant.getType() == TypeJoueur.NOIR);
+    }
+
+    public boolean verifierCoup(Point point) {
+        if (pionSelect == null) return false;
+
+        List<Point> accessible = pt.getCasesAccessibles(pionSelect);
+        System.out.println(accessible.contains(point));
+        if (accessible.contains(point)) {
+            Coup coup = new Coup(pionSelect, point);
+            joueCoup(coup);
+            coupsPrecedant.add(coup);
+            pionSelect = null;
+            return true;
+        }
+        return false;
     }
 }

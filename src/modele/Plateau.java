@@ -1,9 +1,7 @@
 package modele;
 
-import global.Configuration;
 import structure.Observable;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,35 +97,50 @@ public class Plateau extends Observable {
     }
 
 
-    // Un array list des cases auxquelles un pion peut se deplacer
-    public List<Point> getCasesAccessibles(Pion pion) {
+    public List<Point> getCasesAccessibles(Pion pion){
+        int pl = pion.getPosition().getL();
+        int pc = pion.getPosition().getC();
+
         List<Point> accessibles = new ArrayList<>();
-        int pionC = pion.getPosition().getC();
-        int pionL = pion.getPosition().getL();
-        // Parcourir les cases de la ligne de pion
-        int low = pionC - 1;
-        int high = pionC + 1;
-        for(int i = 0; i < 2; i++){
-            while (low >= 0 || high < nbLigne){
-                if(low >= 0)
-                    if(cases[low][pionL] == VIDE){
-                        accessibles.add(new Point(low, pionL));
-                        low--;
-                    } else
-                        low = -1;
-                if(high < nbLigne)
-                    if(cases[high][pionL] == VIDE){
-                        accessibles.add(new Point(high, pionL));
-                        high++;
-                    } else
-                        low = nbLigne;
+        if(pl!=8) {
+            for (int i = pl + 1; i < 9; i++) {
+                if (cases[i][pc] == VIDE) {
+                    accessibles.add(new Point(i, pc));
+                } else {
+                    break;
+                }
             }
-            // Parcourir les cases de la colonne de pion
-            low = pionL - 1;
-            high = pionL + 1;
+        }
+        if(pl!=0) {
+            for (int i = pl - 1; i >= 0; i--) {
+                if (cases[i][pc] == VIDE) {
+                    accessibles.add(new Point(i, pc));
+                } else {
+                    break;
+                }
+            }
+        }
+        if(pc!=8) {
+            for (int i = pc + 1; i < 9; i++) {
+                if (cases[pl][i] == VIDE) {
+                    accessibles.add(new Point(pl, i));
+                } else {
+                    break;
+                }
+            }
+        }
+        if(pc!=0) {
+            for (int i = pc - 1; i >=0; i--) {
+                if (cases[pl][i] == VIDE) {
+                    accessibles.add(new Point(pl, i));
+                } else {
+                    break;
+                }
+            }
         }
         return accessibles;
     }
+
 
     public void deplacerPion(Pion pion, int l, int c) {
         if (pion.getType() == TypePion.BLANC) {
@@ -135,6 +148,11 @@ public class Plateau extends Observable {
             blancs.get(blancs.indexOf(pion)).getPosition().setL(l);
             blancs.get(blancs.indexOf(pion)).getPosition().setC(c);
             cases[pion.getPosition().getL()][pion.getPosition().getC()] = BLANC;
+        } else if (pion.getType() == TypePion.ROI) {
+            cases[pion.getPosition().getL()][pion.getPosition().getC()] = VIDE;
+            blancs.get(blancs.indexOf(pion)).getPosition().setL(l);
+            blancs.get(blancs.indexOf(pion)).getPosition().setC(c);
+            cases[pion.getPosition().getL()][pion.getPosition().getC()] = ROI;
         } else {
             cases[pion.getPosition().getL()][pion.getPosition().getC()] = VIDE;
             noirs.get(noirs.indexOf(pion)).getPosition().setL(l);
@@ -143,21 +161,14 @@ public class Plateau extends Observable {
         }
     }
 
-    public boolean peutDeplacer(Pion pion, int l, int c){
-        Point posCourant = pion.getPosition();
-        boolean state = true;
-        if(pion.getType() != TypePion.ROI)
-            state = !((c == 0 && l == 0) || (c == 0 && l == 8) || (c == 8 && l == 0) || (c == 8 && l == 8));
-        if(posCourant.getL() == l){
-            for(int i = posCourant.getC(); i <= c; i++)
-                state &= (cases[i][l] == VIDE);
-        } else if(posCourant.getC() == c) {
-            for(int i = posCourant.getL(); i <= l; i++)
-                state &= (cases[c][i] == VIDE);
-        } else {
-            return false;
-        }
-        return state;
+    public boolean peutDeplacer(Pion pion, Point dest){
+        List<Point> accessible = getCasesAccessibles(pion);
+        System.out.println(accessible.contains(dest));
+        return accessible.contains(dest);
+    }
+
+    public TypePion getPion(Point point) {
+        return getPion(point.getL(), point.getC());
     }
 
     public TypePion getPion(int l, int c) {
@@ -211,5 +222,28 @@ public class Plateau extends Observable {
 
     public Pion getRoi() {
         return roi;
+    }
+
+    public int getBlancsElimine() {
+        return (int) blancs.stream().filter(Pion::estPris).count();
+    }
+
+    public int getNoirsElimine() {
+        return (int) noirs.stream().filter(Pion::estPris).count();
+    }
+
+    public Pion trouverPion(Point point, Joueur j) {
+        if (j.getType() == TypeJoueur.BLANC){
+            for (Pion pion : blancs) {
+                if (pion.getPosition().equals(point))
+                    return pion;
+            }
+        }
+
+        for (Pion pion : noirs) {
+            if (pion.getPosition().equals(point))
+                return pion;
+        }
+        return null;
     }
 }
