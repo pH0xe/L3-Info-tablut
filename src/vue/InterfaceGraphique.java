@@ -2,6 +2,7 @@ package vue;
 
 import controleur.Controleur;
 import vue.panels.PanelAccueil;
+import vue.panels.PanelJeu;
 import vue.panels.PanelOption;
 
 import javax.swing.*;
@@ -11,7 +12,7 @@ public class InterfaceGraphique implements Runnable {
     private Controleur controleur;
 
     private JFrame frame;
-    private JPanel panelAccueil, panelOption;
+    private JPanel panelAccueil, panelOption, panelJeu;
 
     public InterfaceGraphique(Controleur controleur) {
         this.controleur = controleur;
@@ -31,7 +32,8 @@ public class InterfaceGraphique implements Runnable {
 
         panelAccueil = new PanelAccueil(controleur);
         panelOption = new PanelOption(controleur);
-        frame.add(panelOption);
+        panelJeu = new PanelJeu(controleur, null);
+        frame.add(panelJeu);
 
         frame.setVisible(true);
     }
