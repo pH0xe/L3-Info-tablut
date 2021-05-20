@@ -8,7 +8,7 @@ public class IAFacile extends IA{
     public int heuristique(Jeu j){
         return 1;
     }
-    public int Minimax(Jeu j, Couleur tj, int profondeur, List<Coup> cp){
+    public int Minimax(Jeu j, Couleur tj, int profondeur, List<Coup> cp, int alpha, int beta){
         return 0;
     }
     public Coup iaJoue(Jeu j){

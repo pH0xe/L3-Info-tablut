@@ -85,7 +85,7 @@ public class Controleur implements CollecteurEvenements {
         tIAB.stop();
         Coup c = iaBlanc.iaJoue(jeu);
         jeu.joueCoup(c);
-        jeu.getPlateau().affichePlateau();
+        //jeu.getPlateau().affichePlateau();
         System.out.println();
         verifFin();
     }

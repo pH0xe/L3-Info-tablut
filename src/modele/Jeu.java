@@ -215,7 +215,6 @@ public class Jeu extends Observable {
         if (accessible.contains(point)) {
             Coup coup = new Coup(pionSelect, point);
             joueCoup(coup);
-            coupsPrecedant.add(coup);
             pionSelect = null;
             return true;
         }

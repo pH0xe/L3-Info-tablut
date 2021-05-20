@@ -6,6 +6,6 @@ import java.util.List;
 
 public abstract class IA {
     public abstract int heuristique(Jeu j);
-    public abstract int Minimax(Jeu j, Couleur tj, int profondeur, List<Coup> cp);
+    public abstract int Minimax(Jeu j, Couleur tj, int profondeur, List<Coup> cp, int alpha, int beta);
     public abstract Coup iaJoue(Jeu j);
 }
