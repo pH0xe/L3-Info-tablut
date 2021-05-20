@@ -1,6 +1,7 @@
 package vue.customComponent;
 
 import vue.utils.Constants;
+import vue.utils.Images;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -17,7 +18,6 @@ public class ButtonBuilder {
         button = new JButton();
         isPressed = false;
         isHovered = false;
-        // button.setBorderPainted(false);
         button.setFocusPainted(false);
     }
 
@@ -38,6 +38,11 @@ public class ButtonBuilder {
 
     public ButtonBuilder setName(String name) {
         button.setName(name);
+        return this;
+    }
+
+    public ButtonBuilder setIcon(Image img) {
+        button.setIcon(new ImageIcon(img));
         return this;
     }
 
@@ -74,17 +79,27 @@ public class ButtonBuilder {
             g.setColor(c.getBackground().darker());
             g.fillRoundRect(0, decalageY, w, h - decalageY, roundSize, roundSize);
 
-            Color couleurPrincipal = btn.getModel().isPressed() ? c.getBackground().darker() : c.getBackground();
-            g.setColor(couleurPrincipal);
+            g.setColor(c.getBackground());
             g.fillRoundRect(0, decalageY, w, h + decalageY - 5, roundSize, roundSize);
 
+            ImageIcon ic = (ImageIcon)btn.getIcon();
+            if (ic != null) {
+                Image img = ic.getImage();
+                img = img.getScaledInstance((int) (c.getHeight()*0.4), (int) (c.getHeight()*0.4), Image.SCALE_SMOOTH);
+                btn.setIcon(new ImageIcon(img));
+            }
             super.paint(g, c);
         }
 
         private int getDecalage(AbstractButton btn) {
             if (btn.getModel().isRollover()) return 2;
-            if (btn.getModel().isPressed()) return 2;
             return 0;
+        }
+
+        @Override
+        protected void paintIcon(Graphics g, JComponent c, Rectangle iconRect) {
+            iconRect.setLocation(10, (int) iconRect.getY());
+            super.paintIcon(g, c, iconRect);
         }
     }
 }

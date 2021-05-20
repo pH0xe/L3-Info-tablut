@@ -1,8 +1,8 @@
-package vue.mouseAdapters;
+package vue.adapters.mouseAdapters;
 
 import controleur.CollecteurEvenements;
 import global.Configuration;
-import vue.utils.Labels;
+import vue.panels.PanelOption;
 import vue.utils.Names;
 
 import javax.swing.*;
@@ -11,9 +11,11 @@ import java.awt.event.MouseEvent;
 
 public class OptionsAdapteur extends MouseAdapter {
     private final CollecteurEvenements controleur;
+    private PanelOption panel;
 
-    public OptionsAdapteur(CollecteurEvenements controleur) {
+    public OptionsAdapteur(CollecteurEvenements controleur, PanelOption panel) {
         this.controleur = controleur;
+        this.panel = panel;
     }
 
     @Override
@@ -27,7 +29,8 @@ public class OptionsAdapteur extends MouseAdapter {
                 Configuration.instance().logger().warning("[Son] Non implémenté");
                 break;
             case (Names.BTN_RETOUR):
-                Configuration.instance().logger().warning("[Retours] Non implémenté");
+                Configuration.instance().logger().warning("[Retours]");
+                controleur.fermerOption(panel.getNomJoueurBlanc(), panel.getNomJoueurNoir(), panel.getTypeJB(), panel.getTypeJN());
                 break;
             default:
                 Configuration.instance().logger().severe("Commande inconnue : " + source.getName());

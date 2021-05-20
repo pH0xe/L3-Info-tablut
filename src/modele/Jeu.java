@@ -1,20 +1,28 @@
 package modele;
 
 import global.Configuration;
+import structure.Observable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
+import java.util.stream.Collectors;
 
-public class Jeu {
+public class Jeu extends Observable {
     private Joueur joueurCourant;
     private final Joueur j1;
     private final Joueur j2;
     private Plateau pt;
+    private final Stack<Coup> coupsPrecedant, coupsSuivant;
+    private Pion pionSelect;
 
     public Jeu(Joueur j1, Joueur j2){
         this.j1 = j1;
         this.j2 = j2;
         this.joueurCourant = j1; // j1 = blancs
         pt = new Plateau();
+        coupsPrecedant = new Stack<>();
+        coupsSuivant = new Stack<>();
     }
 
     public Jeu(Jeu j){
@@ -22,6 +30,8 @@ public class Jeu {
         this.j2 = j.j2;
         this.joueurCourant = j.j1; // j1 = blancs
         this.pt = j.pt;
+        coupsPrecedant = new Stack<>();
+        coupsSuivant = new Stack<>();
     }
 
     public Joueur joueurCourant(){
@@ -29,27 +39,36 @@ public class Jeu {
     }
 
     public void joueurSuivant(){
+        joueurCourant = getJoueurSuivant();
+    }
+
+    public Joueur getJoueurSuivant(){
         if(joueurCourant == j1){
-            joueurCourant = j2;
+            return j2;
         }else{
-            joueurCourant = j1;
+            return j1;
         }
     }
 
     public List<Pion> getPionCourant() {
-        if (joueurCourant().getType() == TypeJoueur.BLANC) {
-            return pt.blancs;
+        if (joueurCourant().getCouleur() == Couleur.BLANC) {
+            return pt.getBlancs();
         } else {
-            return pt.noirs;
+            return pt.getNoirs();
         }
     }
 
     public void joueCoup(Coup c){
         Pion pion = c.getPion();
         Point destination = c.getDestination();
-        if(pt.peutDeplacer(pion, destination.getL(), destination.getC()))
+        if(pt.peutDeplacer(pion, destination)) {
             pt.deplacerPion(pion, destination.getL(), destination.getC());
-        else
+            coupsPrecedant.push(c);
+            coupsSuivant.clear();
+            pionCapture(pion);
+            joueurSuivant();
+            update();
+        }  else
             Configuration.instance().logger().severe("Deplacement impossible : ( " + pion.getType() + ":" + pion.getPosition().getL() + "," + pion.getPosition().getC() + ") -> " + destination.getL() + "," + destination.getC());
         this.joueurSuivant();
     }
@@ -79,64 +98,131 @@ public class Jeu {
     }
 
     public boolean roiSorti() {
-        Point roiPos = pt.roi.getPosition();
+        Point roiPos = pt.getRoi().getPosition();
         int roiC = roiPos.getC();
         int roiL = roiPos.getL();
-        return ((roiC == 0 || roiL == 0 || roiL == 8 || roiC == 8));
+        return (roiC == 0 || roiL == 0 || roiC == 8 || roiL == 8);
     }
 
     public boolean roiCapture() {
-        Point roiPos = pt.roi.getPosition();
+        Point roiPos = pt.getRoi().getPosition();
         int roiC = roiPos.getC();
         int roiL = roiPos.getL();
-        if(roiL == 3 && roiC == 4)
-            return (pt.cases[roiPos.getL() - 1][roiPos.getC()] == pt.NOIR && pt.cases[roiPos.getL()][roiPos.getC() + 1] == pt.NOIR && pt.cases[roiPos.getL()][roiPos.getC() - 1] == pt.NOIR);
-        if(roiL == 5 && roiC == 4)
-            return (pt.cases[roiPos.getL() + 1][roiPos.getC()] == pt.NOIR && pt.cases[roiPos.getL()][roiPos.getC() + 1] == pt.NOIR && pt.cases[roiPos.getL()][roiPos.getC() - 1] == pt.NOIR);
-        if(roiL == 4 && roiC == 3)
-            return (pt.cases[roiPos.getL() + 1][roiPos.getC()] == pt.NOIR && pt.cases[roiPos.getL() - 1][roiPos.getC()] == pt.NOIR && pt.cases[roiPos.getL()][roiPos.getC() - 1] == pt.NOIR);
-        if(roiL == 4 && roiC == 5)
-            return (pt.cases[roiPos.getL() + 1][roiPos.getC()] == pt.NOIR && pt.cases[roiPos.getL() - 1][roiPos.getC()] == pt.NOIR && pt.cases[roiPos.getL()][roiPos.getC() + 1] == pt.NOIR);
-        try {
-            return (pt.cases[roiPos.getL() + 1][roiPos.getC()] == pt.NOIR && pt.cases[roiPos.getL() - 1][roiPos.getC()] == pt.NOIR && pt.cases[roiPos.getL()][roiPos.getC() + 1] == pt.NOIR && pt.cases[roiPos.getL()][roiPos.getC() - 1] == pt.NOIR);
-        } catch (Exception e){
-            return false;
-        }
+        if(roiC == 3 && roiL == 4)
+            return (pt.estCaseDeType(roiPos.getL(), roiPos.getC()-1, TypePion.NOIR)
+                    && pt.estCaseDeType(roiPos.getL()-1, roiPos.getC(), TypePion.NOIR)
+                    && pt.estCaseDeType(roiPos.getL()+1, roiPos.getC(), TypePion.NOIR));
+        if(roiC == 5 && roiL == 4)
+            return (pt.estCaseDeType(roiPos.getL(), roiPos.getC()+1, TypePion.NOIR)
+                    && pt.estCaseDeType(roiPos.getL()-1, roiPos.getC(), TypePion.NOIR)
+                    && pt.estCaseDeType(roiPos.getL()+1, roiPos.getC(), TypePion.NOIR));
+        if(roiC == 4 && roiL == 3)
+            return (pt.estCaseDeType(roiPos.getL(), roiPos.getC()-1, TypePion.NOIR)
+                    && pt.estCaseDeType(roiPos.getL(), roiPos.getC()+1, TypePion.NOIR)
+                    && pt.estCaseDeType(roiPos.getL()-1, roiPos.getC(), TypePion.NOIR));
+        if(roiC == 4 && roiL == 5)
+            return (pt.estCaseDeType(roiPos.getL(), roiPos.getC()+1, TypePion.NOIR)
+                    && pt.estCaseDeType(roiPos.getL(), roiPos.getC()-1, TypePion.NOIR)
+                    && pt.estCaseDeType(roiPos.getL()+1, roiPos.getC(), TypePion.NOIR));
+        return (pt.estCaseDeType(roiPos.getL()+1, roiPos.getC(), TypePion.NOIR)
+                && pt.estCaseDeType(roiPos.getL()-1, roiPos.getC(), TypePion.NOIR)
+                && pt.estCaseDeType(roiPos.getL(), roiPos.getC()+1, TypePion.NOIR)
+                && pt.estCaseDeType(roiPos.getL(), roiPos.getC()-1, TypePion.NOIR));
     }
 
-    public boolean pionCapture(Pion pion){
+    public void pionCapture(Pion pion){
         Point posPion = pion.getPosition();
         int pionC = posPion.getC();
         int pionL = posPion.getL();
-//
-        if(pion.getType() == TypePion.BLANC){
-            try {
-                if(pt.cases[pionL - 1][pionC] == pt.NOIR && pt.cases[pionL + 1][pionC] == pt.NOIR)
-                    return true;
-            } catch (Exception e){
-                return false;
-            }
-            try {
-                if(pt.cases[pionL][pionC - 1] == pt.NOIR && pt.cases[pionL][pionC + 1] == pt.NOIR)
-                    return true;
-            } catch (Exception e){
-                return false;
-            }
-        } else if(pion.getType() == TypePion.NOIR){
-            try {
-                if((pt.cases[pionL - 1][pionC] == pt.BLANC || pt.cases[pionL - 1][pionC] == pt.ROI) && (pt.cases[pionL + 1][pionC] == pt.BLANC || pt.cases[pionL + 1][pionC] == pt.ROI))
-                    return true;
-            } catch (Exception e){
-                return false;
-            }
-            try {
-                if((pt.cases[pionL][pionC - 1] == pt.BLANC || pt.cases[pionL][pionC - 1] == pt.ROI) && (pt.cases[pionL][pionC + 1] == pt.BLANC || pt.cases[pionL][pionC + 1] == pt.ROI))
-                    return true;
-            } catch (Exception e){
-                return false;
-            }
+        // TODO methode pas bonne
+
+        if(pionL-2 >= 0 && pt.estCaseDeCouleur(pionL-1, pionC, pion.getCouleur().getOppose()) && pt.estCaseDeCouleur(pionL-2, pionC, pion.getCouleur()))
+            pt.capturerPion(new Point(pionL-1, pionC), pion);
+
+        if (pionL+2 <= 8 && pt.estCaseDeCouleur(pionL+1, pionC, pion.getCouleur().getOppose()) && pt.estCaseDeCouleur(pionL+2, pionC, pion.getCouleur()))
+            pt.capturerPion(new Point(pionL+1, pionC), pion);
+
+        if (pionC-2 >= 0 && pt.estCaseDeCouleur(pionL, pionC-1, pion.getCouleur().getOppose()) && pt.estCaseDeCouleur(pionL, pionC-2, pion.getCouleur()))
+            pt.capturerPion(new Point(pionL, pionC-1), pion);
+
+        if ((pionC+2 <= 8 && pt.estCaseDeCouleur(pionL, pionC+1, pion.getCouleur().getOppose()) && pt.estCaseDeCouleur(pionL, pionC+2, pion.getCouleur())))
+            pt.capturerPion(new Point(pionL, pionC+1), pion);
+
+    }
+
+    public Plateau getPlateau() {
+        return pt;
+    }
+
+    public void annulerCoup() {
+        // TODO annuler le coup dans jeu
+        Coup c = coupsPrecedant.pop();
+        coupsSuivant.push(c);
+    }
+
+    public void refaireCoup() {
+        Coup c = coupsSuivant.pop();
+
+        Pion pion = c.getPion();
+        Point destination = c.getDestination();
+        if(pt.peutDeplacer(pion, destination)) {
+            pt.deplacerPion(pion, destination.getL(), destination.getC());
+            coupsPrecedant.push(c);
+        } else
+            Configuration.instance().logger().severe("Deplacement impossible : ( " + pion.getType() + ":" + pion.getPosition().getC() + "," + pion.getPosition().getL() + ") -> " + destination.getL() + "," + destination.getC());
+    }
+
+    public void setSelectionner(Point point) {
+        Pion tmp = pt.trouverPion(point, joueurCourant.getCouleur());
+        if (tmp != pionSelect)
+            pionSelect = tmp;
+        else
+            pionSelect = null;
+        update();
+    }
+
+    public Pion getSelectionne() {
+        return pionSelect;
+    }
+
+    public List<Point> getClickable() {
+        return pt.getCasesAccessibles(pionSelect);
+    }
+
+    public void verifierPion(Point point) {
+        if (deMemeCouleur(point) && estClickable(point))
+            setSelectionner(point);
+
+    }
+
+    private boolean estClickable(Point point) {
+        Pion p = pt.trouverPion(point, joueurCourant.getCouleur());
+        return getPionClickable().contains(p);
+    }
+
+    private boolean deMemeCouleur(Point point) {
+        TypePion tmp = pt.getTypePion(point);
+        if (tmp == null) return false;
+        return tmp.getCouleur() ==  joueurCourant.getCouleur();
+    }
+
+    public boolean verifierCoup(Point point) {
+        if (pionSelect == null) return false;
+
+        List<Point> accessible = pt.getCasesAccessibles(pionSelect);
+        if (accessible.contains(point)) {
+            Coup coup = new Coup(pionSelect, point);
+            joueCoup(coup);
+            coupsPrecedant.add(coup);
+            pionSelect = null;
+            return true;
         }
         return false;
+    }
+
+    public List<Pion> getPionClickable() {
+        List<Pion> pions = getPionCourant();
+        return pions.stream().filter(pion -> !pt.getCasesAccessibles(pion).isEmpty()).collect(Collectors.toList());
     }
 
     public Plateau getPlateau() {

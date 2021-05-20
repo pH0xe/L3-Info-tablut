@@ -13,19 +13,9 @@ public class Pion {
         this.etat = EtatPion.ACTIF;
     }
 
-    public Pion(TypePion type, Point position, EtatPion etat){
-        this.type = type;
-        this.position = position;
-        this.etat = etat;
-    }
-
     public boolean estPris(){
         return etat == EtatPion.INACTIF;
     }
-
-//    public void changerEtat(){
-//        etat = EtatPion.INACTIF;
-//    }
 
     public void changerEtat(EtatPion etat){
         this.etat = etat;
@@ -53,6 +43,10 @@ public class Pion {
 
     public Point getPosition(){
         return position;
+    }
+
+    public Couleur getCouleur() {
+        return type.getCouleur();
     }
 
     @Override
