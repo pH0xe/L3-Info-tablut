@@ -11,9 +11,9 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        //InterfaceGraphique.demarrer(new Controleur());
-        Joueur j1 = new Joueur("Joueur 1", TypeJoueur.BLANC);
-        Joueur j2 = new Joueur("Joueur 2", TypeJoueur.NOIR);
+        InterfaceGraphique.demarrer(new Controleur());
+        Joueur j1 = new Joueur("Joueur 1", Couleur.BLANC);
+        Joueur j2 = new Joueur("Joueur 2", Couleur.NOIR);
         Jeu j = new Jeu(j1, j2);
         IA IAF = new IAFacile();
         IA IAD = new IADifficile();
@@ -26,7 +26,7 @@ public class Main {
         j.joueCoup(new Coup(p.getNoirs().get(0), new Point(0, 8)));
         System.out.println();
         p.affichePlateau();
-        IAD.Minimax(j, TypeJoueur.BLANC, 4, new ArrayList<Coup>());
+        IAD.Minimax(j, Couleur.BLANC, 4, new ArrayList<Coup>());
         Coup c = IAD.iaJoue(j);
         System.out.println(c);
         j.joueCoup(c);

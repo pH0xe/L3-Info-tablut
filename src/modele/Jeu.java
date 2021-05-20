@@ -78,7 +78,7 @@ public class Jeu extends Observable {
         Pion pion = c.getPion();
         Point destination = c.getDestination();
         Plateau plat = jeu2.getPlateau();
-        if(plat.peutDeplacer(pion, destination.getL(), destination.getC()))
+        if(plat.peutDeplacer(pion, destination))
             plat.deplacerPion(pion, destination.getL(), destination.getC());
         else
             Configuration.instance().logger().severe("Deplacement impossible : ( " + pion.getType() + ":" + pion.getPosition().getL() + "," + pion.getPosition().getC() + ") -> " + destination.getL() + "," + destination.getC());
@@ -134,7 +134,6 @@ public class Jeu extends Observable {
         Point posPion = pion.getPosition();
         int pionC = posPion.getC();
         int pionL = posPion.getL();
-        // TODO methode pas bonne
 
         if(pionL-2 >= 0 && pt.estCaseDeCouleur(pionL-1, pionC, pion.getCouleur().getOppose()) && pt.estCaseDeCouleur(pionL-2, pionC, pion.getCouleur()))
             pt.capturerPion(new Point(pionL-1, pionC), pion);
@@ -148,10 +147,6 @@ public class Jeu extends Observable {
         if ((pionC+2 <= 8 && pt.estCaseDeCouleur(pionL, pionC+1, pion.getCouleur().getOppose()) && pt.estCaseDeCouleur(pionL, pionC+2, pion.getCouleur())))
             pt.capturerPion(new Point(pionL, pionC+1), pion);
 
-    }
-
-    public Plateau getPlateau() {
-        return pt;
     }
 
     public void annulerCoup() {

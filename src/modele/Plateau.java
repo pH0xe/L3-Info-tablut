@@ -65,7 +65,7 @@ public class Plateau extends Observable {
         cases = new TypePion[9][9];
         this.blancs.add(roi);
         //Placement roi
-        cases[roi.getPosition().getL()][roi.getPosition().getL()] = ROI;
+        cases[roi.getPosition().getL()][roi.getPosition().getL()] = TypePion.ROI;
 
 
         //Placement pion blancs
@@ -84,65 +84,6 @@ public class Plateau extends Observable {
             cases[l][c] = p.getType();
         }
 
-    }
-
-    public void initPionsBlancsVictoire(){
-
-        noirs = new ArrayList<>();
-        blancs = new ArrayList<>();
-        this.roi = new Pion(TypePion.ROI, new Point(2, 4));
-
-        this.blancs.add(roi);
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(3, 4)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(4, 2)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(4, 3)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(4, 5)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(4, 6)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(5, 4)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(6, 4)));
-
-
-        //Creation pion noirs;
-
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(0, 3)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(0, 4)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(0, 5)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(1, 4)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(3, 0)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(3, 8)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(4, 0)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(4, 1)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(4, 7)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(4, 8)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(5, 0)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(5, 8)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(7, 4)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(8, 3)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(8, 4)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(8, 5)));
-
-        for (int i = 0; i < nbLigne; i++) {
-            for (int j = 0; j < nbColonne; j++) {
-                cases[i][j] = VIDE;
-            }
-        }
-
-        for (Pion p : blancs) {
-            int l = p.getPosition().getL();
-            int c = p.getPosition().getC();
-
-            cases[l][c] = BLANC;
-        }
-
-        //Placement pion noirs
-        for (Pion p : noirs) {
-            int l = p.getPosition().getL();
-            int c = p.getPosition().getC();
-
-            cases[l][c] = NOIR;
-        }
-
-        cases[roi.getPosition().getL()][roi.getPosition().getL()] = ROI;
     }
 
     public List<Point> getCasesAccessibles(Pion pion){
@@ -242,22 +183,6 @@ public class Plateau extends Observable {
         }
     }
 
-    public TypePion[][] getCases() {
-        return cases;
-    }
-
-    public List<Pion> getBlancs() {
-        return blancs;
-    }
-
-    public List<Pion> getNoirs() {
-        return noirs;
-    }
-
-    public Pion getRoi() {
-        return roi;
-    }
-
     public int getBlancsElimine() {
         return (int) blancs.stream().filter(Pion::estPris).count();
     }
@@ -297,7 +222,7 @@ public class Plateau extends Observable {
         return roi;
     }
 
-    public int[][] getCases() {
+    public TypePion[][] getCases() {
         return cases;
     }
 
@@ -319,7 +244,7 @@ public class Plateau extends Observable {
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(nbLigne, nbColonne, VIDE, NOIR, BLANC, ROI, roi, noirs, blancs);
+        int result = Objects.hash(nbLigne, nbColonne, roi, noirs, blancs);
         result = 31 * result + Arrays.hashCode(cases);
         return result;
     }

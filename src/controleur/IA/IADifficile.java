@@ -31,19 +31,19 @@ public class IADifficile extends IA{
         int cRoi = roi.getPosition().getC();
 
 
-        if(( lRoi+1 == 4 && cRoi == 4) || p.getCases()[lRoi+1][cRoi] == p.NOIR){
+        if(( lRoi+1 == 4 && cRoi == 4) || p.getCases()[lRoi+1][cRoi] == TypePion.NOIR){
             autourRoi++;
         }
 
-        if(( lRoi-1 == 4 && cRoi == 4) || p.getCases()[lRoi-1][cRoi] == p.NOIR){
+        if(( lRoi-1 == 4 && cRoi == 4) || p.getCases()[lRoi-1][cRoi] == TypePion.NOIR){
             autourRoi++;
         }
 
-        if(( lRoi == 4 && cRoi+1 == 4) || p.getCases()[lRoi][cRoi+1] == p.NOIR){
+        if(( lRoi == 4 && cRoi+1 == 4) || p.getCases()[lRoi][cRoi+1] == TypePion.NOIR){
             autourRoi++;
         }
 
-        if(( lRoi == 4 && cRoi-1 == 4) || p.getCases()[lRoi][cRoi-1] == p.NOIR){
+        if(( lRoi == 4 && cRoi-1 == 4) || p.getCases()[lRoi][cRoi-1] == TypePion.NOIR){
             autourRoi++;
         }
 
@@ -61,7 +61,7 @@ public class IADifficile extends IA{
 
     //Configuration.instance.logger
 
-    public int Minimax(Jeu j, TypeJoueur tj, int profondeur, List<Coup> prec){
+    public int Minimax(Jeu j, Couleur tj, int profondeur, List<Coup> prec){
 
         if(profondeur==0 || j.roiSorti() || j.roiCapture()){
             return heuristique(j);
@@ -82,7 +82,7 @@ public class IADifficile extends IA{
             }
         }
         int val;
-        if (tj.equals(TypeJoueur.BLANC)){
+        if (tj.equals(Couleur.BLANC)){
             val = -100000;
         }
         else{
@@ -95,8 +95,8 @@ public class IADifficile extends IA{
             prec.add(cp);
             int dL = cp.getPion().getPosition().getL();
             int dC = cp.getPion().getPosition().getC();
-            if (tj.equals(TypeJoueur.BLANC)){
-                borne =  Minimax(j.joueCoupDuplique(cp),TypeJoueur.NOIR, profondeur-1, prec);
+            if (tj.equals(Couleur.BLANC)){
+                borne =  Minimax(j.joueCoupDuplique(cp),Couleur.NOIR, profondeur-1, prec);
                 if(borne > val){
                     val = borne;
                     meilleur = cp;
@@ -106,7 +106,7 @@ public class IADifficile extends IA{
                 }
             }
             else{
-                borne =  Minimax(j.joueCoupDuplique(cp),TypeJoueur.BLANC, profondeur-1, prec);
+                borne =  Minimax(j.joueCoupDuplique(cp),Couleur.BLANC, profondeur-1, prec);
                 if(borne < val){
                     val = borne;
                     meilleur = cp;
