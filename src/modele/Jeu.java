@@ -3,7 +3,6 @@ package modele;
 import global.Configuration;
 import structure.Observable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
@@ -43,14 +42,14 @@ public class Jeu extends Observable {
     }
 
     public Joueur getJoueurSuivant(){
-        if(joueurCourant == j1){
+        if(joueurCourant.equals(j1)){
             return j2;
         }else{
             return j1;
         }
     }
 
-    public List<Pion> getPionCourant() {
+    public List<Pion> getPionsCourant() {
         if (joueurCourant().getCouleur() == Couleur.BLANC) {
             return pt.getBlancs();
         } else {
@@ -70,7 +69,6 @@ public class Jeu extends Observable {
             update();
         }  else
             Configuration.instance().logger().severe("Deplacement impossible : ( " + pion.getType() + ":" + pion.getPosition().getL() + "," + pion.getPosition().getC() + ") -> " + destination.getL() + "," + destination.getC());
-        this.joueurSuivant();
     }
 
     public Jeu joueCoupDuplique(Coup c){
@@ -216,7 +214,8 @@ public class Jeu extends Observable {
     }
 
     public List<Pion> getPionClickable() {
-        List<Pion> pions = getPionCourant();
+        List<Pion> pions = getPionsCourant();
+
         return pions.stream().filter(pion -> !pt.getCasesAccessibles(pion).isEmpty()).collect(Collectors.toList());
     }
 

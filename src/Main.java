@@ -12,6 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
         InterfaceGraphique.demarrer(new Controleur());
+        /*
         Joueur j1 = new Joueur("Joueur 1", Couleur.BLANC);
         Joueur j2 = new Joueur("Joueur 2", Couleur.NOIR);
         Jeu j = new Jeu(j1, j2);
@@ -31,5 +32,6 @@ public class Main {
         System.out.println(c);
         j.joueCoup(c);
         p.affichePlateau();
+         */
     }
 }

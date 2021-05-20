@@ -42,7 +42,9 @@ public class Controleur implements CollecteurEvenements {
     public void cliquePlateau(Point point) {
         if (jeu.verifierCoup(point)) {
             if (jeu.roiSorti())
-                Configuration.instance().logger().info("ROI SORTI");
+                System.out.println("rois sorti");
+            else if (jeu.roiCapture())
+                System.out.println("roi pris");
                 // TODO dialog de fin
             return;
         }

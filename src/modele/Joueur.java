@@ -34,4 +34,12 @@ public class Joueur {
     public int hashCode() {
         return Objects.hash(nom, type);
     }
+
+    @Override
+    public String toString() {
+        return "Joueur{" +
+                "nom='" + nom + '\'' +
+                ", type=" + type +
+                '}';
+    }
 }

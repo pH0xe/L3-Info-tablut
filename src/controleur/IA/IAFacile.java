@@ -14,7 +14,7 @@ public class IAFacile extends IA{
     public Coup iaJoue(Jeu j){
         Plateau p = j.getPlateau();
         Random r = new Random();
-        List<Pion> ps = j.getPionCourant();
+        List<Pion> ps = j.getPionsCourant();
         List<Point> jouables;
         Pion aJouer;
         do {

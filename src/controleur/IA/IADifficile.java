@@ -68,7 +68,7 @@ public class IADifficile extends IA{
         }
         Plateau p = j.getPlateau();
         List<Coup> C = new ArrayList<>();
-        List<Pion> jouables = j.getPionCourant();
+        List<Pion> jouables = j.getPionsCourant();
         for (Pion pi: jouables) {
             List<Point> accessibles = p.getCasesAccessibles(pi);
             for (Point pt: accessibles) {

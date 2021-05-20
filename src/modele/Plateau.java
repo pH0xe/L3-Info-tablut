@@ -196,7 +196,6 @@ public class Plateau extends Observable {
         if (c == Couleur.BLANC){
             for (Pion pion : blancs) {
                 if (pion.getPosition().equals(point)) {
-                    if (pion.estPris()) return null;
                     return pion;
                 }
             }
@@ -204,7 +203,6 @@ public class Plateau extends Observable {
 
         for (Pion pion : noirs) {
             if (pion.getPosition().equals(point)) {
-                if (pion.estPris()) return null;
                 return pion;
             }
         }
@@ -213,6 +211,7 @@ public class Plateau extends Observable {
 
     public void capturerPion(Point point, Pion pion) {
         Pion p = trouverPion(point, pion.getCouleur().getOppose());
+        if (p.getType() == TypePion.ROI) return;
         cases[point.getL()][point.getC()] = null;
         p.changerEtat(EtatPion.INACTIF);
 
