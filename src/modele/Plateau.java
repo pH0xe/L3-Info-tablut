@@ -26,6 +26,13 @@ public class Plateau extends Observable {
         initPlateau();
     }
 
+    public Plateau(Plateau p){
+        this.noirs = new ArrayList<>(p.getNoirs());
+        this.blancs = new ArrayList<>(p.getBlancs());
+        this.roi = new Pion(p.getRoi());
+        initPlateau();
+    }
+
     public void initPions() {
         //Creation pion blancs;
         this.blancs.add(new Pion(TypePion.BLANC, new Point(2, 4)));
@@ -70,6 +77,8 @@ public class Plateau extends Observable {
 
         //Placement pion blancs
         for (Pion p : blancs) {
+            if(p.estPris())
+                continue;
             int l = p.getPosition().getL();
             int c = p.getPosition().getC();
 
@@ -78,6 +87,8 @@ public class Plateau extends Observable {
 
         //Placement pion noirs
         for (Pion p : noirs) {
+            if(p.estPris())
+                continue;
             int l = p.getPosition().getL();
             int c = p.getPosition().getC();
 
@@ -209,13 +220,16 @@ public class Plateau extends Observable {
         return null;
     }
 
-    public void capturerPion(Point point, Pion pion) {
+    public Pion capturerPion(Point point, Pion pion) {
         Pion p = trouverPion(point, pion.getCouleur().getOppose());
-        if (p.getType() == TypePion.ROI) return;
+        if (p.getType() == TypePion.ROI) return null;
+        System.out.println("CapturerPion " + point);
+        System.out.println("Cases LC avant: "+cases[point.getL()][point.getC()]);
         cases[point.getL()][point.getC()] = null;
+        System.out.println("Cases LC apres: "+cases[point.getL()][point.getC()]);
         p.changerEtat(EtatPion.INACTIF);
-
         Configuration.instance().logger().info("Capture du pion : " + p);
+        return p;
     }
 
     public Pion getRoi() {

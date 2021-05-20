@@ -12,4 +12,8 @@ public interface CollecteurEvenements {
     void fermerOption(String nomJoueurBlanc, String nomJoueurNoir, TypeIA typeJB, TypeIA typeJN);
 
     void cliquePlateau(Point point);
+
+    void joueIA1();
+
+    void joueIA2();
 }

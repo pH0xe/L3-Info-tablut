@@ -3,6 +3,7 @@ package modele;
 import global.Configuration;
 import structure.Observable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
@@ -25,10 +26,13 @@ public class Jeu extends Observable {
     }
 
     public Jeu(Jeu j){
-        this.j1 = j.j1;
-        this.j2 = j.j2;
-        this.joueurCourant = j.j1; // j1 = blancs
-        this.pt = j.pt;
+        this.j1 = new Joueur(j.j1);
+        this.j2 = new Joueur(j.j2);
+        if(j.joueurCourant().getCouleur() == Couleur.BLANC)
+            this.joueurCourant = this.j1; // j1 = blancs
+        else
+            this.joueurCourant = this.j2; // j1 = blancs
+        this.pt = new Plateau(j.getPlateau());
         coupsPrecedant = new Stack<>();
         coupsSuivant = new Stack<>();
     }
@@ -64,7 +68,7 @@ public class Jeu extends Observable {
             pt.deplacerPion(pion, destination.getL(), destination.getC());
             coupsPrecedant.push(c);
             coupsSuivant.clear();
-            pionCapture(pion);
+            c.setCaptures(pionCapture(pion));
             joueurSuivant();
             update();
         }  else
@@ -88,11 +92,15 @@ public class Jeu extends Observable {
         Coup dernier = c.get(c.size()-1);
         //System.out.println("Dernier coup " + dernier);
         c.remove(c.size()-1);
-        Point dest = new Point(destL, destC);
-        Pion p = dernier.getPion();
-        Coup cp = new Coup(p, dest);
+        for (Pion p: dernier.getCaptures()) {
+            p.changerEtat(EtatPion.ACTIF);
+        }
+        this.getPlateau().deplacerPion(dernier.getPion(), destL, destC);
+        joueurSuivant();
         //System.out.println("Coup d'annulation: " + cp);
-        this.joueCoup(cp);
+        //deplacer pion
+        //joueur suivant
+        //reactiver pions
     }
 
     public boolean roiSorti() {
@@ -128,23 +136,24 @@ public class Jeu extends Observable {
                 && pt.estCaseDeType(roiPos.getL(), roiPos.getC()-1, TypePion.NOIR));
     }
 
-    public void pionCapture(Pion pion){
+    public List<Pion> pionCapture(Pion pion){
         Point posPion = pion.getPosition();
         int pionC = posPion.getC();
         int pionL = posPion.getL();
+        List<Pion> captures = new ArrayList<>();
 
         if(pionL-2 >= 0 && pt.estCaseDeCouleur(pionL-1, pionC, pion.getCouleur().getOppose()) && pt.estCaseDeCouleur(pionL-2, pionC, pion.getCouleur()))
-            pt.capturerPion(new Point(pionL-1, pionC), pion);
+            captures.add(pt.capturerPion(new Point(pionL-1, pionC), pion));
 
         if (pionL+2 <= 8 && pt.estCaseDeCouleur(pionL+1, pionC, pion.getCouleur().getOppose()) && pt.estCaseDeCouleur(pionL+2, pionC, pion.getCouleur()))
-            pt.capturerPion(new Point(pionL+1, pionC), pion);
+            captures.add(pt.capturerPion(new Point(pionL+1, pionC), pion));
 
         if (pionC-2 >= 0 && pt.estCaseDeCouleur(pionL, pionC-1, pion.getCouleur().getOppose()) && pt.estCaseDeCouleur(pionL, pionC-2, pion.getCouleur()))
-            pt.capturerPion(new Point(pionL, pionC-1), pion);
+            captures.add(pt.capturerPion(new Point(pionL, pionC-1), pion));
 
         if ((pionC+2 <= 8 && pt.estCaseDeCouleur(pionL, pionC+1, pion.getCouleur().getOppose()) && pt.estCaseDeCouleur(pionL, pionC+2, pion.getCouleur())))
-            pt.capturerPion(new Point(pionL, pionC+1), pion);
-
+            captures.add(pt.capturerPion(new Point(pionL, pionC+1), pion));
+        return captures;
     }
 
     public void annulerCoup() {

@@ -52,9 +52,9 @@ public class IADifficile extends IA{
         /****FIN ENCERCLEMENT ***/
 
         heuristique += 8*p.getBlancs().size();
-        heuristique -= 16*p.getNoirs().size();
+        heuristique -= 16*(16-p.getNoirs().size());
 
-        heuristique += 32 * j.getPlateau().getCasesAccessibles(roi).size();
+        heuristique += 3 * j.getPlateau().getCasesAccessibles(roi).size();
 
         return heuristique;
           }
@@ -75,12 +75,7 @@ public class IADifficile extends IA{
                 C.add(new Coup(pi, pt));
             }
         }
-        Configuration.instance().logger().warning("Liste coups: ");
-        for(Coup cp:C){
-            if(cp.getPion().getType().equals(TypePion.ROI)){
-                Configuration.instance().logger().warning(cp.toString());
-            }
-        }
+
         int val;
         if (tj.equals(Couleur.BLANC)){
             val = -100000;
@@ -129,6 +124,7 @@ public class IADifficile extends IA{
 
 
     public Coup iaJoue(Jeu j){
+        Minimax(j, j.joueurCourant().getCouleur(),2, new ArrayList<>());
         Plateau p = j.getPlateau();
         Random r = new Random();
         ConfigJeu cj = new ConfigJeu(j.joueurCourant(), p);

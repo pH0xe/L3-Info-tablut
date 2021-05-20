@@ -33,5 +33,6 @@ public class Main {
         j.joueCoup(c);
         p.affichePlateau();
          */
+
     }
 }

@@ -13,6 +13,12 @@ public class Pion {
         this.etat = EtatPion.ACTIF;
     }
 
+    public Pion(Pion pion) {
+        this.type = pion.getType();
+        this.etat = pion.getEtat();
+        this.position = new Point(pion.getPosition());
+    }
+
     public boolean estPris(){
         return etat == EtatPion.INACTIF;
     }

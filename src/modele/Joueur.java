@@ -10,6 +10,11 @@ public class Joueur {
         this.nom = nom;
         this.type = type;
     }
+
+    public Joueur(Joueur j){
+        this.type = j.getCouleur();
+        this.nom = j.getNom();
+    }
     public String getNom(){
         return nom;
     }

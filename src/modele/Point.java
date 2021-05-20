@@ -12,6 +12,11 @@ public class Point {
         this.c = c;
     }
 
+    public Point(Point point) {
+        this.l = point.getL();
+        this.c = point.getC();
+    }
+
     public int getL(){
         return l;
     }
