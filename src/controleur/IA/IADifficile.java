@@ -34,19 +34,19 @@ public class IADifficile extends IA{
         int cRoi = roi.getPosition().getC();
 
 
-        if(( lRoi+1 == 4 && cRoi == 4) || p.getCases()[lRoi+1][cRoi] == TypePion.NOIR){
+        if(( lRoi+1 == 4 && cRoi == 4) || p.estCaseDeType(lRoi+1, cRoi, TypePion.NOIR)){
             autourRoi++;
         }
 
-        if(( lRoi-1 == 4 && cRoi == 4) || p.getCases()[lRoi-1][cRoi] == TypePion.NOIR){
+        if(( lRoi-1 == 4 && cRoi == 4) || p.estCaseDeType(lRoi-1, cRoi, TypePion.NOIR)){
             autourRoi++;
         }
 
-        if(( lRoi == 4 && cRoi+1 == 4) || p.getCases()[lRoi][cRoi+1] == TypePion.NOIR){
+        if(( lRoi == 4 && cRoi+1 == 4) || p.estCaseDeType(lRoi, cRoi+1, TypePion.NOIR)){
             autourRoi++;
         }
 
-        if(( lRoi == 4 && cRoi-1 == 4) || p.getCases()[lRoi][cRoi-1] == TypePion.NOIR){
+        if(( lRoi == 4 && cRoi-1 == 4) || p.estCaseDeType(lRoi, cRoi-1, TypePion.NOIR)){
             autourRoi++;
         }
 

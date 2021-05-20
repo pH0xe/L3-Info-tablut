@@ -5,32 +5,31 @@ import structure.Observable;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.Objects;
 
 public class Plateau extends Observable {
-    public final int nbLigne = 9;
-    public final int nbColonne = 9;
-
-    private TypePion[][] cases;
     private Pion roi;
     private List<Pion> noirs;
     private List<Pion> blancs;
+    private final int nbLigne = 9;
+    private final int nbColonne = 9;
 
 
     public Plateau() {
         noirs = new ArrayList<>();
         blancs = new ArrayList<>();
         initPions();
-        initPlateau();
     }
 
     public Plateau(Plateau p){
         this.noirs = new ArrayList<>(p.getNoirs());
         this.blancs = new ArrayList<>(p.getBlancs());
         this.roi = new Pion(p.getRoi());
-        initPlateau();
+        initPions();
     }
 
     public void initPions() {
@@ -44,9 +43,7 @@ public class Plateau extends Observable {
         this.blancs.add(new Pion(TypePion.BLANC, new Point(5, 4)));
         this.blancs.add(new Pion(TypePion.BLANC, new Point(6, 4)));
 
-
         //Creation pion noirs;
-
         this.noirs.add(new Pion(TypePion.NOIR, new Point(0, 3)));
         this.noirs.add(new Pion(TypePion.NOIR, new Point(0, 4)));
         this.noirs.add(new Pion(TypePion.NOIR, new Point(0, 5)));
@@ -68,34 +65,6 @@ public class Plateau extends Observable {
         this.blancs.add(this.roi);
     }
 
-    public void initPlateau() {
-        cases = new TypePion[9][9];
-
-        //Placement roi
-        cases[roi.getPosition().getL()][roi.getPosition().getL()] = TypePion.ROI;
-
-
-        //Placement pion blancs
-        for (Pion p : blancs) {
-            if(p.estPris())
-                continue;
-            int l = p.getPosition().getL();
-            int c = p.getPosition().getC();
-
-            cases[l][c] = p.getType();
-        }
-
-        //Placement pion noirs
-        for (Pion p : noirs) {
-            if(p.estPris())
-                continue;
-            int l = p.getPosition().getL();
-            int c = p.getPosition().getC();
-
-            cases[l][c] = p.getType();
-        }
-
-    }
 
     public List<Point> getCasesAccessibles(Pion pion){
         int pl = pion.getPosition().getL();
@@ -104,51 +73,41 @@ public class Plateau extends Observable {
         List<Point> accessibles = new ArrayList<>();
         if(pl!=8) {
             for (int i = pl + 1; i < 9; i++) {
-                if (cases[i][pc] == null) {
+                if (estVide(i, pc))
                     accessibles.add(new Point(i, pc));
-                } else {
-                    break;
-                }
+                else break;
             }
         }
         if(pl!=0) {
             for (int i = pl - 1; i >= 0; i--) {
-                if (cases[i][pc] == null) {
+                if (estVide(i, pc))
                     accessibles.add(new Point(i, pc));
-                } else {
-                    break;
-                }
+                else break;
             }
         }
         if(pc!=8) {
             for (int i = pc + 1; i < 9; i++) {
-                if (cases[pl][i] == null) {
+                if (estVide(pl, i))
                     accessibles.add(new Point(pl, i));
-                } else {
-                    break;
-                }
+                else break;
             }
         }
         if(pc!=0) {
             for (int i = pc - 1; i >=0; i--) {
-                if (cases[pl][i] == null) {
+                if (estVide(pl, i))
                     accessibles.add(new Point(pl, i));
-                } else {
-                    break;
-                }
+                else break;
             }
         }
         return accessibles;
     }
 
     public void deplacerPion(Pion pion, int l, int c) {
-        cases[pion.getPosition().getL()][pion.getPosition().getC()] = null;
-        if (pion.getType().getCouleur() == Couleur.BLANC) {
-            blancs.get(blancs.indexOf(pion)).deplacerPion(l, c);
-        } else {
-            noirs.get(noirs.indexOf(pion)).deplacerPion(l, c);
-        }
-        cases[pion.getPosition().getL()][pion.getPosition().getC()] = pion.getType();
+        pion.deplacerPion(l, c);
+    }
+
+    public void deplacerPion(Pion pion, Point dest) {
+        deplacerPion(pion, dest.getL(), dest.getC());
     }
 
     public boolean peutDeplacer(Pion pion, Point dest){
@@ -157,23 +116,25 @@ public class Plateau extends Observable {
     }
 
     public TypePion getTypePion(Point point) {
-        return getTypePion(point.getL(), point.getC());
+        Pion p = getPion(point);
+        if (p == null) return null;
+        return p.getType();
     }
 
     public TypePion getTypePion(int l, int c) {
-        return cases[l][c];
+        return getTypePion(new Point(l,c));
     }
 
     public boolean estCaseDeType(Point point, TypePion typePion) {
-        return cases[point.getL()][point.getC()] == typePion;
+        return getTypePion(point) == typePion;
     }
 
     public boolean estCaseDeType(int l, int c, TypePion typePion) {
-        return cases[l][c] == typePion;
+        return estCaseDeType(new Point(l, c), typePion);
     }
 
     public boolean estCaseDeCouleur(int l, int c, Couleur couleur) {
-        TypePion type = cases[l][c];
+        TypePion type = getTypePion(l, c);
         if (type == null)  return false;
         return type.getCouleur() == couleur;
     }
@@ -181,11 +142,11 @@ public class Plateau extends Observable {
     public void affichePlateau() {
         for (int i = 0; i < nbLigne; i++) {
             for (int j = 0; j < nbColonne; j++) {
-                if (cases[i][j] == null) {
+                if (getPion(i, j) == null) {
                     System.out.print(".");
-                } else if (cases[i][j] == TypePion.BLANC) {
+                } else if (estCaseDeType(i, j, TypePion.BLANC)) {
                     System.out.print("B");
-                } else if (cases[i][j] == TypePion.ROI) {
+                } else if (estCaseDeType(i, j, TypePion.ROI)) {
                     System.out.print("R");
                 } else {
                     System.out.print("N");
@@ -193,6 +154,18 @@ public class Plateau extends Observable {
             }
             System.out.println();
         }
+    }
+
+    public List<Pion> getBlancs() {
+        return blancs;
+    }
+
+    public List<Pion> getNoirs() {
+        return noirs;
+    }
+
+    public Pion getRoi() {
+        return roi;
     }
 
     public int getBlancsElimine() {
@@ -203,49 +176,32 @@ public class Plateau extends Observable {
         return (int) noirs.stream().filter(Pion::estPris).count();
     }
 
-    public Pion trouverPion(Point point, Couleur c) {
-        if (c == Couleur.BLANC){
-            for (Pion pion : blancs) {
-                if (pion.getPosition().equals(point)) {
-                    return pion;
-                }
-            }
-        }
+    public Pion getPion(Point point) {
+        Pion res = blancs.stream().filter(pion1 -> pion1.getPosition().equals(point)).findFirst().orElse(null);
+        if (res != null) return res;
+        res = noirs.stream().filter(pion1 -> pion1.getPosition().equals(point)).findFirst().orElse(null);
+        return res;
+    }
 
-        for (Pion pion : noirs) {
-            if (pion.getPosition().equals(point)) {
-                return pion;
-            }
-        }
-        return null;
+    private Pion getPion(int i, int j) {
+        return getPion(new Point(i, j));
+    }
+
+    public boolean estVide(Point point) {
+        Pion p = getPion(point);
+        return p == null || p.estPris();
+    }
+
+    public boolean estVide(int l, int c) {
+        return estVide(new Point(l,c));
+
     }
 
     public Pion capturerPion(Point point, Pion pion) {
-        Pion p = trouverPion(point, pion.getCouleur().getOppose());
-        if (p.getType() == TypePion.ROI) return null;
-        //System.out.println("CapturerPion " + point);
-        //System.out.println("Cases LC avant: "+cases[point.getL()][point.getC()]);
-        cases[point.getL()][point.getC()] = null;
-        //System.out.println("Cases LC apres: "+cases[point.getL()][point.getC()]);
+        Pion p = getPion(point);
         p.changerEtat(EtatPion.INACTIF);
         Configuration.instance().logger().info("Capture du pion : " + p);
         return p;
-    }
-
-    public Pion getRoi() {
-        return roi;
-    }
-
-    public TypePion[][] getCases() {
-        return cases;
-    }
-
-    public List<Pion> getNoirs() {
-        return noirs;
-    }
-
-    public List<Pion> getBlancs() {
-        return blancs;
     }
 
     @Override
@@ -253,13 +209,11 @@ public class Plateau extends Observable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Plateau plateau = (Plateau) o;
-        return  Arrays.equals(cases, plateau.cases) && Objects.equals(roi, plateau.roi) && Objects.equals(noirs, plateau.noirs) && Objects.equals(blancs, plateau.blancs);
+        return Objects.equals(roi, plateau.roi) && Objects.equals(noirs, plateau.noirs) && Objects.equals(blancs, plateau.blancs);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(nbLigne, nbColonne, roi, noirs, blancs);
-        result = 31 * result + Arrays.hashCode(cases);
-        return result;
+        return Objects.hash(roi, noirs, blancs, nbLigne, nbColonne);
     }
 }
