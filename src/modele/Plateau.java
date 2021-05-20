@@ -137,6 +137,7 @@ public class Plateau extends Observable {
         } else {
             noirs.get(noirs.indexOf(pion)).deplacerPion(l, c);
         }
+        cases[pion.getPosition().getL()][pion.getPosition().getC()] = pion.getType();
     }
 
     public boolean peutDeplacer(Pion pion, Point dest){
