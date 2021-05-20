@@ -1,11 +1,12 @@
 package vue.panels;
 
 import controleur.CollecteurEvenements;
+import controleur.TypeIA;
 import vue.customComponent.ButtonBuilder;
 import vue.customComponent.CustomComboBox;
 import vue.customComponent.CustomTextField;
 import vue.customComponent.formPanel;
-import vue.mouseAdapters.OptionsAdapteur;
+import vue.adapters.mouseAdapters.OptionsAdapteur;
 import vue.utils.Constants;
 import vue.utils.ConstraintBuilder;
 import vue.utils.Labels;
@@ -76,7 +77,7 @@ public class PanelOption extends JPanel {
         joueurBlanc = new CustomComboBox(comboboxOption, Names.OPTIONS_COMBO_BLANC);
         joueurNoir = new CustomComboBox(comboboxOption, Names.OPTIONS_COMBO_NOIR);
         nomJBlanc = new CustomTextField(Labels.OPTIONS_FIEBL, Names.OPTIONS_TEXTFIELD_BLANC);
-        nomJNoir = new CustomTextField(Labels.OPTIONS_FIENL, Names.OPTIONS_TEXTFIELD_NOIR);
+        nomJNoir = new CustomTextField(Labels.OPTIONS_FIENO, Names.OPTIONS_TEXTFIELD_NOIR);
         btnBack = new ButtonBuilder().setBackground(Constants.BUTTON_BACK_BACKGROUND).setForeground(Constants.BUTTON_BACK_FOREGROUND).setText(Labels.BTN_RETOUR).setName(Names.BTN_RETOUR).toJButton();
 
         String[] labels = {Labels.OPTIONS_MUSIC, Labels.OPTIONS_SOUND, Labels.OPTIONS_JOUBL, Labels.OPTIONS_JOUNO, Labels.OPTIONS_NOJBL,Labels.OPTIONS_NOJNO, ""};
@@ -88,8 +89,42 @@ public class PanelOption extends JPanel {
     }
 
     private void initAdaptateur() {
-        btnMusic.addMouseListener(new OptionsAdapteur(controleur));
-        btnSon.addMouseListener(new OptionsAdapteur(controleur));
-        btnBack.addMouseListener(new OptionsAdapteur(controleur));
+        btnMusic.addMouseListener(new OptionsAdapteur(controleur, this));
+        btnSon.addMouseListener(new OptionsAdapteur(controleur, this));
+        btnBack.addMouseListener(new OptionsAdapteur(controleur, this));
+    }
+
+    public String getNomJoueurBlanc() {
+        if (!joueurBlanc.getSelectedItem().toString().equalsIgnoreCase("humain"))
+            return joueurBlanc.getSelectedItem().toString();
+
+        if (nomJBlanc.getText().isBlank()) return "Joueur blanc";
+        return nomJBlanc.getText();
+    }
+
+    public String getNomJoueurNoir() {
+        if (!joueurNoir.getSelectedItem().toString().equalsIgnoreCase("humain"))
+            return joueurNoir.getSelectedItem().toString();
+
+        if (nomJNoir.getText().isBlank()) return "Joueur noir";
+        return nomJNoir.getText();
+    }
+
+    public TypeIA getTypeJB() {
+        String jb = joueurBlanc.getSelectedItem().toString();
+        if (jb.equalsIgnoreCase("humain")) return TypeIA.NONE;
+        if (jb.equalsIgnoreCase("IA Facile")) return TypeIA.FACILE;
+        if (jb.equalsIgnoreCase("IA Moyenne")) return TypeIA.MOYENNE;
+        if (jb.equalsIgnoreCase("IA Difficile")) return TypeIA.DIFFICILE;
+        return TypeIA.NONE;
+    }
+
+    public TypeIA getTypeJN() {
+        String jn = joueurNoir.getSelectedItem().toString();
+        if (jn.equalsIgnoreCase("humain")) return TypeIA.NONE;
+        if (jn.equalsIgnoreCase("IA Facile")) return TypeIA.FACILE;
+        if (jn.equalsIgnoreCase("IA Moyenne")) return TypeIA.MOYENNE;
+        if (jn.equalsIgnoreCase("IA Difficile")) return TypeIA.DIFFICILE;
+        return TypeIA.NONE;
     }
 }

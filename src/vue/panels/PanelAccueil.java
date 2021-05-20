@@ -2,7 +2,7 @@ package vue.panels;
 
 import controleur.CollecteurEvenements;
 import vue.customComponent.ButtonBuilder;
-import vue.mouseAdapters.*;
+import vue.adapters.mouseAdapters.*;
 import vue.utils.Constants;
 import vue.utils.ConstraintBuilder;
 import vue.utils.Labels;

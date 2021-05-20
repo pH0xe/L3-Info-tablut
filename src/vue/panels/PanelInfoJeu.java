@@ -2,6 +2,7 @@ package vue.panels;
 
 import controleur.CollecteurEvenements;
 import modele.Jeu;
+import vue.adapters.mouseAdapters.JeuInfoAdapteur;
 import vue.customComponent.ButtonBuilder;
 import vue.utils.Constants;
 import vue.utils.ConstraintBuilder;
@@ -10,15 +11,12 @@ import vue.utils.Labels;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Random;
 
 public class PanelInfoJeu extends JPanel {
-    private final Jeu jeu;
+    private Jeu jeu;
     private final CollecteurEvenements controleur;
     private JLabel joueurCourant;
-    private JPanel pionElimi;
+    private PanelPionElimine pionElimi;
     private JButton btnOption, btnRefaire, btnAnnuler;
 
     public PanelInfoJeu(CollecteurEvenements controleur, Jeu jeu) {
@@ -58,10 +56,26 @@ public class PanelInfoJeu extends JPanel {
         cb.incrGridy();
         add(btnOption, cb.toConstraints());
 
-        update();
+        initButtonAdapters();
+
+        if (jeu != null)
+            update();
+    }
+
+    private void initButtonAdapters() {
+        btnRefaire.addMouseListener(new JeuInfoAdapteur(controleur));
+        btnAnnuler.addMouseListener(new JeuInfoAdapteur(controleur));
+        btnOption.addMouseListener(new JeuInfoAdapteur(controleur));
     }
 
     public void update() {
-        joueurCourant.setText("Au tours de : " + jeu.joueurCourant().getNom() + " [" + jeu.joueurCourant().getType().toString().toLowerCase() + "]");
+        joueurCourant.setText("Au tours de : " + jeu.joueurCourant().getNom() + " [" + jeu.joueurCourant().getCouleur().toString().toLowerCase() + "]");
+        pionElimi.setPionB(jeu.getPlateau().getBlancsElimine());
+        pionElimi.setPionN(jeu.getPlateau().getNoirsElimine());
+        pionElimi.repaint();
+    }
+
+    public void addJeu(Jeu jeu) {
+        this.jeu = jeu;
     }
 }

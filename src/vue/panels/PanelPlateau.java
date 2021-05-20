@@ -3,14 +3,16 @@ package vue.panels;
 import controleur.CollecteurEvenements;
 import modele.*;
 import modele.Point;
+import vue.adapters.mouseAdapters.PlateauAdapteur;
 import vue.utils.Constants;
 import vue.utils.Images;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class PanelPlateau extends JPanel {
-    private final Jeu jeu;
+    private Jeu jeu;
     private final CollecteurEvenements controleur;
     private int initX, initY, sizeCase;
 
@@ -18,6 +20,7 @@ public class PanelPlateau extends JPanel {
         this.controleur = controleur;
         this.jeu = jeu;
         setOpaque(false);
+        addMouseListener(new PlateauAdapteur(controleur, this));
     }
 
     @Override
@@ -45,20 +48,29 @@ public class PanelPlateau extends JPanel {
         }
 
 
+        if (jeu != null)
+            miseEnPlaceJeu(g2);
+    }
+
+    private void miseEnPlaceJeu(Graphics2D g2) {
         java.util.List<Pion> blancs = jeu.getPlateau().getBlancs();
         java.util.List<Pion> noirs = jeu.getPlateau().getNoirs();
 
-        boolean tourBlanc = jeu.joueurCourant().getType() == TypeJoueur.BLANC;
+        boolean tourBlanc = jeu.joueurCourant().getCouleur() == Couleur.BLANC;
 
         for (Pion pion : blancs) {
+            boolean clickable = tourBlanc && jeu.getPionClickable().contains(pion);
+            if (pion.estPris()) continue;
             if (pion.getType() == TypePion.ROI)
-                drawPion(g2,pion.getPosition().getL(),pion.getPosition().getC(), Images.PION_ROI, tourBlanc);
+                drawPion(g2,pion.getPosition().getL(),pion.getPosition().getC(), Images.PION_ROI, clickable);
             else
-                drawPion(g2,pion.getPosition().getL(),pion.getPosition().getC(), Images.PION_BLANC, tourBlanc);
+                drawPion(g2,pion.getPosition().getL(),pion.getPosition().getC(), Images.PION_BLANC, clickable);
         }
 
         for (Pion pion : noirs) {
-            drawPion(g2,pion.getPosition().getL(),pion.getPosition().getC(), Images.PION_NOIR, !tourBlanc);
+            boolean clickable = !tourBlanc && jeu.getPionClickable().contains(pion);
+            if (pion.estPris()) continue;
+            drawPion(g2,pion.getPosition().getL(),pion.getPosition().getC(), Images.PION_NOIR, clickable);
         }
     }
 
@@ -71,25 +83,56 @@ public class PanelPlateau extends JPanel {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.drawImage(img, x, y, sizePion, sizePion, null);
 
-        if (estClickable) {
-            g2.setStroke(new BasicStroke(4));
-            int strokeSize = (int) ((BasicStroke) g2.getStroke()).getLineWidth();
+        g2.setStroke(new BasicStroke(4));
+        int strokeSize = (int) ((BasicStroke) g2.getStroke()).getLineWidth();
+        Pion pionSelect = jeu.getSelectionne();
+        if (estClickable && pionSelect == null) {
             x -= strokeSize/3;
             y -= strokeSize/3;
             sizePion += strokeSize/2;
             g2.setColor(Constants.HALO_PION);
             g2.drawOval(x,y, sizePion, sizePion);
+        } else if (pionSelect != null && pionSelect.getPosition().equals(new Point(l, c))) {
+            x -= strokeSize/3;
+            y -= strokeSize/3;
+            sizePion += strokeSize/2;
+            g2.setColor(Constants.HALO_PION);
+            g2.drawOval(x,y, sizePion, sizePion);
+
+            drawSelectable(g2);
         }
+    }
+
+    private void drawSelectable(Graphics2D g2) {
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(Constants.BOARD_PREVIEW);
+        List<Point> clickable = jeu.getClickable();
+
+        int sizePoint = sizeCase/4;
+        int offset = (sizeCase - sizePoint) / 2;
+
+        for (Point point : clickable) {
+            int x = initX + (sizeCase * point.getC()) + offset;
+            int y = initY + (sizeCase * point.getL()) + offset;
+
+            g2.fillOval(x,y, sizePoint, sizePoint);
+        }
+
+
     }
 
 
     public Point getCoord(int x, int y) {
         int taillePlateau = sizeCase * 9;
         if (x >= initX + taillePlateau || x <= initX || y >= initY + taillePlateau || y <= initY)
-            return new Point(-1, -1);
+            return null;
 
         int c = (x - initX) / sizeCase;
         int l = (y - initY) / sizeCase;
         return new Point(l,c);
+    }
+
+    public void addJeu(Jeu jeu) {
+        this.jeu = jeu;
     }
 }

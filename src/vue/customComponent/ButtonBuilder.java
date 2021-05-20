@@ -79,8 +79,7 @@ public class ButtonBuilder {
             g.setColor(c.getBackground().darker());
             g.fillRoundRect(0, decalageY, w, h - decalageY, roundSize, roundSize);
 
-            Color couleurPrincipal = btn.getModel().isPressed() ? c.getBackground().darker() : c.getBackground();
-            g.setColor(couleurPrincipal);
+            g.setColor(c.getBackground());
             g.fillRoundRect(0, decalageY, w, h + decalageY - 5, roundSize, roundSize);
 
             ImageIcon ic = (ImageIcon)btn.getIcon();
@@ -94,7 +93,6 @@ public class ButtonBuilder {
 
         private int getDecalage(AbstractButton btn) {
             if (btn.getModel().isRollover()) return 2;
-            if (btn.getModel().isPressed()) return 2;
             return 0;
         }
 
