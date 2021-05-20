@@ -1,4 +1,6 @@
-package modele;
+package modele.util;
+
+import modele.pion.Pion;
 
 public class Coup {
     private Pion pion;

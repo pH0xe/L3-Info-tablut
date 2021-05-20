@@ -1,7 +1,6 @@
 package controleur;
 
-import modele.Jeu;
-import modele.Point;
+import modele.util.Point;
 import vue.InterfaceGraphique;
 
 public interface CollecteurEvenements {
