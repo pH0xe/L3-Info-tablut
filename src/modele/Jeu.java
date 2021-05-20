@@ -158,7 +158,8 @@ public class Jeu extends Observable {
     }
 
     public void setSelectionner(Point point) {
-        Pion tmp = pt.trouverPion(point, joueurCourant.getCouleur());
+        Pion tmp = pt.getPion(point);
+        if (tmp.getCouleur() != joueurCourant.getCouleur()) pionSelect = null;
         if (tmp != pionSelect)
             pionSelect = tmp;
         else
@@ -181,7 +182,7 @@ public class Jeu extends Observable {
     }
 
     private boolean estClickable(Point point) {
-        Pion p = pt.trouverPion(point, joueurCourant.getCouleur());
+        Pion p = pt.getPion(point);
         return getPionClickable().contains(p);
     }
 
