@@ -18,7 +18,6 @@ public class IADifficile extends IA{
     public int heuristique(Jeu j){
         Plateau p = j.getPlateau();
         Pion roi = p.getRoi();
-        //System.out.println("Roi : " + roi);
         if(j.roiSorti()){
             System.out.println("Roi Sorti");
             return MAX;
@@ -27,7 +26,7 @@ public class IADifficile extends IA{
             System.out.println("Roi Capture");
             return MIN;
         }
-        int autourRoi = 0;
+        int autourRoiNoir = 0;
         int heuristique = 0;
 
         int lRoi = roi.getPosition().getL();
@@ -35,32 +34,33 @@ public class IADifficile extends IA{
 
 
         if(( lRoi+1 == 4 && cRoi == 4) || p.estCaseDeType(lRoi+1, cRoi, TypePion.NOIR)){
-            autourRoi++;
+            autourRoiNoir++;
         }
 
         if(( lRoi-1 == 4 && cRoi == 4) || p.estCaseDeType(lRoi-1, cRoi, TypePion.NOIR)){
-            autourRoi++;
+            autourRoiNoir++;
         }
 
         if(( lRoi == 4 && cRoi+1 == 4) || p.estCaseDeType(lRoi, cRoi+1, TypePion.NOIR)){
-            autourRoi++;
+            autourRoiNoir++;
         }
 
         if(( lRoi == 4 && cRoi-1 == 4) || p.estCaseDeType(lRoi, cRoi-1, TypePion.NOIR)){
-            autourRoi++;
+            autourRoiNoir++;
         }
 
-        heuristique -= 5*autourRoi;
+        heuristique -= 5*autourRoiNoir;
 
         /****FIN ENCERCLEMENT ***/
 
         heuristique += 8*p.getBlancs().size();
-        heuristique -= 16*(p.getNoirs().size());
+        heuristique -= 4*p.getNoirs().size();
 
-        heuristique += 32 * j.getPlateau().getCasesAccessibles(roi).size();
+        heuristique += 7 * j.getPlateau().getCasesAccessibles(roi).size();
 
+        heuristique += 32 * j.getPlateau().getSortiesAccessibles();
         return heuristique;
-          }
+    }
 
     //Configuration.instance.logger
 
@@ -116,6 +116,7 @@ public class IADifficile extends IA{
                     coups.clear();
                 }else if(borne == val){
                     coups.add(cp);
+
                 }
                 beta = min(beta, val);
                 if (beta<=alpha){
@@ -137,7 +138,7 @@ public class IADifficile extends IA{
 
 
     public Coup iaJoue(Jeu j){
-        Minimax(j, j.joueurCourant().getCouleur(),5, new ArrayList<>(),MIN, MAX);
+        Minimax(j, j.joueurCourant().getCouleur(),4, new ArrayList<>(),MIN, MAX);
         Plateau p = j.getPlateau();
         Random r = new Random();
         ConfigJeu cj = new ConfigJeu(j.joueurCourant(), p);

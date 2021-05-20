@@ -178,8 +178,15 @@ public class Plateau extends Observable {
 
     public Pion getPion(Point point) {
         Pion res = blancs.stream().filter(pion1 -> pion1.getPosition().equals(point)).findFirst().orElse(null);
-        if (res != null) return res;
+        if (res != null) {
+            if (res.estPris()) return null;
+            return res;
+        }
         res = noirs.stream().filter(pion1 -> pion1.getPosition().equals(point)).findFirst().orElse(null);
+        if (res != null) {
+            if (res.estPris()) return null;
+            return res;
+        }
         return res;
     }
 
@@ -216,4 +223,53 @@ public class Plateau extends Observable {
     public int hashCode() {
         return Objects.hash(roi, noirs, blancs, nbLigne, nbColonne);
     }
+
+    public int getSortiesAccessibles() {
+        return estSortieAccessibleColonne()+estSortieAccessibleLigne();
+
+    }
+
+    public int estSortieAccessibleLigne(){
+        int i = 0;
+        int res = 0;
+        int roiL = getRoi().getPosition().getL();
+        int roiC = getRoi().getPosition().getC();
+        while(i != roiL && getPion(i, roiC) == null){
+            i++;
+        }
+        if(i == roiL)
+            res++;
+        i = nbLigne;
+        while(i != roiL && getPion(i, roiC) == null){
+            i--;
+        }
+        if(i == roiL)
+            res++;
+
+        return res;
+
+
+    }
+
+    public int estSortieAccessibleColonne(){
+        int i = 0;
+        int res = 0;
+        int roiL = getRoi().getPosition().getL();
+        int roiC = getRoi().getPosition().getC();
+        while(i != roiC && getPion(roiL, i) == null){
+            i++;
+        }
+        if(i == roiC)
+            res++;
+        i = nbColonne;
+        while(i != roiC && getPion(roiL, i) == null){
+            i--;
+        }
+        if(i == roiC)
+            res++;
+
+
+        return res;
+    }
+
 }

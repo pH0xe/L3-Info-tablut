@@ -89,6 +89,16 @@ public class Jeu extends Observable {
     }
 
     public void annulerCoup(List<Coup> c, int destL, int destC){
+        /*Coup dernier = c.get(c.size()-1);
+        System.out.println("Dernier coup " + dernier);
+        c.remove(c.size()-1);
+        Point dest = new Point(destL, destC);
+        Pion p = dernier.getPion();
+        p.changerEtat(EtatPion.ACTIF);
+        Coup cp = new Coup(p, dest);
+        System.out.println("Coup d'annulation: " + cp);
+        this.joueCoup(cp);*/
+
         Coup dernier = c.get(c.size()-1);
         //System.out.println("Dernier coup " + dernier);
         c.remove(c.size()-1);
@@ -137,6 +147,7 @@ public class Jeu extends Observable {
     }
 
     public List<Pion> pionCapture(Pion pion){
+        if (pion.getType()  ==  TypePion.ROI) return null;
         Point posPion = pion.getPosition();
         int pionC = posPion.getC();
         int pionL = posPion.getL();
