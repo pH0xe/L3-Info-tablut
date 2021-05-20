@@ -1,4 +1,4 @@
-package vue.panels;
+package vue.panels.jeu;
 
 import controleur.CollecteurEvenements;
 import vue.customComponent.ButtonBuilder;

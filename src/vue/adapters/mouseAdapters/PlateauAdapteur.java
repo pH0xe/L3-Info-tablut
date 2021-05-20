@@ -2,7 +2,7 @@ package vue.adapters.mouseAdapters;
 
 import controleur.CollecteurEvenements;
 import modele.util.Point;
-import vue.panels.PanelPlateau;
+import vue.panels.jeu.PanelPlateau;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

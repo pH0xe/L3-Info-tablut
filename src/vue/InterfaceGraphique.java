@@ -4,9 +4,9 @@ import controleur.Controleur;
 import modele.Jeu;
 import structure.Observer;
 import vue.adapters.WindowEvents;
-import vue.panels.DialogOptionJeu;
+import vue.panels.jeu.DialogOptionJeu;
 import vue.panels.PanelAccueil;
-import vue.panels.PanelJeu;
+import vue.panels.jeu.PanelJeu;
 import vue.panels.PanelOption;
 
 import javax.swing.*;
