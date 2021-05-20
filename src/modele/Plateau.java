@@ -63,7 +63,7 @@ public class Plateau extends Observable {
 
     public void initPlateau() {
         cases = new TypePion[9][9];
-        this.blancs.add(roi);
+
         //Placement roi
         cases[roi.getPosition().getL()][roi.getPosition().getL()] = TypePion.ROI;
 
