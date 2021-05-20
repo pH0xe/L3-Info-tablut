@@ -1,13 +1,15 @@
 package modele;
 
 import global.Configuration;
+import modele.Joueur.Couleur;
+import modele.pion.EtatPion;
+import modele.pion.Pion;
+import modele.pion.TypePion;
+import modele.util.Point;
 import structure.Observable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Plateau extends Observable {
     private Pion roi;
@@ -170,8 +172,15 @@ public class Plateau extends Observable {
 
     public Pion getPion(Point point) {
         Pion res = blancs.stream().filter(pion1 -> pion1.getPosition().equals(point)).findFirst().orElse(null);
-        if (res != null) return res;
+        if (res != null) {
+            if (res.estPris()) return null;
+            return res;
+        }
         res = noirs.stream().filter(pion1 -> pion1.getPosition().equals(point)).findFirst().orElse(null);
+        if (res != null) {
+            if (res.estPris()) return null;
+            return res;
+        }
         return res;
     }
 
@@ -191,6 +200,7 @@ public class Plateau extends Observable {
 
     public void capturerPion(Point point, Pion pion) {
         Pion p = getPion(point);
+        if (p.getType() == TypePion.ROI) return;
         p.changerEtat(EtatPion.INACTIF);
 
         Configuration.instance().logger().info("Capture du pion : " + p);

@@ -1,4 +1,7 @@
-package modele;
+package modele.pion;
+
+import modele.Joueur.Couleur;
+import modele.util.Point;
 
 import java.util.Objects;
 

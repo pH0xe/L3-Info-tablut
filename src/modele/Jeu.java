@@ -1,9 +1,14 @@
 package modele;
 
 import global.Configuration;
+import modele.Joueur.Couleur;
+import modele.Joueur.Joueur;
+import modele.pion.Pion;
+import modele.pion.TypePion;
+import modele.util.Coup;
+import modele.util.Point;
 import structure.Observable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
@@ -19,7 +24,7 @@ public class Jeu extends Observable {
     public Jeu(Joueur j1, Joueur j2){
         this.j1 = j1;
         this.j2 = j2;
-        this.joueurCourant = j1; // j1 = blancs
+        this.joueurCourant = j1;
         pt = new Plateau();
         coupsPrecedant = new Stack<>();
         coupsSuivant = new Stack<>();
@@ -90,37 +95,16 @@ public class Jeu extends Observable {
             return (pt.estCaseDeType(roiPos.getL(), roiPos.getC()+1, TypePion.NOIR)
                     && pt.estCaseDeType(roiPos.getL(), roiPos.getC()-1, TypePion.NOIR)
                     && pt.estCaseDeType(roiPos.getL()+1, roiPos.getC(), TypePion.NOIR));
-        try {
-            return (pt.estCaseDeType(roiPos.getL()+1, roiPos.getC(), TypePion.NOIR)
-                    && pt.estCaseDeType(roiPos.getL()-1, roiPos.getC(), TypePion.NOIR)
-                    && pt.estCaseDeType(roiPos.getL(), roiPos.getC()+1, TypePion.NOIR)
-                    && pt.estCaseDeType(roiPos.getL(), roiPos.getC()-1, TypePion.NOIR));
-        } catch (Exception e){
-            return false;
-        }
+        return (pt.estCaseDeType(roiPos.getL()+1, roiPos.getC(), TypePion.NOIR)
+                && pt.estCaseDeType(roiPos.getL()-1, roiPos.getC(), TypePion.NOIR)
+                && pt.estCaseDeType(roiPos.getL(), roiPos.getC()+1, TypePion.NOIR)
+                && pt.estCaseDeType(roiPos.getL(), roiPos.getC()-1, TypePion.NOIR));
     }
 
     public void pionCapture(Pion pion){
         Point posPion = pion.getPosition();
         int pionC = posPion.getC();
         int pionL = posPion.getL();
-        // TODO methode pas bonne
-        /*
-        if(pion.getType().getCouleur() == Couleur.BLANC){
-            if(pt.estCaseDeCouleur(pionL, pionC - 1, Couleur.NOIR) && pt.estCaseDeCouleur(pionL, pionC+1, Couleur.NOIR))
-                return true;
-
-            if(pt.estCaseDeCouleur(pionL-1, pionC, Couleur.NOIR) && pt.estCaseDeCouleur(pionL+1, pionC, Couleur.NOIR))
-                return true;
-        } else if(pion.getType().getCouleur() == Couleur.NOIR){
-            if(pt.estCaseDeCouleur(pionL, pionC - 1, Couleur.BLANC) && pt.estCaseDeCouleur(pionL, pionC+1, Couleur.BLANC))
-                return true;
-
-            if(pt.estCaseDeCouleur(pionL-1, pionC, Couleur.BLANC) && pt.estCaseDeCouleur(pionL+1, pionC, Couleur.BLANC))
-                return true;
-        }
-        return false;
-         */
         if(pionL-2 >= 0 && pt.estCaseDeCouleur(pionL-1, pionC, pion.getCouleur().getOppose()) && pt.estCaseDeCouleur(pionL-2, pionC, pion.getCouleur()))
             pt.capturerPion(new Point(pionL-1, pionC), pion);
 

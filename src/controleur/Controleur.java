@@ -2,6 +2,9 @@ package controleur;
 
 import global.Configuration;
 import modele.*;
+import modele.Joueur.Couleur;
+import modele.Joueur.Joueur;
+import modele.util.Point;
 import vue.InterfaceGraphique;
 
 public class Controleur implements CollecteurEvenements {
