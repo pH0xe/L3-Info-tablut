@@ -11,9 +11,6 @@ import vue.utils.Labels;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Random;
 
 public class PanelInfoJeu extends JPanel {
     private Jeu jeu;
@@ -72,7 +69,7 @@ public class PanelInfoJeu extends JPanel {
     }
 
     public void update() {
-        joueurCourant.setText("Au tours de : " + jeu.joueurCourant().getNom() + " [" + jeu.joueurCourant().getType().toString().toLowerCase() + "]");
+        joueurCourant.setText("Au tours de : " + jeu.joueurCourant().getNom() + " [" + jeu.joueurCourant().getCouleur().toString().toLowerCase() + "]");
         pionElimi.setPionB(jeu.getPlateau().getBlancsElimine());
         pionElimi.setPionN(jeu.getPlateau().getNoirsElimine());
         pionElimi.repaint();

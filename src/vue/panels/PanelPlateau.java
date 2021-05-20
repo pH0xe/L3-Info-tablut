@@ -56,17 +56,21 @@ public class PanelPlateau extends JPanel {
         java.util.List<Pion> blancs = jeu.getPlateau().getBlancs();
         java.util.List<Pion> noirs = jeu.getPlateau().getNoirs();
 
-        boolean tourBlanc = jeu.joueurCourant().getType() == TypeJoueur.BLANC;
+        boolean tourBlanc = jeu.joueurCourant().getCouleur() == Couleur.BLANC;
 
         for (Pion pion : blancs) {
+            boolean clickable = tourBlanc && jeu.getPionClickable().contains(pion);
+            if (pion.estPris()) continue;
             if (pion.getType() == TypePion.ROI)
-                drawPion(g2,pion.getPosition().getL(),pion.getPosition().getC(), Images.PION_ROI, tourBlanc);
+                drawPion(g2,pion.getPosition().getL(),pion.getPosition().getC(), Images.PION_ROI, clickable);
             else
-                drawPion(g2,pion.getPosition().getL(),pion.getPosition().getC(), Images.PION_BLANC, tourBlanc);
+                drawPion(g2,pion.getPosition().getL(),pion.getPosition().getC(), Images.PION_BLANC, clickable);
         }
 
         for (Pion pion : noirs) {
-            drawPion(g2,pion.getPosition().getL(),pion.getPosition().getC(), Images.PION_NOIR, !tourBlanc);
+            boolean clickable = !tourBlanc && jeu.getPionClickable().contains(pion);
+            if (pion.estPris()) continue;
+            drawPion(g2,pion.getPosition().getL(),pion.getPosition().getC(), Images.PION_NOIR, clickable);
         }
     }
 

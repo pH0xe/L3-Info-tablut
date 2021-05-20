@@ -1,5 +1,6 @@
 package controleur;
 
+import global.Configuration;
 import modele.*;
 import vue.InterfaceGraphique;
 
@@ -9,8 +10,8 @@ public class Controleur implements CollecteurEvenements {
     private Joueur joueurBlanc, joueurNoir;
 
     public Controleur(){
-        joueurBlanc = new Joueur("Joueur blanc", TypeJoueur.BLANC);
-        joueurNoir = new Joueur("Joueur noir", TypeJoueur.NOIR);
+        joueurBlanc = new Joueur("Joueur blanc", Couleur.BLANC);
+        joueurNoir = new Joueur("Joueur noir", Couleur.NOIR);
         jeu = new Jeu(joueurBlanc, joueurNoir);
     }
 
@@ -39,7 +40,12 @@ public class Controleur implements CollecteurEvenements {
 
     @Override
     public void cliquePlateau(Point point) {
-        if (jeu.verifierCoup(point)) return;
+        if (jeu.verifierCoup(point)) {
+            if (jeu.roiSorti())
+                Configuration.instance().logger().info("ROI SORTI");
+                // TODO dialog de fin
+            return;
+        }
         jeu.verifierPion(point);
     }
 }

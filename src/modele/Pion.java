@@ -1,5 +1,7 @@
 package modele;
 
+import java.util.Objects;
+
 public class Pion {
     private TypePion type;
     private EtatPion etat;
@@ -14,10 +16,6 @@ public class Pion {
     public boolean estPris(){
         return etat == EtatPion.INACTIF;
     }
-
-//    public void changerEtat(){
-//        etat = EtatPion.INACTIF;
-//    }
 
     public void changerEtat(EtatPion etat){
         this.etat = etat;
@@ -47,6 +45,10 @@ public class Pion {
         return position;
     }
 
+    public Couleur getCouleur() {
+        return type.getCouleur();
+    }
+
     @Override
     public String toString() {
         return "Pion{" +
@@ -54,5 +56,18 @@ public class Pion {
                 ", etat=" + etat +
                 ", position=" + position +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pion pion = (Pion) o;
+        return type == pion.type && etat == pion.etat && Objects.equals(position, pion.position);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, etat, position);
     }
 }
