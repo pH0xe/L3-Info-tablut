@@ -202,6 +202,7 @@ public class Plateau extends Observable {
         Pion p = getPion(point);
         if (p.getType() == TypePion.ROI) return;
         p.changerEtat(EtatPion.INACTIF);
+        p.deplacerPion(-1, -1);
 
         Configuration.instance().logger().info("Capture du pion : " + p);
     }
