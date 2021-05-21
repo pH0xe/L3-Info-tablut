@@ -57,6 +57,7 @@ public class InterfaceGraphique implements Runnable, Observer {
         dialogOptionJeu.setMinimumSize(new Dimension(300,500));
         dialogOptionJeu.setLocationRelativeTo(frame);
         dialogOptionJeu.setVisible(false);
+        dialogOptionJeu.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
     }
 
     @Override
@@ -89,5 +90,10 @@ public class InterfaceGraphique implements Runnable, Observer {
         frame.add(panelAccueil);
         frame.repaint();
         frame.setVisible(true);
+    }
+
+    public void ouvrirDialogOption() {
+        this.dialogOptionJeu.setLocationRelativeTo(frame);
+        this.dialogOptionJeu.setVisible(true);
     }
 }

@@ -18,7 +18,7 @@ public class Jeu extends Observable {
     private final Joueur j1;
     private final Joueur j2;
     private Plateau pt;
-    private final Stack<Coup> coupsPrecedant, coupsSuivant;
+    private final Stack<Coup> coupsPrecedent, coupsSuivant;
     private Pion pionSelect;
 
     public Jeu(Joueur j1, Joueur j2){
@@ -26,7 +26,7 @@ public class Jeu extends Observable {
         this.j2 = j2;
         this.joueurCourant = j1;
         pt = new Plateau();
-        coupsPrecedant = new Stack<>();
+        coupsPrecedent = new Stack<>();
         coupsSuivant = new Stack<>();
     }
 
@@ -59,7 +59,7 @@ public class Jeu extends Observable {
         Point destination = c.getDestination();
         if(pt.peutDeplacer(pion, destination)) {
             pt.deplacerPion(pion, destination.getL(), destination.getC());
-            coupsPrecedant.push(c);
+            coupsPrecedent.push(c);
             coupsSuivant.clear();
             pionCapture(pion);
             joueurSuivant();
@@ -125,7 +125,7 @@ public class Jeu extends Observable {
 
     public void annulerCoup() {
         // TODO annuler le coup dans jeu
-        Coup c = coupsPrecedant.pop();
+        Coup c = coupsPrecedent.pop();
         coupsSuivant.push(c);
     }
 
@@ -136,7 +136,7 @@ public class Jeu extends Observable {
         Point destination = c.getDestination();
         if(pt.peutDeplacer(pion, destination)) {
             pt.deplacerPion(pion, destination.getL(), destination.getC());
-            coupsPrecedant.push(c);
+            coupsPrecedent.push(c);
         } else
             Configuration.instance().logger().severe("Deplacement impossible : ( " + pion.getType() + ":" + pion.getPosition().getC() + "," + pion.getPosition().getL() + ") -> " + destination.getL() + "," + destination.getC());
     }
@@ -183,7 +183,7 @@ public class Jeu extends Observable {
         if (accessible.contains(point)) {
             Coup coup = new Coup(pionSelect, point);
             joueCoup(coup);
-            coupsPrecedant.add(coup);
+            coupsPrecedent.add(coup);
             pionSelect = null;
             return true;
         }

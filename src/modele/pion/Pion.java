@@ -52,6 +52,15 @@ public class Pion {
         return type.getCouleur();
     }
 
+    public boolean estBlanc() {
+        return type.getCouleur() == Couleur.BLANC;
+    }
+
+    public boolean estNoir() {
+        return type.getCouleur() == Couleur.NOIR;
+    }
+
+
     @Override
     public String toString() {
         return "Pion{" +

@@ -10,52 +10,51 @@ import structure.Observable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Plateau extends Observable {
     private Pion roi;
-    private List<Pion> noirs;
-    private List<Pion> blancs;
+    private List<Pion> pions;
     private final int nbLigne = 9;
     private final int nbColonne = 9;
 
 
     public Plateau() {
-        noirs = new ArrayList<>();
-        blancs = new ArrayList<>();
+        pions = new ArrayList<>();
         initPions();
     }
 
     public void initPions() {
         //Creation pion blancs;
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(2, 4)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(3, 4)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(4, 2)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(4, 3)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(4, 5)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(4, 6)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(5, 4)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(6, 4)));
+        this.pions.add(new Pion(TypePion.BLANC, new Point(2, 4)));
+        this.pions.add(new Pion(TypePion.BLANC, new Point(3, 4)));
+        this.pions.add(new Pion(TypePion.BLANC, new Point(4, 2)));
+        this.pions.add(new Pion(TypePion.BLANC, new Point(4, 3)));
+        this.pions.add(new Pion(TypePion.BLANC, new Point(4, 5)));
+        this.pions.add(new Pion(TypePion.BLANC, new Point(4, 6)));
+        this.pions.add(new Pion(TypePion.BLANC, new Point(5, 4)));
+        this.pions.add(new Pion(TypePion.BLANC, new Point(6, 4)));
 
         //Creation pion noirs;
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(0, 3)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(0, 4)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(0, 5)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(1, 4)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(3, 0)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(3, 8)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(4, 0)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(4, 1)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(4, 7)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(4, 8)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(5, 0)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(5, 8)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(7, 4)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(8, 3)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(8, 4)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(8, 5)));
+        this.pions.add(new Pion(TypePion.NOIR, new Point(0, 3)));
+        this.pions.add(new Pion(TypePion.NOIR, new Point(0, 4)));
+        this.pions.add(new Pion(TypePion.NOIR, new Point(0, 5)));
+        this.pions.add(new Pion(TypePion.NOIR, new Point(1, 4)));
+        this.pions.add(new Pion(TypePion.NOIR, new Point(3, 0)));
+        this.pions.add(new Pion(TypePion.NOIR, new Point(3, 8)));
+        this.pions.add(new Pion(TypePion.NOIR, new Point(4, 0)));
+        this.pions.add(new Pion(TypePion.NOIR, new Point(4, 1)));
+        this.pions.add(new Pion(TypePion.NOIR, new Point(4, 7)));
+        this.pions.add(new Pion(TypePion.NOIR, new Point(4, 8)));
+        this.pions.add(new Pion(TypePion.NOIR, new Point(5, 0)));
+        this.pions.add(new Pion(TypePion.NOIR, new Point(5, 8)));
+        this.pions.add(new Pion(TypePion.NOIR, new Point(7, 4)));
+        this.pions.add(new Pion(TypePion.NOIR, new Point(8, 3)));
+        this.pions.add(new Pion(TypePion.NOIR, new Point(8, 4)));
+        this.pions.add(new Pion(TypePion.NOIR, new Point(8, 5)));
 
         this.roi = new Pion(TypePion.ROI, new Point(4, 4));
-        this.blancs.add(this.roi);
+        this.pions.add(this.roi);
     }
 
 
@@ -151,11 +150,11 @@ public class Plateau extends Observable {
     }
 
     public List<Pion> getBlancs() {
-        return blancs;
+        return pions.stream().filter(Pion::estBlanc).collect(Collectors.toList());
     }
 
     public List<Pion> getNoirs() {
-        return noirs;
+        return pions.stream().filter(Pion::estNoir).collect(Collectors.toList());
     }
 
     public Pion getRoi() {
@@ -163,25 +162,20 @@ public class Plateau extends Observable {
     }
 
     public int getBlancsElimine() {
-        return (int) blancs.stream().filter(Pion::estPris).count();
+        return (int) getBlancs().stream().filter(Pion::estPris).count();
     }
 
     public int getNoirsElimine() {
-        return (int) noirs.stream().filter(Pion::estPris).count();
+        return (int) getNoirs().stream().filter(Pion::estPris).count();
     }
 
     public Pion getPion(Point point) {
-        Pion res = blancs.stream().filter(pion1 -> pion1.getPosition().equals(point)).findFirst().orElse(null);
+        Pion res = pions.stream().filter(pion1 -> pion1.getPosition().equals(point)).findFirst().orElse(null);
         if (res != null) {
             if (res.estPris()) return null;
             return res;
         }
-        res = noirs.stream().filter(pion1 -> pion1.getPosition().equals(point)).findFirst().orElse(null);
-        if (res != null) {
-            if (res.estPris()) return null;
-            return res;
-        }
-        return res;
+        return null;
     }
 
     private Pion getPion(int i, int j) {
