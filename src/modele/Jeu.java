@@ -32,7 +32,7 @@ public class Jeu extends Observable {
             this.joueurCourant = this.j1; // j1 = blancs
         else
             this.joueurCourant = this.j2; // j1 = blancs
-        this.pt = new Plateau(j.getPlateau());
+        this.pt = j.getPlateau();
         coupsPrecedant = new Stack<>();
         coupsSuivant = new Stack<>();
     }
@@ -76,7 +76,7 @@ public class Jeu extends Observable {
     }
 
     public Jeu joueCoupDuplique(Coup c){
-        Jeu jeu2 = new Jeu(this);
+        /*Jeu jeu2 = new Jeu(this);
         Pion pion = c.getPion();
         Point destination = c.getDestination();
         Plateau plat = jeu2.getPlateau();
@@ -85,33 +85,50 @@ public class Jeu extends Observable {
         else
             Configuration.instance().logger().severe("Deplacement impossible : ( " + pion.getType() + ":" + pion.getPosition().getL() + "," + pion.getPosition().getC() + ") -> " + destination.getL() + "," + destination.getC());
         jeu2.joueurSuivant();
-        return jeu2;
+        return jeu2;*/
+
+        Pion pion = c.getPion();
+        Point destination = c.getDestination();
+        Plateau plat = this.getPlateau();
+        if(plat.peutDeplacer(pion, destination)) {
+            plat.deplacerPion(pion, destination.getL(), destination.getC());
+            c.setCaptures(this.pionCapture(pion));
+        }
+        else
+            Configuration.instance().logger().severe("Deplacement impossible : ( " + pion.getType() + ":" + pion.getPosition().getL() + "," + pion.getPosition().getC() + ") -> " + destination.getL() + "," + destination.getC());
+        this.joueurSuivant();
+        return this;
     }
 
     public void annulerCoup(List<Coup> c, int destL, int destC){
+        /*c.remove(c.size()-1);
+        Jeu j = new Jeu(this.j1, this.j2);
+        for (Coup cp: c) {
+            j.joueCoup(cp);
+        }
+        this.setPt(j.getPlateau());*/
+
         /*Coup dernier = c.get(c.size()-1);
-        System.out.println("Dernier coup " + dernier);
         c.remove(c.size()-1);
         Point dest = new Point(destL, destC);
         Pion p = dernier.getPion();
         p.changerEtat(EtatPion.ACTIF);
         Coup cp = new Coup(p, dest);
-        System.out.println("Coup d'annulation: " + cp);
         this.joueCoup(cp);*/
 
         Coup dernier = c.get(c.size()-1);
-        //System.out.println("Dernier coup " + dernier);
-        c.remove(c.size()-1);
-        for (Pion p: dernier.getCaptures()) {
-            p.changerEtat(EtatPion.ACTIF);
+        List<Pion> captures = dernier.getCaptures();
+        if(!captures.isEmpty()) {
+            for (Pion p : captures) {
+                if(p != null)
+                    p.changerEtat(EtatPion.ACTIF);
+            }
         }
         this.getPlateau().deplacerPion(dernier.getPion(), destL, destC);
         joueurSuivant();
-        //System.out.println("Coup d'annulation: " + cp);
-        //deplacer pion
-        //joueur suivant
-        //reactiver pions
+        c.remove(c.size()-1);
     }
+
 
     public boolean roiSorti() {
         Point roiPos = pt.getRoi().getPosition();
@@ -147,7 +164,6 @@ public class Jeu extends Observable {
     }
 
     public List<Pion> pionCapture(Pion pion){
-        if (pion.getType()  ==  TypePion.ROI) return null;
         Point posPion = pion.getPosition();
         int pionC = posPion.getC();
         int pionL = posPion.getL();
@@ -241,5 +257,17 @@ public class Jeu extends Observable {
 
     public Plateau getPlateau() {
         return pt;
+    }
+
+    public List<Coup> getListeCoups(){
+        List<Coup> C = new ArrayList<>();
+        List<Pion> jouables = this.getPionsCourant();
+        for (Pion pi: jouables) {
+            List<Point> accessibles = pt.getCasesAccessibles(pi);
+            for (Point pt: accessibles) {
+                C.add(new Coup(pi, pt));
+            }
+        }
+        return C;
     }
 }

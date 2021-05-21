@@ -26,8 +26,10 @@ public class Plateau extends Observable {
     }
 
     public Plateau(Plateau p){
-        this.noirs = new ArrayList<>(p.getNoirs());
-        this.blancs = new ArrayList<>(p.getBlancs());
+        this.blancs = new ArrayList<>();
+        this.noirs = new ArrayList<>();
+        blancs.addAll(p.getBlancs());
+        noirs.addAll(p.getNoirs());
         this.roi = new Pion(p.getRoi());
         initPions();
     }
@@ -206,6 +208,7 @@ public class Plateau extends Observable {
 
     public Pion capturerPion(Point point, Pion pion) {
         Pion p = getPion(point);
+        if(p.getType() == TypePion.ROI) return null;
         p.changerEtat(EtatPion.INACTIF);
         Configuration.instance().logger().info("Capture du pion : " + p);
         return p;

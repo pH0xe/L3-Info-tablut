@@ -14,6 +14,15 @@ public class Coup {
         captures = new ArrayList<>();
     }
 
+    public Coup(Coup c){
+        this.pion = new Pion(c.getPion());
+        this.caseADeplacer = new Point(c.getDestination());
+        this.captures = new ArrayList<>();
+        for (Pion pt: c.getCaptures()) {
+            this.captures.add(pt);
+        }
+    }
+
     public void setCaptures(List<Pion> captures) {
         this.captures = captures;
     }

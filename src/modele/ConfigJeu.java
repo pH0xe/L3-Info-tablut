@@ -4,19 +4,19 @@ import java.util.Objects;
 
 public class ConfigJeu {
     private Joueur joueurCourant;
-    private Plateau plateau;
+    private Jeu jeu;
 
-    public ConfigJeu(Joueur j, Plateau p){
+    public ConfigJeu(Joueur j, Jeu p){
         joueurCourant=j;
-        plateau=p;
+        jeu=p;
     }
 
     public Joueur getJoueurCourant() {
         return joueurCourant;
     }
 
-    public Plateau getPlateau() {
-        return plateau;
+    public Jeu getJeu() {
+        return jeu;
     }
 
     @Override
@@ -24,11 +24,11 @@ public class ConfigJeu {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ConfigJeu configJeu = (ConfigJeu) o;
-        return Objects.equals(joueurCourant, configJeu.joueurCourant) && Objects.equals(plateau, configJeu.plateau);
+        return Objects.equals(joueurCourant, configJeu.joueurCourant) && Objects.equals(jeu, configJeu.jeu);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(joueurCourant, plateau);
+        return Objects.hash(joueurCourant, jeu);
     }
 }
