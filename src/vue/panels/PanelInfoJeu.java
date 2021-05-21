@@ -62,6 +62,6 @@ public class PanelInfoJeu extends JPanel {
     }
 
     public void update() {
-        joueurCourant.setText("Au tours de : " + jeu.joueurCourant().getNom() + " [" + jeu.joueurCourant().getType().toString().toLowerCase() + "]");
+        joueurCourant.setText("Au tours de : " + jeu.joueurCourant().getNom() + " [" + jeu.joueurCourant().getCouleur().toString().toLowerCase() + "]");
     }
 }

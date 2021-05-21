@@ -28,4 +28,6 @@ public class Constants {
     public static final Font DEFAULT_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
     public static final Font BOLD_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 14);
     public static final Font ITALIC_FONT = new Font(Font.SANS_SERIF, Font.ITALIC,14);
+
+    public static final Color INSTR_LABEL_BG = new Color(224,224,224);
 }

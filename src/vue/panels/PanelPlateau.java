@@ -48,7 +48,7 @@ public class PanelPlateau extends JPanel {
         java.util.List<Pion> blancs = jeu.getPlateau().getBlancs();
         java.util.List<Pion> noirs = jeu.getPlateau().getNoirs();
 
-        boolean tourBlanc = jeu.joueurCourant().getType() == TypeJoueur.BLANC;
+        boolean tourBlanc = jeu.joueurCourant().getCouleur() == Couleur.BLANC;
 
         for (Pion pion : blancs) {
             if (pion.getType() == TypePion.ROI)

@@ -67,6 +67,11 @@ public class ConstraintBuilder {
         return this;
     }
 
+    public ConstraintBuilder setGridHeight(int gridheight) {
+        constraints.gridheight = gridheight;
+        return this;
+    }
+
     public ConstraintBuilder setIpady(int ipady) {
         constraints.ipady = ipady;
         return this;

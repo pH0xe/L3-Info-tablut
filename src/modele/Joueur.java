@@ -2,9 +2,9 @@ package modele;
 
 public class Joueur {
     private String nom;
-    private TypeJoueur type;
+    private Couleur type;
 
-    public Joueur(String nom, TypeJoueur type){
+    public Joueur(String nom, Couleur type){
         this.nom = nom;
         this.type = type;
     }
@@ -12,8 +12,11 @@ public class Joueur {
         return nom;
     }
 
-    public TypeJoueur getType(){
+    public Couleur getCouleur(){
         return type;
     }
 
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
 }
