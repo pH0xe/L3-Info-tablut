@@ -11,13 +11,11 @@ public class Controleur implements CollecteurEvenements {
     private Jeu jeu;
     private InterfaceGraphique interfaceGraphique;
     private Joueur joueurBlanc, joueurNoir;
-    private boolean estPause;
 
     public Controleur(){
         joueurBlanc = new Joueur("Joueur blanc", Couleur.BLANC);
         joueurNoir = new Joueur("Joueur noir", Couleur.NOIR);
         jeu = new Jeu(joueurBlanc, joueurNoir);
-        estPause = false;
     }
 
     @Override
@@ -40,12 +38,12 @@ public class Controleur implements CollecteurEvenements {
         joueurBlanc.setNom(nomJoueurBlanc);
         joueurNoir.setNom(nomJoueurNoir);
         // TODO ajouter les IA;
+        // TODO supprimer IA si necessaire
         interfaceGraphique.fermerOption();
     }
 
     @Override
     public void cliquePlateau(Point point) {
-        if (estPause) return;
         if (jeu.verifierCoup(point)) {
             if (jeu.roiSorti())
                 Configuration.instance().logger().info("ROI SORTI");
@@ -57,8 +55,7 @@ public class Controleur implements CollecteurEvenements {
 
     @Override
     public void ouvrirOptionJeu() {
-        // TODO on stop les deux IA et on empeche de cliquer sur le plateau
-        estPause = true;
+        // TODO on stop les deux IA
         interfaceGraphique.ouvrirDialogOption();
     }
 
@@ -76,16 +73,25 @@ public class Controleur implements CollecteurEvenements {
 
     @Override
     public void fermerOptionJeu(TypeIA typeIAB, TypeIA typeIAN) {
-
+        // TODO changer les IA / les suppr
+        // TODO changer le nom si necessaire
+        // TODO relancer les IA
+        interfaceGraphique.fermerDialogOption();
     }
 
     @Override
     public void abandonnerPartie() {
-
+        // TODO enregistrer VICTOIRE
+        // TODO afficher la dialog de fin
+        // TODO arreter les IA;
+        interfaceGraphique.fermerDialogOption();
     }
 
     @Override
     public void retourAccueil() {
-
+        // TODO arreter les IA
+        interfaceGraphique.fermerDialogOption();
+        interfaceGraphique.retourAccueil("jeu");
+        jeu = new Jeu(joueurBlanc, joueurNoir);
     }
 }

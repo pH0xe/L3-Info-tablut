@@ -96,4 +96,17 @@ public class InterfaceGraphique implements Runnable, Observer {
         this.dialogOptionJeu.setLocationRelativeTo(frame);
         this.dialogOptionJeu.setVisible(true);
     }
+
+    public void fermerDialogOption() {
+        this.dialogOptionJeu.setVisible(false);
+    }
+
+    public void retourAccueil(String source) {
+        if (source.equalsIgnoreCase("jeu")) {
+            frame.remove(panelJeu);
+            frame.add(panelAccueil);
+            frame.repaint();
+            frame.setVisible(true);
+        }
+    }
 }
