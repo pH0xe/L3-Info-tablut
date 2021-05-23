@@ -1,6 +1,8 @@
 package modele.Joueur;
 
-public class Joueur {
+import java.io.*;
+
+public class Joueur implements Serializable {
     private String nom;
     private Couleur type;
 

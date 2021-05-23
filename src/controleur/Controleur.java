@@ -45,9 +45,10 @@ public class Controleur implements CollecteurEvenements {
     @Override
     public void cliquePlateau(Point point) {
         if (jeu.verifierCoup(point)) {
-            if (jeu.roiSorti())
+            if (jeu.roiSorti()){
                 Configuration.instance().logger().info("ROI SORTI");
                 // TODO dialog de fin
+            }
             return;
         }
         jeu.verifierPion(point);

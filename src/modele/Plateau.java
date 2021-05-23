@@ -1,6 +1,8 @@
 package modele;
 
 import global.Configuration;
+import global.reader.BoardReader;
+import global.reader.BoardReaderText;
 import modele.Joueur.Couleur;
 import modele.pion.EtatPion;
 import modele.pion.Pion;
@@ -8,6 +10,7 @@ import modele.pion.TypePion;
 import modele.util.Point;
 import structure.Observable;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,40 +24,28 @@ public class Plateau extends Observable {
 
     public Plateau() {
         pions = new ArrayList<>();
-        initPions();
+        initDefaultPions();
     }
 
-    public void initPions() {
-        //Creation pion blancs;
-        this.pions.add(new Pion(TypePion.BLANC, new Point(2, 4)));
-        this.pions.add(new Pion(TypePion.BLANC, new Point(3, 4)));
-        this.pions.add(new Pion(TypePion.BLANC, new Point(4, 2)));
-        this.pions.add(new Pion(TypePion.BLANC, new Point(4, 3)));
-        this.pions.add(new Pion(TypePion.BLANC, new Point(4, 5)));
-        this.pions.add(new Pion(TypePion.BLANC, new Point(4, 6)));
-        this.pions.add(new Pion(TypePion.BLANC, new Point(5, 4)));
-        this.pions.add(new Pion(TypePion.BLANC, new Point(6, 4)));
+    public Plateau(BoardReader reader) {
+        pions = new ArrayList<>();
+        initReaderPions(reader);
+    }
 
-        //Creation pion noirs;
-        this.pions.add(new Pion(TypePion.NOIR, new Point(0, 3)));
-        this.pions.add(new Pion(TypePion.NOIR, new Point(0, 4)));
-        this.pions.add(new Pion(TypePion.NOIR, new Point(0, 5)));
-        this.pions.add(new Pion(TypePion.NOIR, new Point(1, 4)));
-        this.pions.add(new Pion(TypePion.NOIR, new Point(3, 0)));
-        this.pions.add(new Pion(TypePion.NOIR, new Point(3, 8)));
-        this.pions.add(new Pion(TypePion.NOIR, new Point(4, 0)));
-        this.pions.add(new Pion(TypePion.NOIR, new Point(4, 1)));
-        this.pions.add(new Pion(TypePion.NOIR, new Point(4, 7)));
-        this.pions.add(new Pion(TypePion.NOIR, new Point(4, 8)));
-        this.pions.add(new Pion(TypePion.NOIR, new Point(5, 0)));
-        this.pions.add(new Pion(TypePion.NOIR, new Point(5, 8)));
-        this.pions.add(new Pion(TypePion.NOIR, new Point(7, 4)));
-        this.pions.add(new Pion(TypePion.NOIR, new Point(8, 3)));
-        this.pions.add(new Pion(TypePion.NOIR, new Point(8, 4)));
-        this.pions.add(new Pion(TypePion.NOIR, new Point(8, 5)));
+    private void initReaderPions(BoardReader reader) {
+        this.pions.addAll(reader.getBlancs());
+        this.pions.addAll(reader.getNoirs());
 
-        this.roi = new Pion(TypePion.ROI, new Point(4, 4));
+        this.roi = reader.getRoi();
         this.pions.add(this.roi);
+    }
+
+    public void initDefaultPions() {
+        String board = Configuration.instance().getConfig("defaultBoard");
+        InputStream in = Configuration.charger(board);
+        BoardReader reader = new BoardReaderText(in);
+        reader.lirePlateau();
+        initReaderPions(reader);
     }
 
 
@@ -196,6 +187,7 @@ public class Plateau extends Observable {
         Pion p = getPion(point);
         if (p.getType() == TypePion.ROI) return;
         p.changerEtat(EtatPion.INACTIF);
+        p.deplacerPion(-1, -1);
 
         Configuration.instance().logger().info("Capture du pion : " + p);
     }

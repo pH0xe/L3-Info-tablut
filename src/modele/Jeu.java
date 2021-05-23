@@ -194,4 +194,12 @@ public class Jeu extends Observable {
         List<Pion> pions = getPionCourant();
         return pions.stream().filter(pion -> !pt.getCasesAccessibles(pion).isEmpty()).collect(Collectors.toList());
     }
+
+    public Joueur getJoueurBlanc() {
+        return j1;
+    }
+
+    public Joueur getJoueurNoir() {
+        return j2;
+    }
 }
