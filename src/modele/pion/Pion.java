@@ -1,11 +1,13 @@
 package modele.pion;
 
 import modele.Joueur.Couleur;
+import modele.Joueur.Joueur;
 import modele.util.Point;
 
+import java.io.*;
 import java.util.Objects;
 
-public class Pion {
+public class Pion implements Serializable{
     private TypePion type;
     private EtatPion etat;
     private Point position;
@@ -18,6 +20,10 @@ public class Pion {
 
     public boolean estPris(){
         return etat == EtatPion.INACTIF;
+    }
+
+    public boolean estRoi() {
+        return type == TypePion.ROI;
     }
 
     public void changerEtat(EtatPion etat){
