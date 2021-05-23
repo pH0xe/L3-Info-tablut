@@ -1,8 +1,9 @@
 package modele.util;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Point {
+public class Point implements Serializable {
     private int l;
     private int c;
 
