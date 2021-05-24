@@ -15,16 +15,15 @@ import javax.swing.*;
 import java.awt.*;
 
 public class InterfaceGraphique implements Runnable, Observer {
-    private Controleur controleur;
+    private final Controleur controleur;
 
     private JFrame frame;
-    private PanelOption panelOption;
-    private PanelJeu panelJeu;
-    private PanelAccueil panelAccueil;
-    private PanelSauvegarde panelSauvegarde;
-    private JDialog dialogOptionJeu;
-    private Jeu jeu;
-    private DialogSaveQuit dialogSaveQuit;
+    private final PanelOption panelOption;
+    private final PanelJeu panelJeu;
+    private final PanelAccueil panelAccueil;
+    private final PanelSauvegarde panelSauvegarde;
+    private final JDialog dialogOptionJeu;
+    private final DialogSaveQuit dialogSaveQuit;
 
     public InterfaceGraphique(Controleur controleur) {
         this.controleur = controleur;
@@ -77,31 +76,24 @@ public class InterfaceGraphique implements Runnable, Observer {
     }
 
     public void fixerJeu(Jeu jeu) {
-        this.jeu = jeu;
-        this.jeu.addObserver(this);
+        jeu.addObserver(this);
         panelJeu.addJeu(jeu);
-        if (panelAccueil.isDisplayable())
-            frame.remove(panelAccueil);
-        if (panelSauvegarde.isDisplayable())
-            frame.remove(panelSauvegarde);
+        fermerPanels();
         frame.add(panelJeu);
         update();
-        frame.repaint();
-        frame.setVisible(true);
+        reloadFrame();
     }
 
     public void ouvrirOption() {
-        frame.remove(panelAccueil);
+        fermerPanels();
         frame.add(panelOption);
-        frame.repaint();
-        frame.setVisible(true);
+        reloadFrame();
     }
 
     public void fermerOption() {
-        frame.remove(panelOption);
+        fermerPanels();
         frame.add(panelAccueil);
-        frame.repaint();
-        frame.setVisible(true);
+        reloadFrame();
     }
 
     public void ouvrirDialogOption() {
@@ -113,13 +105,10 @@ public class InterfaceGraphique implements Runnable, Observer {
         this.dialogOptionJeu.setVisible(false);
     }
 
-    public void retourAccueil(String source) {
-        if (source.equalsIgnoreCase("jeu")) {
-            frame.remove(panelJeu);
-            frame.add(panelAccueil);
-            frame.repaint();
-            frame.setVisible(true);
-        }
+    public void retourAccueil() {
+        fermerPanels();
+        frame.add(panelAccueil);
+        reloadFrame();
     }
 
     public void afficherDialogSauvegarde(int afterAction) {
@@ -127,16 +116,31 @@ public class InterfaceGraphique implements Runnable, Observer {
     }
 
     public void ouvrirSauvegarde() {
-        frame.remove(panelAccueil);
-        frame.add(panelSauvegarde);
+        fermerPanels();
         panelSauvegarde.update();
-        frame.repaint();
-        frame.setVisible(true);
+        reloadFrame();
     }
 
     public void quitterSauvegarde() {
         frame.remove(panelSauvegarde);
         frame.add(panelAccueil);
+        frame.repaint();
+        frame.setVisible(true);
+    }
+
+    private void fermerPanels() {
+        if (panelOption.isDisplayable())
+            frame.remove(panelOption);
+        if (panelJeu.isDisplayable())
+            frame.remove(panelJeu);
+        if (panelAccueil.isDisplayable())
+            frame.remove(panelAccueil);
+        if (panelSauvegarde.isDisplayable())
+            frame.remove(panelSauvegarde);
+    }
+
+    private void reloadFrame() {
+        frame.revalidate();
         frame.repaint();
         frame.setVisible(true);
     }

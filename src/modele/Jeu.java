@@ -1,6 +1,7 @@
 package modele;
 
 import global.Configuration;
+import global.Operateur;
 import global.reader.BoardReaderBinary;
 import modele.Joueur.Couleur;
 import modele.Joueur.Joueur;
@@ -87,46 +88,42 @@ public class Jeu extends Observable {
 
     public boolean roiCapture() {
         Point roiPos = pt.getRoi().getPosition();
-        int roiC = roiPos.getC();
-        int roiL = roiPos.getL();
-        if(roiC == 3 && roiL == 4)
-            return (pt.estCaseDeType(roiPos.getL(), roiPos.getC()-1, TypePion.NOIR)
-                    && pt.estCaseDeType(roiPos.getL()-1, roiPos.getC(), TypePion.NOIR)
-                    && pt.estCaseDeType(roiPos.getL()+1, roiPos.getC(), TypePion.NOIR));
-        if(roiC == 5 && roiL == 4)
-            return (pt.estCaseDeType(roiPos.getL(), roiPos.getC()+1, TypePion.NOIR)
-                    && pt.estCaseDeType(roiPos.getL()-1, roiPos.getC(), TypePion.NOIR)
-                    && pt.estCaseDeType(roiPos.getL()+1, roiPos.getC(), TypePion.NOIR));
-        if(roiC == 4 && roiL == 3)
-            return (pt.estCaseDeType(roiPos.getL(), roiPos.getC()-1, TypePion.NOIR)
-                    && pt.estCaseDeType(roiPos.getL(), roiPos.getC()+1, TypePion.NOIR)
-                    && pt.estCaseDeType(roiPos.getL()-1, roiPos.getC(), TypePion.NOIR));
-        if(roiC == 4 && roiL == 5)
-            return (pt.estCaseDeType(roiPos.getL(), roiPos.getC()+1, TypePion.NOIR)
-                    && pt.estCaseDeType(roiPos.getL(), roiPos.getC()-1, TypePion.NOIR)
-                    && pt.estCaseDeType(roiPos.getL()+1, roiPos.getC(), TypePion.NOIR));
-        return (pt.estCaseDeType(roiPos.getL()+1, roiPos.getC(), TypePion.NOIR)
-                && pt.estCaseDeType(roiPos.getL()-1, roiPos.getC(), TypePion.NOIR)
-                && pt.estCaseDeType(roiPos.getL(), roiPos.getC()+1, TypePion.NOIR)
-                && pt.estCaseDeType(roiPos.getL(), roiPos.getC()-1, TypePion.NOIR));
+        int c = roiPos.getC();
+        int l = roiPos.getL();
+        return (checkRoi(l+1, c)
+                && checkRoi(l-1, c)
+                && checkRoi(l, c+1)
+                && checkRoi(l, c-1));
+
+    }
+
+    private boolean checkRoi(int l, int c) {
+        return (l == 4 && c == 4) || pt.estCaseDeType(l, c, TypePion.NOIR);
     }
 
     public void pionCapture(Pion pion){
         Point posPion = pion.getPosition();
         int pionC = posPion.getC();
         int pionL = posPion.getL();
-        if(pionL-2 >= 0 && pt.estCaseDeCouleur(pionL-1, pionC, pion.getCouleur().getOppose()) && pt.estCaseDeCouleur(pionL-2, pionC, pion.getCouleur()))
-            pt.capturerPion(new Point(pionL-1, pionC), pion);
 
-        if (pionL+2 <= 8 && pt.estCaseDeCouleur(pionL+1, pionC, pion.getCouleur().getOppose()) && pt.estCaseDeCouleur(pionL+2, pionC, pion.getCouleur()))
-            pt.capturerPion(new Point(pionL+1, pionC), pion);
+        Operateur[][] ops = {
+                {Operateur.SUB,Operateur.NOTHING},
+                {Operateur.ADD,Operateur.NOTHING},
+                {Operateur.NOTHING,Operateur.SUB},
+                {Operateur.NOTHING,Operateur.ADD},
+        };
 
-        if (pionC-2 >= 0 && pt.estCaseDeCouleur(pionL, pionC-1, pion.getCouleur().getOppose()) && pt.estCaseDeCouleur(pionL, pionC-2, pion.getCouleur()))
-            pt.capturerPion(new Point(pionL, pionC-1), pion);
+        for (Operateur[] op : ops) {
+            if(checkPion(pionL, pionC, op[0], op[1], pion.getCouleur()))
+                pt.capturerPion(new Point(op[0].faire(pionL,1), op[1].faire(pionC,1)), pion);
+        }
+    }
 
-        if ((pionC+2 <= 8 && pt.estCaseDeCouleur(pionL, pionC+1, pion.getCouleur().getOppose()) && pt.estCaseDeCouleur(pionL, pionC+2, pion.getCouleur())))
-            pt.capturerPion(new Point(pionL, pionC+1), pion);
+    private boolean checkPion(int l, int c, Operateur opL, Operateur opC, Couleur couleur) {
+        if (opL.faire(l,2) > 8 || opL.faire(l,2) < 0) return false;
+        if (opC.faire(c,2) > 8 || opC.faire(c,2) < 0) return false;
 
+        return pt.estCaseDeCouleur(opL.faire(l,1), opC.faire(c,1), couleur.getOppose()) && pt.estCaseDeCouleur(opL.faire(l,2), opC.faire(c,2), couleur);
     }
 
     public Plateau getPlateau() {

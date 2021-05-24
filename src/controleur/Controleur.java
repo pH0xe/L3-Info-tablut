@@ -10,7 +10,6 @@ import modele.util.Point;
 import vue.InterfaceGraphique;
 
 import java.io.File;
-import java.io.IOException;
 
 public class Controleur implements CollecteurEvenements {
     private Jeu jeu;
@@ -97,7 +96,7 @@ public class Controleur implements CollecteurEvenements {
     public void retourAccueil() {
         // TODO arreter les IA
         interfaceGraphique.fermerDialogOption();
-        interfaceGraphique.retourAccueil("jeu");
+        interfaceGraphique.retourAccueil();
         jeu = new Jeu(joueurBlanc, joueurNoir);
     }
 
