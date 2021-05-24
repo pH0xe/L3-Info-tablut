@@ -117,6 +117,7 @@ public class InterfaceGraphique implements Runnable, Observer {
 
     public void ouvrirSauvegarde() {
         fermerPanels();
+        frame.add(panelSauvegarde);
         panelSauvegarde.update();
         reloadFrame();
     }

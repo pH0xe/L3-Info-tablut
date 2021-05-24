@@ -110,7 +110,7 @@ public class Jeu extends Observable {
                 {Operateur.SUB,Operateur.NOTHING},
                 {Operateur.ADD,Operateur.NOTHING},
                 {Operateur.NOTHING,Operateur.SUB},
-                {Operateur.NOTHING,Operateur.ADD},
+                {Operateur.NOTHING,Operateur.ADD}
         };
 
         for (Operateur[] op : ops) {
@@ -123,7 +123,8 @@ public class Jeu extends Observable {
         if (opL.faire(l,2) > 8 || opL.faire(l,2) < 0) return false;
         if (opC.faire(c,2) > 8 || opC.faire(c,2) < 0) return false;
 
-        return pt.estCaseDeCouleur(opL.faire(l,1), opC.faire(c,1), couleur.getOppose()) && pt.estCaseDeCouleur(opL.faire(l,2), opC.faire(c,2), couleur);
+        return pt.estCaseDeCouleur(opL.faire(l,1), opC.faire(c,1), couleur.getOppose())
+                && pt.estCaseDeCouleur(opL.faire(l,2), opC.faire(c,2), couleur);
     }
 
     public Plateau getPlateau() {
