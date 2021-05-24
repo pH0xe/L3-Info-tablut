@@ -22,10 +22,6 @@ public class Main {
             } catch (Exception e) {
                 System.err.println("Erreur lors de la création du répartoire " + pathStr);
             }
-        } else {
-            System.out.println(pathStr + " existe deja");
         }
-
-
     }
 }

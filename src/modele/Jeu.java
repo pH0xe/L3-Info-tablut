@@ -1,6 +1,7 @@
 package modele;
 
 import global.Configuration;
+import global.reader.BoardReaderBinary;
 import modele.Joueur.Couleur;
 import modele.Joueur.Joueur;
 import modele.pion.Pion;
@@ -28,6 +29,15 @@ public class Jeu extends Observable {
         pt = new Plateau();
         coupsPrecedent = new Stack<>();
         coupsSuivant = new Stack<>();
+    }
+
+    public Jeu(BoardReaderBinary br) {
+        coupsPrecedent = br.getCoupsPrecedent();
+        coupsSuivant = br.getCoupsSuivant();
+        j2 = br.getJoueurNoir();
+        j1 = br.getJoueurBlanc();
+        joueurCourant = br.getJoueurCourant();
+        pt = new Plateau(br);
     }
 
     public Joueur joueurCourant(){
@@ -201,5 +211,13 @@ public class Jeu extends Observable {
 
     public Joueur getJoueurNoir() {
         return j2;
+    }
+
+    public Stack<Coup> getCoupsSuivant() {
+        return coupsSuivant;
+    }
+
+    public Stack<Coup> getCoupsPrecedent() {
+        return coupsPrecedent;
     }
 }

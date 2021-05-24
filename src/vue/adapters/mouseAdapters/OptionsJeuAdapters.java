@@ -2,7 +2,8 @@ package vue.adapters.mouseAdapters;
 
 import controleur.CollecteurEvenements;
 import global.Configuration;
-import vue.panels.jeu.DialogOptionJeu;
+import vue.dialog.DialogOptionJeu;
+import vue.dialog.DialogSaveQuit;
 import vue.utils.Labels;
 
 import javax.swing.*;
@@ -28,7 +29,7 @@ public class OptionsJeuAdapters extends MouseAdapter {
                 break;
             case Labels.JEU_ACCUEIL:
                 Configuration.instance().logger().info(("[" + Labels.JEU_ACCUEIL + "]"));
-                controleur.retourAccueil();
+                controleur.afficherDialogSauv(DialogSaveQuit.MAIN_AFTER);
                 break;
             case Labels.BTN_FERMER:
                 Configuration.instance().logger().info(("[" + Labels.BTN_FERMER + "]"));

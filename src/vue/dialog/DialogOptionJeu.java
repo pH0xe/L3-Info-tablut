@@ -1,4 +1,4 @@
-package vue.panels.jeu;
+package vue.dialog;
 
 import controleur.CollecteurEvenements;
 import controleur.TypeIA;

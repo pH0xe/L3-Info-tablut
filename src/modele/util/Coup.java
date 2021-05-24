@@ -2,7 +2,9 @@ package modele.util;
 
 import modele.pion.Pion;
 
-public class Coup {
+import java.io.Serializable;
+
+public class Coup implements Serializable {
     private Pion pion;
     private Point caseADeplacer;
 

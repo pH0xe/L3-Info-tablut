@@ -4,10 +4,12 @@ import controleur.Controleur;
 import modele.Jeu;
 import structure.Observer;
 import vue.adapters.WindowEvents;
-import vue.panels.jeu.DialogOptionJeu;
+import vue.dialog.DialogOptionJeu;
+import vue.dialog.DialogSaveQuit;
 import vue.panels.PanelAccueil;
 import vue.panels.jeu.PanelJeu;
 import vue.panels.PanelOption;
+import vue.panels.saves.PanelSauvegarde;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,8 +21,10 @@ public class InterfaceGraphique implements Runnable, Observer {
     private PanelOption panelOption;
     private PanelJeu panelJeu;
     private PanelAccueil panelAccueil;
+    private PanelSauvegarde panelSauvegarde;
     private JDialog dialogOptionJeu;
     private Jeu jeu;
+    private DialogSaveQuit dialogSaveQuit;
 
     public InterfaceGraphique(Controleur controleur) {
         this.controleur = controleur;
@@ -30,6 +34,8 @@ public class InterfaceGraphique implements Runnable, Observer {
         panelAccueil = new PanelAccueil(controleur);
         panelOption = new PanelOption(controleur);
         panelJeu = new PanelJeu(controleur, null);
+        panelSauvegarde = new PanelSauvegarde(controleur);
+        dialogSaveQuit = new DialogSaveQuit(controleur);
     }
 
     public static void demarrer(Controleur controleur) {
@@ -40,7 +46,7 @@ public class InterfaceGraphique implements Runnable, Observer {
     public void run() {
         frame =  new JFrame("Tablut");
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.addWindowListener(new WindowEvents(controleur));
+        frame.addWindowListener(new WindowEvents(controleur, panelJeu));
         frame.setSize(600, 600);
         frame.setMinimumSize(new Dimension(600,600));
         frame.setLocationRelativeTo(null);
@@ -62,8 +68,11 @@ public class InterfaceGraphique implements Runnable, Observer {
 
     @Override
     public void update() {
-        if (panelJeu != null) {
+        if (panelJeu.isDisplayable()) {
             panelJeu.update();
+        }
+        if (panelSauvegarde.isDisplayable()) {
+            panelSauvegarde.update();
         }
     }
 
@@ -71,7 +80,10 @@ public class InterfaceGraphique implements Runnable, Observer {
         this.jeu = jeu;
         this.jeu.addObserver(this);
         panelJeu.addJeu(jeu);
-        frame.remove(panelAccueil);
+        if (panelAccueil.isDisplayable())
+            frame.remove(panelAccueil);
+        if (panelSauvegarde.isDisplayable())
+            frame.remove(panelSauvegarde);
         frame.add(panelJeu);
         update();
         frame.repaint();
@@ -108,5 +120,24 @@ public class InterfaceGraphique implements Runnable, Observer {
             frame.repaint();
             frame.setVisible(true);
         }
+    }
+
+    public void afficherDialogSauvegarde(int afterAction) {
+        dialogSaveQuit.showMessage(afterAction);
+    }
+
+    public void ouvrirSauvegarde() {
+        frame.remove(panelAccueil);
+        frame.add(panelSauvegarde);
+        panelSauvegarde.update();
+        frame.repaint();
+        frame.setVisible(true);
+    }
+
+    public void quitterSauvegarde() {
+        frame.remove(panelSauvegarde);
+        frame.add(panelAccueil);
+        frame.repaint();
+        frame.setVisible(true);
     }
 }

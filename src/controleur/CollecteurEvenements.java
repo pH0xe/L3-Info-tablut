@@ -15,4 +15,15 @@ public interface CollecteurEvenements {
     void fermerOptionJeu(TypeIA typeIAB, TypeIA typeIAN);
     void abandonnerPartie();
     void retourAccueil();
+
+    void sauvegarderAccueil();
+    void sauvegarderQuitter();
+    void fermerApp();
+
+    void afficherDialogSauv(int afterAction);
+    void ouvrirSauvegarde();
+
+    void quitterSauvegarde();
+    void supprimerSauvegarde(String filename);
+    void chargerSauvegarde(String filename);
 }
