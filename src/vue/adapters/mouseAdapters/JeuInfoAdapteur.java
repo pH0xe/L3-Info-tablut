@@ -3,6 +3,7 @@ package vue.adapters.mouseAdapters;
 import controleur.CollecteurEvenements;
 import global.Configuration;
 import modele.Jeu;
+import vue.panels.jeu.PanelInfoJeu;
 import vue.utils.Labels;
 
 import javax.swing.*;
@@ -11,9 +12,11 @@ import java.awt.event.MouseEvent;
 
 public class JeuInfoAdapteur extends MouseAdapter {
     private final CollecteurEvenements controleur;
+    private final PanelInfoJeu panel;
 
-    public JeuInfoAdapteur(CollecteurEvenements controleur) {
+    public JeuInfoAdapteur(CollecteurEvenements controleur, PanelInfoJeu panel) {
         this.controleur = controleur;
+        this.panel = panel;
     }
 
     @Override
@@ -26,12 +29,16 @@ public class JeuInfoAdapteur extends MouseAdapter {
                 controleur.ouvrirOptionJeu();
                 break;
             case Labels.JEU_REFAIRE:
-                Configuration.instance().logger().warning("[Refaire]");
-                controleur.refaireCoup();
+                if (panel.refaireActif()) {
+                    Configuration.instance().logger().warning("[Refaire]");
+                    controleur.refaireCoup();
+                }
                 break;
             case Labels.JEU_ANNULER:
-                Configuration.instance().logger().info("[Annuler]");
-                controleur.annulerCoup();
+                if (panel.annulerActif()) {
+                    Configuration.instance().logger().info("[Annuler]");
+                    controleur.annulerCoup();
+                }
                 break;
             default:
                 Configuration.instance().logger().severe("[" + e.getSource() + "] Commande inconnue");
