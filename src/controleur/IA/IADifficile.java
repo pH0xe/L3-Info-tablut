@@ -140,8 +140,7 @@ public class IADifficile extends IA{
             } else {
                 //System.out.println("meilleur fin :    " + meilleur);
                 coups.add(meilleur);
-                List<Coup> copy = new ArrayList<>();
-                copy.addAll(coups);
+                List<Coup> copy = new ArrayList<>(coups);
                 returnVal.put(cj, copy);
                 coups.clear();
             }

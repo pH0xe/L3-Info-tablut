@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 public class Coup implements Serializable {
     private Pion pion;
-    private Point caseADeplacer;
+    private Point destination;
     private List<Pion> captures;
 
     public Coup(Pion p, Point dest){
@@ -22,8 +22,8 @@ public class Coup implements Serializable {
         this.pion = new Pion(c.getPion());
         this.caseADeplacer = new Point(c.getDestination());
         this.captures = new ArrayList<>();
-        for (Pion pt: c.getCaptures()) {
-            this.captures.add(pt);
+        for (Pion p : c.getCaptures()){
+            captures.add(new Pion(p));
         }
     }
 

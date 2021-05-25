@@ -94,17 +94,6 @@ public class Jeu extends Observable {
     }
 
     public Jeu joueCoupDuplique(Coup c){
-        /*Jeu jeu2 = new Jeu(this);
-        Pion pion = c.getPion();
-        Point destination = c.getDestination();
-        Plateau plat = jeu2.getPlateau();
-        if(plat.peutDeplacer(pion, destination))
-            plat.deplacerPion(pion, destination.getL(), destination.getC());
-        else
-            Configuration.instance().logger().severe("Deplacement impossible : ( " + pion.getType() + ":" + pion.getPosition().getL() + "," + pion.getPosition().getC() + ") -> " + destination.getL() + "," + destination.getC());
-        jeu2.joueurSuivant();
-        return jeu2;*/
-
         Pion pion = c.getPion();
         Point destination = c.getDestination();
         Plateau plat = this.getPlateau();
@@ -127,7 +116,7 @@ public class Jeu extends Observable {
                     p.changerEtat(EtatPion.ACTIF);
             }
         }
-        this.getPlateau().deplacerPion(dernier.getPion(), destL, destC);
+        this.getPlateau().deplacerPion(pt.getPion(dernier.getPion()), destL, destC);
         joueurSuivant();
         c.remove(c.size()-1);
     }

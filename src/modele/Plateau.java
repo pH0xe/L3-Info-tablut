@@ -164,6 +164,10 @@ public class Plateau extends Observable {
         return getPion(new Point(i, j));
     }
 
+    public Pion getPion(Pion pion) {
+        return pions.stream().filter(pion1 -> pion1.equals(pion)).findFirst().orElse(null);
+    }
+
     public boolean estVide(Point point) {
         Pion p = getPion(point);
         return p == null || p.estPris();
