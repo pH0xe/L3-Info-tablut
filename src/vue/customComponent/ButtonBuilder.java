@@ -92,10 +92,13 @@ public class ButtonBuilder {
             Graphics2D drawable = (Graphics2D) g;
             drawable.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            g.setColor(c.getBackground().darker());
-            g.fillRoundRect(0, decalageY, w, h - decalageY, roundSize, roundSize);
+            if (btn.isEnabled()) {
+                g.setColor(c.getBackground().darker());
+                g.fillRoundRect(0, decalageY, w, h - decalageY, roundSize, roundSize);
+            }
 
-            g.setColor(c.getBackground());
+            Color bgColor = btn.isEnabled() ? c.getBackground() : Color.lightGray;
+            g.setColor(bgColor);
             g.fillRoundRect(0, decalageY, w, h + decalageY - 5, roundSize, roundSize);
 
             ImageIcon ic = (ImageIcon)btn.getIcon();
@@ -112,6 +115,7 @@ public class ButtonBuilder {
         }
 
         private int getDecalage(AbstractButton btn) {
+            if (!btn.isEnabled()) return 2;
             if (btn.getModel().isRollover()) return 2;
             return 0;
         }

@@ -73,9 +73,9 @@ public class PanelInfoJeu extends JPanel {
     }
 
     private void initButtonAdapters() {
-        btnRefaire.addMouseListener(new JeuInfoAdapteur(controleur));
-        btnAnnuler.addMouseListener(new JeuInfoAdapteur(controleur));
-        btnOption.addMouseListener(new JeuInfoAdapteur(controleur));
+        btnRefaire.addMouseListener(new JeuInfoAdapteur(controleur, this));
+        btnAnnuler.addMouseListener(new JeuInfoAdapteur(controleur, this));
+        btnOption.addMouseListener(new JeuInfoAdapteur(controleur, this));
     }
 
     public void update() {
@@ -91,9 +91,20 @@ public class PanelInfoJeu extends JPanel {
         pionElimi.setPionB(jeu.getPlateau().getBlancsElimine());
         pionElimi.setPionN(jeu.getPlateau().getNoirsElimine());
         pionElimi.repaint();
+
+        btnAnnuler.setEnabled(!jeu.getCoupsPrecedent().isEmpty());
+        btnRefaire.setEnabled(!jeu.getCoupsSuivant().isEmpty());
     }
 
     public void addJeu(Jeu jeu) {
         this.jeu = jeu;
+    }
+
+    public boolean annulerActif() {
+        return btnAnnuler.isEnabled();
+    }
+
+    public boolean refaireActif() {
+        return btnRefaire.isEnabled();
     }
 }
