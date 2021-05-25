@@ -22,13 +22,16 @@ public class JeuInfoAdapteur extends MouseAdapter {
 
         switch (source.getText()) {
             case Labels.ACCUEIL_OPTIO :
-                Configuration.instance().logger().warning("[Option] Non implémenté");
+                Configuration.instance().logger().warning("[Option]");
+                controleur.ouvrirOptionJeu();
                 break;
             case Labels.JEU_REFAIRE:
-                Configuration.instance().logger().warning("[Refaire] Non implémenté");
+                Configuration.instance().logger().warning("[Refaire]");
+                controleur.refaireCoup();
                 break;
             case Labels.JEU_ANNULER:
-                Configuration.instance().logger().warning("[Annuler] Non implémenté");
+                Configuration.instance().logger().info("[Annuler]");
+                controleur.annulerCoup();
                 break;
             default:
                 Configuration.instance().logger().severe("[" + e.getSource() + "] Commande inconnue");

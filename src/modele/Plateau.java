@@ -13,33 +13,31 @@ import structure.Observable;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Plateau extends Observable {
     private Pion roi;
-    private List<Pion> noirs;
-    private List<Pion> blancs;
+    private List<Pion> pions;
     private final int nbLigne = 9;
     private final int nbColonne = 9;
 
 
     public Plateau() {
-        noirs = new ArrayList<>();
-        blancs = new ArrayList<>();
+        pions = new ArrayList<>();
         initDefaultPions();
     }
 
     public Plateau(BoardReader reader) {
-        noirs = new ArrayList<>();
-        blancs = new ArrayList<>();
+        pions = new ArrayList<>();
         initReaderPions(reader);
     }
 
     private void initReaderPions(BoardReader reader) {
-        this.blancs.addAll(reader.getBlancs());
-        this.noirs.addAll(reader.getNoirs());
+        this.pions.addAll(reader.getBlancs());
+        this.pions.addAll(reader.getNoirs());
 
         this.roi = reader.getRoi();
-        this.blancs.add(this.roi);
+        this.pions.add(this.roi);
     }
 
     public void initDefaultPions() {
@@ -143,11 +141,11 @@ public class Plateau extends Observable {
     }
 
     public List<Pion> getBlancs() {
-        return blancs;
+        return pions.stream().filter(Pion::estBlanc).collect(Collectors.toList());
     }
 
     public List<Pion> getNoirs() {
-        return noirs;
+        return pions.stream().filter(Pion::estNoir).collect(Collectors.toList());
     }
 
     public Pion getRoi() {
@@ -155,25 +153,20 @@ public class Plateau extends Observable {
     }
 
     public int getBlancsElimine() {
-        return (int) blancs.stream().filter(Pion::estPris).count();
+        return (int) getBlancs().stream().filter(Pion::estPris).count();
     }
 
     public int getNoirsElimine() {
-        return (int) noirs.stream().filter(Pion::estPris).count();
+        return (int) getNoirs().stream().filter(Pion::estPris).count();
     }
 
     public Pion getPion(Point point) {
-        Pion res = blancs.stream().filter(pion1 -> pion1.getPosition().equals(point)).findFirst().orElse(null);
+        Pion res = pions.stream().filter(pion1 -> pion1.getPosition().equals(point)).findFirst().orElse(null);
         if (res != null) {
             if (res.estPris()) return null;
             return res;
         }
-        res = noirs.stream().filter(pion1 -> pion1.getPosition().equals(point)).findFirst().orElse(null);
-        if (res != null) {
-            if (res.estPris()) return null;
-            return res;
-        }
-        return res;
+        return null;
     }
 
     private Pion getPion(int i, int j) {

@@ -3,8 +3,7 @@ package global;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.NoSuchElementException;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,8 +20,22 @@ public class Configuration {
     public static BufferedOutputStream creeFichierSave() {
         try {
             String filename = DateUtils.getFileName();
-            FileOutputStream out = new FileOutputStream("saves" + File.separator + filename);
+            FileOutputStream out = new FileOutputStream("saves" + File.separator + filename + ".dat");
             return new BufferedOutputStream(out);
+        } catch (Exception ignored) {}
+
+        return null;
+    }
+
+    public static List<String> listeFichierSave() {
+        List<String> res = new ArrayList<>();
+        try {
+            File dir = new File("saves");
+            for (File file : Objects.requireNonNull(dir.listFiles())) {
+                if(file.isFile() && file.getName().charAt(0) != '.')
+                    res.add(file.getName());
+            }
+            return res;
         } catch (Exception ignored) {}
 
         return null;

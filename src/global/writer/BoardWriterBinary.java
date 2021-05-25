@@ -20,7 +20,7 @@ public class BoardWriterBinary {
         List<Pion> pions = jeu.getPlateau().getBlancs();
         pions.addAll(jeu.getPlateau().getNoirs());
         int joueurCourant = jeu.joueurCourant().getCouleur() == Couleur.BLANC ? 0 : 1;
-        ObjectSaver obj = new ObjectSaver(jeu.getJoueurBlanc(), jeu.getJoueurNoir(), joueurCourant, pions);
+        ObjectSaver obj = new ObjectSaver(jeu.getJoueurBlanc(), jeu.getJoueurNoir(), joueurCourant, pions, jeu.getCoupsPrecedent(), jeu.getCoupsSuivant());
 
         ObjectOutputStream objectStream = new ObjectOutputStream(output);
         objectStream.writeObject(obj);
