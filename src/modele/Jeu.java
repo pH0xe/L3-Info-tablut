@@ -34,17 +34,6 @@ public class Jeu extends Observable {
         coupsSuivant = new Stack<>();
     }
 
-    public Jeu(Jeu j){
-        this.j1 = new Joueur(j.j1);
-        this.j2 = new Joueur(j.j2);
-        if(j.joueurCourant().getCouleur() == Couleur.BLANC)
-            this.joueurCourant = this.j1; // j1 = blancs
-        else
-            this.joueurCourant = this.j2; // j1 = blancs
-        this.pt = j.getPlateau();
-        coupsPrecedent = new Stack<>();
-        coupsSuivant = new Stack<>();
-    }
 
     public Jeu(BoardReaderBinary br) {
         coupsPrecedent = br.getCoupsPrecedent();
@@ -96,9 +85,8 @@ public class Jeu extends Observable {
     public Jeu joueCoupDuplique(Coup c){
         Pion pion = c.getPion();
         Point destination = c.getDestination();
-        Plateau plat = this.getPlateau();
-        if(plat.peutDeplacer(pion, destination)) {
-            plat.deplacerPion(pion, destination.getL(), destination.getC());
+        if(pt.peutDeplacer(pion, destination)) {
+            pt.deplacerPion(pion, destination.getL(), destination.getC());
             c.setCaptures(this.pionCapture(pion));
         }
         else
@@ -110,10 +98,13 @@ public class Jeu extends Observable {
     public void annulerCoup(List<Coup> c, int destL, int destC){
         Coup dernier = c.get(c.size()-1);
         List<Pion> captures = dernier.getCaptures();
+
         if(!captures.isEmpty()) {
             for (Pion p : captures) {
-                if(p != null)
+                if(p != null) {
                     p.changerEtat(EtatPion.ACTIF);
+                    pt.getPions().add(p);
+                }
             }
         }
         this.getPlateau().deplacerPion(pt.getPion(dernier.getPion()), destL, destC);
@@ -159,7 +150,7 @@ public class Jeu extends Observable {
 
         for (Operateur[] op : ops) {
             if(checkPion(pionL, pionC, op[0], op[1], pion.getCouleur()))
-                captures.add(pt.capturerPion(new Point(op[0].faire(pionL,1), op[1].faire(pionC,1)), pion));
+                captures.add(pt.capturerPion(new Point(op[0].faire(pionL, 1), op[1].faire(pionC, 1)), pion));
         }
         return captures;
     }

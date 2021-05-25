@@ -72,7 +72,7 @@ public class IADifficile extends IA{
 
         heuristique += 2 * j.getPlateau().getCasesAccessibles(roi).size();
 
-        heuristique -= 1024 * j.getPlateau().getSortiesAccessibles();
+        heuristique += 1024 * j.getPlateau().getSortiesAccessibles();
         return heuristique;
     }
 
@@ -102,27 +102,31 @@ public class IADifficile extends IA{
                 //System.out.println("Prof " + profondeur);
                 if (tj.equals(Couleur.BLANC)) {
                     //System.out.println("Prof blanc " + profondeur);
-                    Coup temp = new Coup(cp);
+                    //Coup temp = new Coup(cp);
                     borne = Minimax(j.joueCoupDuplique(cp), Couleur.NOIR, profondeur - 1, prec, alpha, beta);
                     if (borne > val) {
                         val = borne;
-                        meilleur = new Coup(temp);
+                        meilleur = cp;
+                        //meilleur = new Coup(temp);
                         coups.clear();
                     } else if (borne == val) coups.add(cp);
                     alpha = max(alpha, val);
                     if (alpha >= beta) {
-                        j.annulerCoup(prec, dL, dC);
+                        j.annulerCoup(prec,dL,dC);
                         break;
                     }
                 } else {
                     //System.out.println("Prof noir " + profondeur);
-                    Coup temp = new Coup(cp);
-                    borne = Minimax(j.joueCoupDuplique(cp), Couleur.BLANC, profondeur - 1, prec, alpha, beta);
+                    //Coup temp = new Coup(cp);
+                    Jeu j2 = j.joueCoupDuplique(cp);
+                    //System.out.println("Coup: " + temp + ", heuristique: " + heuristique(j2));
+                    borne = Minimax(j2, Couleur.BLANC, profondeur - 1, prec, alpha, beta);
                     if (borne < val) {
                         val = borne;
                         //if(profondeur == 1) System.out.println(profondeur + ": " + cp + " *** " + temp + "heuristique: " + borne);
                         //System.out.println("temp in boucle : " + temp);
-                        meilleur = new Coup(temp);
+                        //meilleur = new Coup(temp);
+                        meilleur = cp;
                         //System.out.println("meilleur boucle: " + meilleur);
                         coups.clear();
                     } else if (borne == val) coups.add(cp);
@@ -133,7 +137,7 @@ public class IADifficile extends IA{
                         break;
                     }
                 }
-                j.annulerCoup(prec, dL, dC);
+                j.annulerCoup(prec,dL,dC);
             }
             if (meilleur == null) {
                 Configuration.instance().logger().severe("Pas de coups jouables");
@@ -151,15 +155,13 @@ public class IADifficile extends IA{
 
 
     public Coup iaJoue(Jeu j){
-        Minimax(j, j.joueurCourant().getCouleur(),3, new ArrayList<>(),MIN, MAX);
+        Minimax(j, j.joueurCourant().getCouleur(),4, new ArrayList<>(),MIN, MAX);
         Random r = new Random();
         ConfigJeu cj = new ConfigJeu(j.joueurCourant(), j);
         System.out.println("Liste coups: -----------------------");
         List<Coup> cps = returnVal.get(cj);
-        for (Coup c: cps
-             ) {
+        for (Coup c: cps) {
             System.out.println(c);
-            //j.annulerCoup(c, dL, dC);
         }
         Coup res = cps.get(r.nextInt(cps.size()));
         System.out.println("Taille : " + cps.size() + "   Coup choisi: " + res);

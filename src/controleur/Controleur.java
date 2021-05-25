@@ -9,6 +9,8 @@ import global.writer.BoardWriterBinary;
 import modele.*;
 import modele.Joueur.Couleur;
 import modele.Joueur.Joueur;
+import modele.pion.Pion;
+import modele.pion.TypePion;
 import modele.util.Coup;
 import modele.util.Point;
 import vue.InterfaceGraphique;
@@ -94,8 +96,6 @@ public class Controleur implements CollecteurEvenements {
         tIAB.stop();
         Coup c = iaBlanc.iaJoue(jeu);
         jeu.joueCoup(c);
-        //jeu.getPlateau().affichePlateau();
-        System.out.println();
         verifFin();
     }
 
@@ -109,7 +109,7 @@ public class Controleur implements CollecteurEvenements {
 
     public void verifFin(){
         if (jeu.roiSorti())
-            System.out.println("rois sorti");
+            System.out.println("roi sorti");
         else if (jeu.roiCapture())
             System.out.println("roi pris");
             // TODO dialog de fin

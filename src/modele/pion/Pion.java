@@ -43,6 +43,7 @@ public class Pion implements Serializable{
             return true;
         }
         catch(Exception e){
+            System.out.println("Exception: " + e);
             return false;
         }
 
