@@ -9,6 +9,10 @@ public interface CollecteurEvenements {
     void ouvrirOption();
     void fermerOption(String nomJoueurBlanc, String nomJoueurNoir, TypeIA typeJB, TypeIA typeJN);
     void cliquePlateau(Point point);
+
+    void joueIA1();
+    void joueIA2();
+
     void ouvrirOptionJeu();
     void refaireCoup();
     void annulerCoup();

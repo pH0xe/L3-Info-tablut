@@ -13,7 +13,10 @@ import structure.Observable;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.Objects;
 
 public class Plateau extends Observable {
     private Pion roi;
@@ -25,6 +28,12 @@ public class Plateau extends Observable {
     public Plateau() {
         pions = new ArrayList<>();
         initDefaultPions();
+    }
+
+    public Plateau(Plateau p){
+        pions = new ArrayList<>();
+        pions.addAll(p.getPions());
+        this.roi = new Pion(p.getRoi());
     }
 
     public Plateau(BoardReader reader) {
@@ -85,7 +94,6 @@ public class Plateau extends Observable {
         return accessibles;
     }
 
-
     public void deplacerPion(Pion pion, int l, int c) {
         pion.deplacerPion(l, c);
     }
@@ -121,23 +129,6 @@ public class Plateau extends Observable {
         TypePion type = getTypePion(l, c);
         if (type == null)  return false;
         return type.getCouleur() == couleur;
-    }
-
-    public void affichePlateau() {
-        for (int i = 0; i < nbLigne; i++) {
-            for (int j = 0; j < nbColonne; j++) {
-                if (getPion(i, j) == null) {
-                    System.out.print(".");
-                } else if (estCaseDeType(i, j, TypePion.BLANC)) {
-                    System.out.print("B");
-                } else if (estCaseDeType(i, j, TypePion.ROI)) {
-                    System.out.print("R");
-                } else {
-                    System.out.print("N");
-                }
-            }
-            System.out.println();
-        }
     }
 
     public List<Pion> getBlancs() {
@@ -183,12 +174,98 @@ public class Plateau extends Observable {
 
     }
 
-    public void capturerPion(Point point, Pion pion) {
+    public Pion capturerPion(Point point, Pion pion) {
         Pion p = getPion(point);
-        if (p.getType() == TypePion.ROI) return;
+        if(p.getType() == TypePion.ROI) return null;
         p.changerEtat(EtatPion.INACTIF);
         p.deplacerPion(-1, -1);
 
         Configuration.instance().logger().info("Capture du pion : " + p);
+        return p;
+    }
+
+    public int getSortiesAccessibles() {
+        return estSortieAccessibleColonne()+estSortieAccessibleLigne();
+
+    }
+
+    public int estSortieAccessibleLigne(){
+        int i = 0;
+        int res = 0;
+        int roiL = getRoi().getPosition().getL();
+        int roiC = getRoi().getPosition().getC();
+        while(i != roiL && getPion(i, roiC) == null){
+            i++;
+        }
+        if(i == roiL)
+            res++;
+        i = nbLigne;
+        while(i != roiL && getPion(i, roiC) == null){
+            i--;
+        }
+        if(i == roiL)
+            res++;
+
+        return res;
+
+
+    }
+
+    public int estSortieAccessibleColonne(){
+        int i = 0;
+        int res = 0;
+        int roiL = getRoi().getPosition().getL();
+        int roiC = getRoi().getPosition().getC();
+        while(i != roiC && getPion(roiL, i) == null){
+            i++;
+        }
+        if(i == roiC)
+            res++;
+        i = nbColonne;
+        while(i != roiC && getPion(roiL, i) == null){
+            i--;
+        }
+        if(i == roiC)
+            res++;
+
+
+        return res;
+    }
+
+    public List<Pion> getPions() {
+        return pions;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < nbLigne; i++) {
+            for (int j = 0; j < nbColonne; j++) {
+                if (getPion(i, j) == null) {
+                    sb.append(".");
+                } else if (estCaseDeType(i, j, TypePion.BLANC)) {
+                    sb.append("B");
+                } else if (estCaseDeType(i, j, TypePion.ROI)) {
+                    sb.append("R");
+                } else {
+                    sb.append("N");
+                }
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Plateau plateau = (Plateau) o;
+        return Objects.equals(roi, plateau.roi) && Objects.equals(pions, plateau.pions);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(roi, pions);
     }
 }
