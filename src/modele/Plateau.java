@@ -132,11 +132,11 @@ public class Plateau extends Observable {
     }
 
     public List<Pion> getBlancs() {
-        return pions.stream().filter(Pion::estBlanc).collect(Collectors.toList());
+        return pions.stream().filter(Pion::estBlanc).filter(pion -> !pion.estPris()).collect(Collectors.toList());
     }
 
     public List<Pion> getNoirs() {
-        return pions.stream().filter(Pion::estNoir).collect(Collectors.toList());
+        return pions.stream().filter(Pion::estNoir).filter(pion -> !pion.estPris()).collect(Collectors.toList());
     }
 
     public Pion getRoi() {
@@ -178,10 +178,11 @@ public class Plateau extends Observable {
         Pion p = getPion(point);
         if(p.getType() == TypePion.ROI) return null;
         p.changerEtat(EtatPion.INACTIF);
+        Pion pion1 = new Pion(p);
         p.deplacerPion(-1, -1);
 
         Configuration.instance().logger().info("Capture du pion : " + p);
-        return p;
+        return pion1;
     }
 
     public int getSortiesAccessibles() {
