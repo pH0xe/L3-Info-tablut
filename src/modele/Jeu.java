@@ -155,7 +155,7 @@ public class Jeu extends Observable {
     }
 
     private boolean checkPion(int l, int c, Operateur opL, Operateur opC, Couleur couleur) {
-        if (opL.faire(l,1) == 4 && opC.faire(c,1) == 4) return true;
+        if ((l == 4 && c == 4 )|| (opL.faire(l,2) == 4 && opC.faire(c,2) == 4)) return true;
         if (opL.faire(l,2) > 8 || opL.faire(l,2) < 0) return false;
         if (opC.faire(c,2) > 8 || opC.faire(c,2) < 0) return false;
 
