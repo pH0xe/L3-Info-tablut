@@ -30,11 +30,6 @@ public class Plateau extends Observable {
         initDefaultPions();
     }
 
-    public Plateau(Plateau p){
-        pions = new ArrayList<>();
-        pions.addAll(p.getPions());
-        this.roi = new Pion(p.getRoi());
-    }
 
     public Plateau(BoardReader reader) {
         pions = new ArrayList<>();
@@ -164,6 +159,10 @@ public class Plateau extends Observable {
         return getPion(new Point(i, j));
     }
 
+    public Pion getPion(Pion pion) {
+        return pions.stream().filter(pion1 -> pion1.equals(pion)).findFirst().orElse(null);
+    }
+
     public boolean estVide(Point point) {
         Pion p = getPion(point);
         return p == null || p.estPris();
@@ -177,12 +176,10 @@ public class Plateau extends Observable {
     public Pion capturerPion(Point point, Pion pion) {
         Pion p = getPion(point);
         if(p.getType() == TypePion.ROI) return null;
+        pions.remove(p);
         p.changerEtat(EtatPion.INACTIF);
-        Pion pion1 = new Pion(p);
-        p.deplacerPion(-1, -1);
-
         Configuration.instance().logger().info("Capture du pion : " + p);
-        return pion1;
+        return p;
     }
 
     public int getSortiesAccessibles() {

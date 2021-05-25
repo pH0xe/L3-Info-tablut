@@ -34,18 +34,6 @@ public class Jeu extends Observable {
         coupsSuivant = new Stack<>();
     }
 
-    public Jeu(Jeu j){
-        this.j1 = new Joueur(j.j1);
-        this.j2 = new Joueur(j.j2);
-        if(j.joueurCourant().getCouleur() == Couleur.BLANC)
-            this.joueurCourant = this.j1; // j1 = blancs
-        else
-            this.joueurCourant = this.j2; // j1 = blancs
-        this.pt = j.getPlateau();
-        coupsPrecedent = new Stack<>();
-        coupsSuivant = new Stack<>();
-    }
-
     public Jeu(BoardReaderBinary br) {
         coupsPrecedent = br.getCoupsPrecedent();
         coupsSuivant = br.getCoupsSuivant();
@@ -94,22 +82,10 @@ public class Jeu extends Observable {
     }
 
     public Jeu joueCoupDuplique(Coup c){
-        /*Jeu jeu2 = new Jeu(this);
         Pion pion = c.getPion();
         Point destination = c.getDestination();
-        Plateau plat = jeu2.getPlateau();
-        if(plat.peutDeplacer(pion, destination))
-            plat.deplacerPion(pion, destination.getL(), destination.getC());
-        else
-            Configuration.instance().logger().severe("Deplacement impossible : ( " + pion.getType() + ":" + pion.getPosition().getL() + "," + pion.getPosition().getC() + ") -> " + destination.getL() + "," + destination.getC());
-        jeu2.joueurSuivant();
-        return jeu2;*/
-
-        Pion pion = c.getPion();
-        Point destination = c.getDestination();
-        Plateau plat = this.getPlateau();
-        if(plat.peutDeplacer(pion, destination)) {
-            plat.deplacerPion(pion, destination.getL(), destination.getC());
+        if(pt.peutDeplacer(pion, destination)) {
+            pt.deplacerPion(pion, destination.getL(), destination.getC());
             c.setCaptures(this.pionCapture(pion));
         }
         else
@@ -121,13 +97,16 @@ public class Jeu extends Observable {
     public void annulerCoup(List<Coup> c, int destL, int destC){
         Coup dernier = c.get(c.size()-1);
         List<Pion> captures = dernier.getCaptures();
+
         if(!captures.isEmpty()) {
             for (Pion p : captures) {
-                if(p != null)
+                if(p != null) {
                     p.changerEtat(EtatPion.ACTIF);
+                    pt.getPions().add(p);
+                }
             }
         }
-        this.getPlateau().deplacerPion(dernier.getPion(), destL, destC);
+        this.getPlateau().deplacerPion(pt.getPion(dernier.getPion()), destL, destC);
         joueurSuivant();
         c.remove(c.size()-1);
     }
@@ -170,13 +149,13 @@ public class Jeu extends Observable {
 
         for (Operateur[] op : ops) {
             if(checkPion(pionL, pionC, op[0], op[1], pion.getCouleur()))
-                captures.add(pt.capturerPion(new Point(op[0].faire(pionL,1), op[1].faire(pionC,1)), pion));
+                captures.add(pt.capturerPion(new Point(op[0].faire(pionL, 1), op[1].faire(pionC, 1)), pion));
         }
         return captures;
     }
 
     private boolean checkPion(int l, int c, Operateur opL, Operateur opC, Couleur couleur) {
-        if (opL.faire(l,1) == 4 && opC.faire(c,1) == 4) return true;
+        if ((l == 4 && c == 4 )|| (opL.faire(l,2) == 4 && opC.faire(c,2) == 4)) return true;
         if (opL.faire(l,2) > 8 || opL.faire(l,2) < 0) return false;
         if (opC.faire(c,2) > 8 || opC.faire(c,2) < 0) return false;
 

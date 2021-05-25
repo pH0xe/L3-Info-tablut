@@ -9,21 +9,21 @@ import java.io.Serializable;
 
 public class Coup implements Serializable {
     private Pion pion;
-    private Point caseADeplacer;
+    private Point destination;
     private List<Pion> captures;
 
     public Coup(Pion p, Point dest){
         pion = p;
-        caseADeplacer = dest;
+        destination = dest;
         captures = new ArrayList<>();
     }
 
     public Coup(Coup c){
         this.pion = new Pion(c.getPion());
-        this.caseADeplacer = new Point(c.getDestination());
+        this.destination = new Point(c.getDestination());
         this.captures = new ArrayList<>();
-        for (Pion pt: c.getCaptures()) {
-            this.captures.add(pt);
+        for (Pion p : c.getCaptures()){
+            captures.add(new Pion(p));
         }
     }
 
@@ -37,13 +37,13 @@ public class Coup implements Serializable {
 
     public Pion getPion() {return pion;}
 
-    public Point getDestination() {return caseADeplacer;}
+    public Point getDestination() {return destination;}
 
     @Override
     public String toString() {
         return "Coup{" +
                 "pion=" + pion +
-                ", caseADeplacer=" + caseADeplacer +
+                ", caseADeplacer=" + destination +
                 '}';
     }
 }
