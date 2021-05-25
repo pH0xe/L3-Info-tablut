@@ -1,9 +1,13 @@
-package modele;
+package modele.util;
+
+import modele.pion.Pion;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Coup {
+import java.io.Serializable;
+
+public class Coup implements Serializable {
     private Pion pion;
     private Point caseADeplacer;
     private List<Pion> captures;

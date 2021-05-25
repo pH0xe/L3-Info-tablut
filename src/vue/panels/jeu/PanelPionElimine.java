@@ -1,4 +1,4 @@
-package vue.panels;
+package vue.panels.jeu;
 
 import vue.utils.Constants;
 import vue.utils.Images;

@@ -1,8 +1,9 @@
-package vue.panels;
+package vue.dialog;
 
 import controleur.CollecteurEvenements;
+import controleur.TypeIA;
+import vue.adapters.mouseAdapters.OptionsJeuAdapters;
 import vue.customComponent.ButtonBuilder;
-import vue.customComponent.ButtonIcon;
 import vue.customComponent.CustomComboBox;
 import vue.customComponent.formPanel;
 import vue.utils.Constants;
@@ -35,6 +36,7 @@ public class DialogOptionJeu extends JPanel {
         gbc.setWeighty(0.9).setGridy(1);
         JPanel panelButton = initPanelButton();
         add(panelButton, gbc.toConstraints());
+        initButtonAdapters();
     }
 
     private JLabel initTitle() {
@@ -79,5 +81,30 @@ public class DialogOptionJeu extends JPanel {
         panel.add(labelComponent, btnConstraints.toConstraints());
 
         return panel;
+    }
+
+    public void initButtonAdapters() {
+        btnAbandon.addMouseListener(new OptionsJeuAdapters(controleur, this));
+        btnAccueil.addMouseListener(new OptionsJeuAdapters(controleur, this));
+        btnClose.addMouseListener(new OptionsJeuAdapters(controleur, this));
+    }
+
+    public TypeIA getIA(JComboBox combo) {
+        String type = combo.getSelectedItem().toString();
+        if (type.equalsIgnoreCase("IA Facile"))
+            return TypeIA.FACILE;
+        if (type.equalsIgnoreCase("IA Moyenne"))
+            return TypeIA.MOYENNE;
+        if (type.equalsIgnoreCase("IA Difficile"))
+            return TypeIA.DIFFICILE;
+        return TypeIA.NONE;
+    }
+
+    public TypeIA getIANoir() {
+        return getIA(joueurNoir);
+    }
+
+    public TypeIA getIABlanc() {
+        return getIA(joueurBlanc);
     }
 }

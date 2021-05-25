@@ -1,9 +1,16 @@
 package modele;
 
 import global.Configuration;
+import global.reader.BoardReader;
+import global.reader.BoardReaderText;
+import modele.Joueur.Couleur;
+import modele.pion.EtatPion;
+import modele.pion.Pion;
+import modele.pion.TypePion;
+import modele.util.Point;
 import structure.Observable;
 
-import java.lang.reflect.Type;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
@@ -13,58 +20,41 @@ import java.util.Objects;
 
 public class Plateau extends Observable {
     private Pion roi;
-    private List<Pion> noirs;
-    private List<Pion> blancs;
+    private List<Pion> pions;
     private final int nbLigne = 9;
     private final int nbColonne = 9;
 
 
     public Plateau() {
-        noirs = new ArrayList<>();
-        blancs = new ArrayList<>();
-        initPions();
+        pions = new ArrayList<>();
+        initDefaultPions();
     }
 
     public Plateau(Plateau p){
-        this.blancs = new ArrayList<>();
-        this.noirs = new ArrayList<>();
-        blancs.addAll(p.getBlancs());
-        noirs.addAll(p.getNoirs());
+        pions = new ArrayList<>();
+        pions.addAll(p.getPions());
         this.roi = new Pion(p.getRoi());
-        initPions();
     }
 
-    public void initPions() {
-        //Creation pion blancs;
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(2, 4)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(3, 4)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(4, 2)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(4, 3)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(4, 5)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(4, 6)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(5, 4)));
-        this.blancs.add(new Pion(TypePion.BLANC, new Point(6, 4)));
+    public Plateau(BoardReader reader) {
+        pions = new ArrayList<>();
+        initReaderPions(reader);
+    }
 
-        //Creation pion noirs;
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(0, 3)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(0, 4)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(0, 5)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(1, 4)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(3, 0)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(3, 8)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(4, 0)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(4, 1)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(4, 7)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(4, 8)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(5, 0)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(5, 8)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(7, 4)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(8, 3)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(8, 4)));
-        this.noirs.add(new Pion(TypePion.NOIR, new Point(8, 5)));
+    private void initReaderPions(BoardReader reader) {
+        this.pions.addAll(reader.getBlancs());
+        this.pions.addAll(reader.getNoirs());
 
-        this.roi = new Pion(TypePion.ROI, new Point(4, 4));
-        this.blancs.add(this.roi);
+        this.roi = reader.getRoi();
+        this.pions.add(this.roi);
+    }
+
+    public void initDefaultPions() {
+        String board = Configuration.instance().getConfig("defaultBoard");
+        InputStream in = Configuration.charger(board);
+        BoardReader reader = new BoardReaderText(in);
+        reader.lirePlateau();
+        initReaderPions(reader);
     }
 
 
@@ -141,29 +131,12 @@ public class Plateau extends Observable {
         return type.getCouleur() == couleur;
     }
 
-    public void affichePlateau() {
-        for (int i = 0; i < nbLigne; i++) {
-            for (int j = 0; j < nbColonne; j++) {
-                if (getPion(i, j) == null) {
-                    System.out.print(".");
-                } else if (estCaseDeType(i, j, TypePion.BLANC)) {
-                    System.out.print("B");
-                } else if (estCaseDeType(i, j, TypePion.ROI)) {
-                    System.out.print("R");
-                } else {
-                    System.out.print("N");
-                }
-            }
-            System.out.println();
-        }
-    }
-
     public List<Pion> getBlancs() {
-        return blancs;
+        return pions.stream().filter(Pion::estBlanc).collect(Collectors.toList());
     }
 
     public List<Pion> getNoirs() {
-        return noirs;
+        return pions.stream().filter(Pion::estNoir).collect(Collectors.toList());
     }
 
     public Pion getRoi() {
@@ -171,25 +144,20 @@ public class Plateau extends Observable {
     }
 
     public int getBlancsElimine() {
-        return (int) blancs.stream().filter(Pion::estPris).count();
+        return (int) getBlancs().stream().filter(Pion::estPris).count();
     }
 
     public int getNoirsElimine() {
-        return (int) noirs.stream().filter(Pion::estPris).count();
+        return (int) getNoirs().stream().filter(Pion::estPris).count();
     }
 
     public Pion getPion(Point point) {
-        Pion res = blancs.stream().filter(pion1 -> pion1.getPosition().equals(point)).findFirst().orElse(null);
+        Pion res = pions.stream().filter(pion1 -> pion1.getPosition().equals(point)).findFirst().orElse(null);
         if (res != null) {
             if (res.estPris()) return null;
             return res;
         }
-        res = noirs.stream().filter(pion1 -> pion1.getPosition().equals(point)).findFirst().orElse(null);
-        if (res != null) {
-            if (res.estPris()) return null;
-            return res;
-        }
-        return res;
+        return null;
     }
 
     private Pion getPion(int i, int j) {
@@ -210,21 +178,10 @@ public class Plateau extends Observable {
         Pion p = getPion(point);
         if(p.getType() == TypePion.ROI) return null;
         p.changerEtat(EtatPion.INACTIF);
+        p.deplacerPion(-1, -1);
+
         Configuration.instance().logger().info("Capture du pion : " + p);
         return p;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Plateau plateau = (Plateau) o;
-        return Objects.equals(roi, plateau.roi) && Objects.equals(noirs, plateau.noirs) && Objects.equals(blancs, plateau.blancs);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(roi, noirs, blancs, nbLigne, nbColonne);
     }
 
     public int getSortiesAccessibles() {
@@ -275,4 +232,40 @@ public class Plateau extends Observable {
         return res;
     }
 
+    public List<Pion> getPions() {
+        return pions;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < nbLigne; i++) {
+            for (int j = 0; j < nbColonne; j++) {
+                if (getPion(i, j) == null) {
+                    sb.append(".");
+                } else if (estCaseDeType(i, j, TypePion.BLANC)) {
+                    sb.append("B");
+                } else if (estCaseDeType(i, j, TypePion.ROI)) {
+                    sb.append("R");
+                } else {
+                    sb.append("N");
+                }
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Plateau plateau = (Plateau) o;
+        return Objects.equals(roi, plateau.roi) && Objects.equals(pions, plateau.pions);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(roi, pions);
+    }
 }

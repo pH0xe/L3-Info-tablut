@@ -1,8 +1,11 @@
-package vue.panels;
+package vue.panels.jeu;
 
 import controleur.CollecteurEvenements;
 import modele.*;
-import modele.Point;
+import modele.Joueur.Couleur;
+import modele.util.Point;
+import modele.pion.Pion;
+import modele.pion.TypePion;
 import vue.adapters.mouseAdapters.PlateauAdapteur;
 import vue.utils.Constants;
 import vue.utils.Images;

@@ -1,6 +1,10 @@
 package controleur.IA;
 
-import modele.*;
+import modele.Jeu;
+import modele.Plateau;
+import modele.pion.Pion;
+import modele.util.Coup;
+import modele.util.Point;
 
 import java.util.*;
 

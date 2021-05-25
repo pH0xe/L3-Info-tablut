@@ -1,4 +1,6 @@
-package modele;
+package modele.pion;
+
+import modele.Joueur.Couleur;
 
 public enum TypePion {
     ROI(Couleur.BLANC), NOIR(Couleur.NOIR), BLANC(Couleur.BLANC);

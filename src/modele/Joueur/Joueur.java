@@ -1,8 +1,9 @@
-package modele;
+package modele.Joueur;
 
 import java.util.Objects;
+import java.io.*;
 
-public class Joueur {
+public class Joueur implements Serializable {
     private String nom;
     private Couleur type;
 
@@ -15,6 +16,7 @@ public class Joueur {
         this.type = j.getCouleur();
         this.nom = j.getNom();
     }
+
     public String getNom(){
         return nom;
     }

@@ -1,5 +1,7 @@
 package modele;
 
+import modele.Joueur.Joueur;
+
 import java.util.Objects;
 
 public class ConfigJeu {

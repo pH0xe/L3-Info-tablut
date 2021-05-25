@@ -1,6 +1,15 @@
 package modele;
 
 import global.Configuration;
+import global.Operateur;
+import global.reader.BoardReaderBinary;
+import modele.Joueur.Couleur;
+import modele.Joueur.Joueur;
+import modele.pion.EtatPion;
+import modele.pion.Pion;
+import modele.pion.TypePion;
+import modele.util.Coup;
+import modele.util.Point;
 import structure.Observable;
 
 import java.util.ArrayList;
@@ -13,15 +22,15 @@ public class Jeu extends Observable {
     private final Joueur j1;
     private final Joueur j2;
     private Plateau pt;
-    private final Stack<Coup> coupsPrecedant, coupsSuivant;
+    private final Stack<Coup> coupsPrecedent, coupsSuivant;
     private Pion pionSelect;
 
     public Jeu(Joueur j1, Joueur j2){
         this.j1 = j1;
         this.j2 = j2;
-        this.joueurCourant = j1; // j1 = blancs
+        this.joueurCourant = j1;
         pt = new Plateau();
-        coupsPrecedant = new Stack<>();
+        coupsPrecedent = new Stack<>();
         coupsSuivant = new Stack<>();
     }
 
@@ -33,8 +42,17 @@ public class Jeu extends Observable {
         else
             this.joueurCourant = this.j2; // j1 = blancs
         this.pt = j.getPlateau();
-        coupsPrecedant = new Stack<>();
+        coupsPrecedent = new Stack<>();
         coupsSuivant = new Stack<>();
+    }
+
+    public Jeu(BoardReaderBinary br) {
+        coupsPrecedent = br.getCoupsPrecedent();
+        coupsSuivant = br.getCoupsSuivant();
+        j2 = br.getJoueurNoir();
+        j1 = br.getJoueurBlanc();
+        joueurCourant = br.getJoueurCourant();
+        pt = new Plateau(br);
     }
 
     public Joueur joueurCourant(){
@@ -66,12 +84,12 @@ public class Jeu extends Observable {
         Point destination = c.getDestination();
         if(pt.peutDeplacer(pion, destination)) {
             pt.deplacerPion(pion, destination.getL(), destination.getC());
-            coupsPrecedant.push(c);
+            coupsPrecedent.push(c);
             coupsSuivant.clear();
             c.setCaptures(pionCapture(pion));
             joueurSuivant();
             update();
-        }  else
+        } else
             Configuration.instance().logger().severe("Deplacement impossible : ( " + pion.getType() + ":" + pion.getPosition().getL() + "," + pion.getPosition().getC() + ") -> " + destination.getL() + "," + destination.getC());
     }
 
@@ -101,21 +119,6 @@ public class Jeu extends Observable {
     }
 
     public void annulerCoup(List<Coup> c, int destL, int destC){
-        /*c.remove(c.size()-1);
-        Jeu j = new Jeu(this.j1, this.j2);
-        for (Coup cp: c) {
-            j.joueCoup(cp);
-        }
-        this.setPt(j.getPlateau());*/
-
-        /*Coup dernier = c.get(c.size()-1);
-        c.remove(c.size()-1);
-        Point dest = new Point(destL, destC);
-        Pion p = dernier.getPion();
-        p.changerEtat(EtatPion.ACTIF);
-        Coup cp = new Coup(p, dest);
-        this.joueCoup(cp);*/
-
         Coup dernier = c.get(c.size()-1);
         List<Pion> captures = dernier.getCaptures();
         if(!captures.isEmpty()) {
@@ -139,28 +142,17 @@ public class Jeu extends Observable {
 
     public boolean roiCapture() {
         Point roiPos = pt.getRoi().getPosition();
-        int roiC = roiPos.getC();
-        int roiL = roiPos.getL();
-        if(roiC == 3 && roiL == 4)
-            return (pt.estCaseDeType(roiPos.getL(), roiPos.getC()-1, TypePion.NOIR)
-                    && pt.estCaseDeType(roiPos.getL()-1, roiPos.getC(), TypePion.NOIR)
-                    && pt.estCaseDeType(roiPos.getL()+1, roiPos.getC(), TypePion.NOIR));
-        if(roiC == 5 && roiL == 4)
-            return (pt.estCaseDeType(roiPos.getL(), roiPos.getC()+1, TypePion.NOIR)
-                    && pt.estCaseDeType(roiPos.getL()-1, roiPos.getC(), TypePion.NOIR)
-                    && pt.estCaseDeType(roiPos.getL()+1, roiPos.getC(), TypePion.NOIR));
-        if(roiC == 4 && roiL == 3)
-            return (pt.estCaseDeType(roiPos.getL(), roiPos.getC()-1, TypePion.NOIR)
-                    && pt.estCaseDeType(roiPos.getL(), roiPos.getC()+1, TypePion.NOIR)
-                    && pt.estCaseDeType(roiPos.getL()-1, roiPos.getC(), TypePion.NOIR));
-        if(roiC == 4 && roiL == 5)
-            return (pt.estCaseDeType(roiPos.getL(), roiPos.getC()+1, TypePion.NOIR)
-                    && pt.estCaseDeType(roiPos.getL(), roiPos.getC()-1, TypePion.NOIR)
-                    && pt.estCaseDeType(roiPos.getL()+1, roiPos.getC(), TypePion.NOIR));
-        return (pt.estCaseDeType(roiPos.getL()+1, roiPos.getC(), TypePion.NOIR)
-                && pt.estCaseDeType(roiPos.getL()-1, roiPos.getC(), TypePion.NOIR)
-                && pt.estCaseDeType(roiPos.getL(), roiPos.getC()+1, TypePion.NOIR)
-                && pt.estCaseDeType(roiPos.getL(), roiPos.getC()-1, TypePion.NOIR));
+        int c = roiPos.getC();
+        int l = roiPos.getL();
+        return (checkRoi(l+1, c)
+                && checkRoi(l-1, c)
+                && checkRoi(l, c+1)
+                && checkRoi(l, c-1));
+
+    }
+
+    private boolean checkRoi(int l, int c) {
+        return (l == 4 && c == 4) || pt.estCaseDeType(l, c, TypePion.NOIR);
     }
 
     public List<Pion> pionCapture(Pion pion){
@@ -169,23 +161,31 @@ public class Jeu extends Observable {
         int pionL = posPion.getL();
         List<Pion> captures = new ArrayList<>();
 
-        if(pionL-2 >= 0 && pt.estCaseDeCouleur(pionL-1, pionC, pion.getCouleur().getOppose()) && pt.estCaseDeCouleur(pionL-2, pionC, pion.getCouleur()))
-            captures.add(pt.capturerPion(new Point(pionL-1, pionC), pion));
+        Operateur[][] ops = {
+                {Operateur.SUB,Operateur.NOTHING},
+                {Operateur.ADD,Operateur.NOTHING},
+                {Operateur.NOTHING,Operateur.SUB},
+                {Operateur.NOTHING,Operateur.ADD}
+        };
 
-        if (pionL+2 <= 8 && pt.estCaseDeCouleur(pionL+1, pionC, pion.getCouleur().getOppose()) && pt.estCaseDeCouleur(pionL+2, pionC, pion.getCouleur()))
-            captures.add(pt.capturerPion(new Point(pionL+1, pionC), pion));
-
-        if (pionC-2 >= 0 && pt.estCaseDeCouleur(pionL, pionC-1, pion.getCouleur().getOppose()) && pt.estCaseDeCouleur(pionL, pionC-2, pion.getCouleur()))
-            captures.add(pt.capturerPion(new Point(pionL, pionC-1), pion));
-
-        if ((pionC+2 <= 8 && pt.estCaseDeCouleur(pionL, pionC+1, pion.getCouleur().getOppose()) && pt.estCaseDeCouleur(pionL, pionC+2, pion.getCouleur())))
-            captures.add(pt.capturerPion(new Point(pionL, pionC+1), pion));
+        for (Operateur[] op : ops) {
+            if(checkPion(pionL, pionC, op[0], op[1], pion.getCouleur()))
+                captures.add(pt.capturerPion(new Point(op[0].faire(pionL,1), op[1].faire(pionC,1)), pion));
+        }
         return captures;
+    }
+
+    private boolean checkPion(int l, int c, Operateur opL, Operateur opC, Couleur couleur) {
+        if (opL.faire(l,2) > 8 || opL.faire(l,2) < 0) return false;
+        if (opC.faire(c,2) > 8 || opC.faire(c,2) < 0) return false;
+
+        return pt.estCaseDeCouleur(opL.faire(l,1), opC.faire(c,1), couleur.getOppose())
+                && pt.estCaseDeCouleur(opL.faire(l,2), opC.faire(c,2), couleur);
     }
 
     public void annulerCoup() {
         // TODO annuler le coup dans jeu
-        Coup c = coupsPrecedant.pop();
+        Coup c = coupsPrecedent.pop();
         coupsSuivant.push(c);
     }
 
@@ -196,7 +196,7 @@ public class Jeu extends Observable {
         Point destination = c.getDestination();
         if(pt.peutDeplacer(pion, destination)) {
             pt.deplacerPion(pion, destination.getL(), destination.getC());
-            coupsPrecedant.push(c);
+            coupsPrecedent.push(c);
         } else
             Configuration.instance().logger().severe("Deplacement impossible : ( " + pion.getType() + ":" + pion.getPosition().getC() + "," + pion.getPosition().getL() + ") -> " + destination.getL() + "," + destination.getC());
     }
@@ -251,7 +251,6 @@ public class Jeu extends Observable {
 
     public List<Pion> getPionClickable() {
         List<Pion> pions = getPionsCourant();
-
         return pions.stream().filter(pion -> !pt.getCasesAccessibles(pion).isEmpty()).collect(Collectors.toList());
     }
 
@@ -269,5 +268,21 @@ public class Jeu extends Observable {
             }
         }
         return C;
+    }
+
+    public Joueur getJoueurBlanc() {
+        return j1;
+    }
+
+    public Joueur getJoueurNoir() {
+        return j2;
+    }
+
+    public Stack<Coup> getCoupsSuivant() {
+        return coupsSuivant;
+    }
+
+    public Stack<Coup> getCoupsPrecedent() {
+        return coupsPrecedent;
     }
 }

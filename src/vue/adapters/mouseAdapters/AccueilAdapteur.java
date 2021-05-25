@@ -27,7 +27,8 @@ public class AccueilAdapteur extends MouseAdapter {
                 Configuration.instance().logger().warning("[Didacticiel] Non implémenté");
                 break;
             case (Labels.ACCUEIL_SAUVE):
-                Configuration.instance().logger().warning("[Sauvegarde] Non implémenté");
+                Configuration.instance().logger().info("[Sauvegarde]");
+                controleur.ouvrirSauvegarde();
                 break;
             case (Labels.ACCUEIL_MEJOU):
                 Configuration.instance().logger().warning("[Meilleurs joueur] Non implémenté");

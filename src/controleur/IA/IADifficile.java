@@ -1,7 +1,13 @@
 package controleur.IA;
 
 import global.Configuration;
-import modele.*;
+import modele.ConfigJeu;
+import modele.Jeu;
+import modele.Joueur.Couleur;
+import modele.Plateau;
+import modele.pion.Pion;
+import modele.pion.TypePion;
+import modele.util.Coup;
 
 import java.util.*;
 

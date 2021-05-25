@@ -12,4 +12,5 @@ public class Images {
     public static final Image ACCUEIL = ImageLoader.chargerImage("images/home.png");
     public static final Image FLAGS = ImageLoader.chargerImage("images/flags.png");
     public static final Image OPTION = ImageLoader.chargerImage("images/option.png");
+    public static final Image CLOSE = ImageLoader.chargerImage("images/close.png");
 }

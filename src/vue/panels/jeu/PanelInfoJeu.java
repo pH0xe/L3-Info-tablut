@@ -1,4 +1,4 @@
-package vue.panels;
+package vue.panels.jeu;
 
 import controleur.CollecteurEvenements;
 import modele.Jeu;
@@ -10,14 +10,19 @@ import vue.utils.Images;
 import vue.utils.Labels;
 
 import javax.swing.*;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import java.awt.*;
 
 public class PanelInfoJeu extends JPanel {
     private Jeu jeu;
     private final CollecteurEvenements controleur;
-    private JLabel joueurCourant;
+    private JTextPane joueurCourant;
     private PanelPionElimine pionElimi;
     private JButton btnOption, btnRefaire, btnAnnuler;
+    private SimpleAttributeSet style;
 
     public PanelInfoJeu(CollecteurEvenements controleur, Jeu jeu) {
         this.controleur = controleur;
@@ -27,11 +32,16 @@ public class PanelInfoJeu extends JPanel {
 
         setLayout(new GridBagLayout());
 
-        joueurCourant = new JLabel("Au tours de : Blanc", SwingConstants.CENTER);
-        joueurCourant.setFont(Constants.BOLD_FONT);
-        joueurCourant.setForeground(Constants.JEU_LABEL_FG);
-        joueurCourant.setOpaque(true);
+        joueurCourant = new JTextPane();
         joueurCourant.setBackground(Constants.JEU_LABEL_BG);
+        joueurCourant.setBorder(BorderFactory.createEmptyBorder(50,0,0,0));
+        style = new SimpleAttributeSet();
+        StyleConstants.setFontFamily(style, Font.SANS_SERIF);
+        StyleConstants.setBackground(style, Constants.JEU_LABEL_BG);
+        StyleConstants.setForeground(style, Constants.JEU_LABEL_FG);
+        StyleConstants.setFontSize(style, 18);
+        StyleConstants.setAlignment(style, StyleConstants.ALIGN_CENTER);
+
         ConstraintBuilder cb = new ConstraintBuilder(0,0).setIpady(40).setWeighty(0.2).setWeightx(1).fillBoth();
         add(joueurCourant, cb.toConstraints());
 
@@ -69,7 +79,15 @@ public class PanelInfoJeu extends JPanel {
     }
 
     public void update() {
-        joueurCourant.setText("Au tours de : " + jeu.joueurCourant().getNom() + " [" + jeu.joueurCourant().getCouleur().toString().toLowerCase() + "]");
+        StyledDocument textJoueur = joueurCourant.getStyledDocument();
+        try {
+            textJoueur.remove(0, textJoueur.getLength());
+            textJoueur.insertString(textJoueur.getLength(), "Au tour de :\n", style);
+            textJoueur.insertString(textJoueur.getLength(), jeu.joueurCourant().getNom() + "\n", style);
+            textJoueur.insertString(textJoueur.getLength(), "[" + jeu.joueurCourant().getCouleur().toString().toLowerCase() + "]", style);
+            textJoueur.setParagraphAttributes(0, textJoueur.getLength(), style, false);
+        } catch (Exception ignored){}
+
         pionElimi.setPionB(jeu.getPlateau().getBlancsElimine());
         pionElimi.setPionN(jeu.getPlateau().getNoirsElimine());
         pionElimi.repaint();
