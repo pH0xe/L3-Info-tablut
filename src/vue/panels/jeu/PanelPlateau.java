@@ -89,6 +89,7 @@ public class PanelPlateau extends JPanel {
         g2.setStroke(new BasicStroke(4));
         int strokeSize = (int) ((BasicStroke) g2.getStroke()).getLineWidth();
         Pion pionSelect = jeu.getSelectionne();
+        if (controleur.estTourIA()) return;
         if (estClickable && pionSelect == null) {
             x -= strokeSize/3;
             y -= strokeSize/3;

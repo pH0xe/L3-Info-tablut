@@ -30,4 +30,6 @@ public interface CollecteurEvenements {
     void quitterSauvegarde();
     void supprimerSauvegarde(String filename);
     void chargerSauvegarde(String filename);
+    void rejouer();
+    boolean estTourIA();
 }

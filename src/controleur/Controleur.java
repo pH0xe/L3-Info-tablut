@@ -44,9 +44,7 @@ public class Controleur implements CollecteurEvenements {
     @Override
     public void demarrerJeu() {
         interfaceGraphique.fixerJeu(jeu);
-        if(iaBlanc!=null){
-            tIAB.start();
-        }
+        lancerTimerIA();
     }
 
     @Override
@@ -58,8 +56,6 @@ public class Controleur implements CollecteurEvenements {
     public void fermerOption(String nomJoueurBlanc, String nomJoueurNoir, TypeIA typeJB, TypeIA typeJN) {
         joueurBlanc.setNom(nomJoueurBlanc);
         joueurNoir.setNom(nomJoueurNoir);
-        // TODO ajouter les IA;
-        // TODO supprimer IA si necessaire
         iaBlanc = definirIa(typeJB);
         iaNoir = definirIa(typeJN);
         interfaceGraphique.fermerOption();
@@ -67,10 +63,8 @@ public class Controleur implements CollecteurEvenements {
 
     @Override
     public void cliquePlateau(Point point) {
-        if(jeu.joueurCourant().getCouleur()==Couleur.BLANC && iaBlanc != null)
-            return;
-        if(jeu.joueurCourant().getCouleur()==Couleur.NOIR && iaNoir != null)
-            return;
+        if (jeu.estFini()) return;
+        if (estTourIA()) return;
         if (jeu.verifierCoup(point)) {
            verifFin();
            return;
@@ -109,21 +103,29 @@ public class Controleur implements CollecteurEvenements {
 
     public void verifFin(){
         if (jeu.roiSorti())
-            System.out.println("roi sorti");
+            interfaceGraphique.ouvrirDialogFin(jeu.getJoueurBlanc());
         else if (jeu.roiCapture())
-            System.out.println("roi pris");
-            // TODO dialog de fin
+            interfaceGraphique.ouvrirDialogFin(jeu.getJoueurNoir());
         else {
-            if(jeu.joueurCourant().getCouleur()==Couleur.BLANC && iaBlanc != null)
-                tIAB.start();
-            if(jeu.joueurCourant().getCouleur()==Couleur.NOIR && iaNoir != null)
-                tIAN.start();
+            lancerTimerIA();
         }
+    }
+
+    private void lancerTimerIA() {
+        if(jeu.joueurCourant().getCouleur()==Couleur.BLANC && iaBlanc != null)
+            tIAB.start();
+        if(jeu.joueurCourant().getCouleur()==Couleur.NOIR && iaNoir != null)
+            tIAN.start();
+    }
+
+    private void stoperIA() {
+        tIAB.stop();
+        tIAN.stop();
     }
 
     @Override
     public void ouvrirOptionJeu() {
-        // TODO on stop les deux IA
+        stoperIA();
         interfaceGraphique.ouvrirDialogOption();
     }
 
@@ -141,24 +143,24 @@ public class Controleur implements CollecteurEvenements {
 
     @Override
     public void fermerOptionJeu(TypeIA typeIAB, TypeIA typeIAN) {
-        // TODO changer les IA / les suppr
-        // TODO changer le nom si necessaire
-        // TODO relancer les IA
+        iaBlanc = definirIa(typeIAB);
+        iaNoir = definirIa(typeIAN);
         interfaceGraphique.fermerDialogOption();
+        lancerTimerIA();
     }
 
     @Override
     public void abandonnerPartie() {
         // TODO enregistrer VICTOIRE
-        // TODO afficher la dialog de fin
-        // TODO arreter les IA;
+        stoperIA();
         interfaceGraphique.fermerDialogOption();
     }
 
     @Override
     public void retourAccueil() {
-        // TODO arreter les IA
+        stoperIA();
         interfaceGraphique.fermerDialogOption();
+        interfaceGraphique.fermerDialogFin();
         interfaceGraphique.retourAccueil();
         jeu = new Jeu(joueurBlanc, joueurNoir);
     }
@@ -216,5 +218,17 @@ public class Controleur implements CollecteurEvenements {
         joueurBlanc = br.getJoueurBlanc();
         joueurNoir = br.getJoueurNoir();
         demarrerJeu();
+    }
+
+    @Override
+    public void rejouer() {
+        interfaceGraphique.fermerDialogFin();
+        jeu = new Jeu(joueurBlanc, joueurNoir);
+        demarrerJeu();
+    }
+
+    @Override
+    public boolean estTourIA() {
+        return (jeu.joueurCourant().getCouleur()==Couleur.BLANC && iaBlanc != null) || (jeu.joueurCourant().getCouleur()==Couleur.NOIR && iaNoir != null);
     }
 }

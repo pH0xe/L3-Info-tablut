@@ -2,8 +2,10 @@ package vue;
 
 import controleur.Controleur;
 import modele.Jeu;
+import modele.Joueur.Joueur;
 import structure.Observer;
 import vue.adapters.WindowEvents;
+import vue.dialog.DialogFinJeu;
 import vue.dialog.DialogOptionJeu;
 import vue.dialog.DialogSaveQuit;
 import vue.panels.PanelAccueil;
@@ -22,7 +24,8 @@ public class InterfaceGraphique implements Runnable, Observer {
     private final PanelJeu panelJeu;
     private final PanelAccueil panelAccueil;
     private final PanelSauvegarde panelSauvegarde;
-    private final JDialog dialogOptionJeu;
+    private final JDialog dialogOptionJeu, dialogFinJeu;
+    private final DialogFinJeu panelDialogFinJeu;
     private final DialogSaveQuit dialogSaveQuit;
 
     public InterfaceGraphique(Controleur controleur) {
@@ -30,11 +33,13 @@ public class InterfaceGraphique implements Runnable, Observer {
         this.controleur.fixerInterface(this);
 
         dialogOptionJeu = new JDialog();
+        dialogFinJeu = new JDialog();
         panelAccueil = new PanelAccueil(controleur);
         panelOption = new PanelOption(controleur);
         panelJeu = new PanelJeu(controleur, null);
         panelSauvegarde = new PanelSauvegarde(controleur);
         dialogSaveQuit = new DialogSaveQuit(controleur);
+        panelDialogFinJeu = new DialogFinJeu(controleur);
     }
 
     public static void demarrer(Controleur controleur) {
@@ -51,6 +56,7 @@ public class InterfaceGraphique implements Runnable, Observer {
         frame.setLocationRelativeTo(null);
 
         initDialogOption();
+        initDialogFin();
 
         frame.add(panelAccueil);
         frame.setVisible(true);
@@ -63,6 +69,14 @@ public class InterfaceGraphique implements Runnable, Observer {
         dialogOptionJeu.setLocationRelativeTo(frame);
         dialogOptionJeu.setVisible(false);
         dialogOptionJeu.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+    }
+
+    private void initDialogFin() {
+        dialogFinJeu.add(panelDialogFinJeu);
+        dialogFinJeu.setSize(400,400);
+        dialogFinJeu.setMinimumSize(new Dimension(300,500));
+        dialogFinJeu.setLocationRelativeTo(frame);
+        dialogFinJeu.setVisible(false);
     }
 
     @Override
@@ -127,6 +141,16 @@ public class InterfaceGraphique implements Runnable, Observer {
         frame.add(panelAccueil);
         frame.repaint();
         frame.setVisible(true);
+    }
+
+    public void ouvrirDialogFin(Joueur gagnant) {
+        panelDialogFinJeu.fixerGagnant(gagnant);
+        this.dialogFinJeu.setLocationRelativeTo(frame);
+        this.dialogFinJeu.setVisible(true);
+    }
+
+    public void fermerDialogFin() {
+        this.dialogFinJeu.setVisible(false);
     }
 
     private void fermerPanels() {

@@ -34,7 +34,6 @@ public class Jeu extends Observable {
         coupsSuivant = new Stack<>();
     }
 
-
     public Jeu(BoardReaderBinary br) {
         coupsPrecedent = br.getCoupsPrecedent();
         coupsSuivant = br.getCoupsSuivant();
@@ -156,6 +155,7 @@ public class Jeu extends Observable {
     }
 
     private boolean checkPion(int l, int c, Operateur opL, Operateur opC, Couleur couleur) {
+        if (opL.faire(l,1) == 4 && opC.faire(c,1) == 4) return true;
         if (opL.faire(l,2) > 8 || opL.faire(l,2) < 0) return false;
         if (opC.faire(c,2) > 8 || opC.faire(c,2) < 0) return false;
 
@@ -230,6 +230,7 @@ public class Jeu extends Observable {
     }
 
     public List<Pion> getPionClickable() {
+        if (estFini()) return new ArrayList<>();
         List<Pion> pions = getPionsCourant();
         return pions.stream().filter(pion -> !pt.getCasesAccessibles(pion).isEmpty()).collect(Collectors.toList());
     }
@@ -264,5 +265,9 @@ public class Jeu extends Observable {
 
     public Stack<Coup> getCoupsPrecedent() {
         return coupsPrecedent;
+    }
+
+    public boolean estFini() {
+        return roiCapture() || roiSorti();
     }
 }
