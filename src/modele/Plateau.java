@@ -54,6 +54,7 @@ public class Plateau extends Observable {
 
     public void initDefaultPions() {
         String board = Configuration.instance().getConfig("defaultBoard");
+        //String board = Configuration.instance().getConfig("endgameBoard");
         InputStream in = Configuration.charger(board);
         BoardReader reader = new BoardReaderText(in);
         reader.lirePlateau();

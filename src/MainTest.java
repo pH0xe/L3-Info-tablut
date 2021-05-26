@@ -9,6 +9,7 @@ import modele.util.Coup;
 import modele.util.Point;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainTest {
 
@@ -49,5 +50,9 @@ public class MainTest {
         System.out.println(jeu1);
         System.out.println();
         System.out.println(jeu2);
+        List<Coup> aaa = jeu1.getListeCoups();
+        for (Coup coup : aaa) {
+            System.out.println(coup);
+        }
     }
 }
