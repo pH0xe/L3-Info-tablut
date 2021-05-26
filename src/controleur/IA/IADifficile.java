@@ -26,19 +26,19 @@ public class IADifficile extends IA{
         mem = new HashSet<>();
     }
 
-    public int heuristique(Jeu j){
+    public int heuristique(Jeu j, int profondeur){
         Plateau p = j.getPlateau();
         Pion roi = p.getRoi();
         if(j.roiSorti()){
-            //System.out.println("Roi Sorti");
-            return MAX;
+            System.out.println("Roi Sorti a la profondeur : " + profondeur);
+            return MAX+profondeur;
         }
         else if(j.roiCapture()){
             //System.out.println("Roi Capture");
             return MIN;
         }
         else if(j.getPlateau().getSortiesAccessibles() >= 2){
-            return MAX - 1;
+            return MAX + profondeur -64;
         }
         int autourRoiNoir = 0;
         int heuristique = 0;
@@ -63,14 +63,14 @@ public class IADifficile extends IA{
             autourRoiNoir++;
         }
 
-        heuristique -= 5*autourRoiNoir;
+        heuristique -= 8*autourRoiNoir;
 
         /***FIN ENCERCLEMENT ***/
 
         heuristique += 8*p.getBlancs().size();
         heuristique -= 16*(16-p.getNoirs().size());
 
-        heuristique += 2 * j.getPlateau().getCasesAccessibles(roi).size();
+        heuristique += 4 * j.getPlateau().getCasesAccessibles(roi).size();
 
         heuristique += 1024 * j.getPlateau().getSortiesAccessibles();
         return heuristique;
@@ -81,7 +81,7 @@ public class IADifficile extends IA{
     public int Minimax(Jeu j, Couleur tj, int profondeur, List<Coup> prec, int alpha, int beta){
 
         if(profondeur==0 || j.roiSorti() || j.roiCapture()){
-            return heuristique(j);
+            return heuristique(j,profondeur);
         }
         ConfigJeu cj = new ConfigJeu(j.joueurCourant(), j);
         if(!mem.contains(cj)) {
@@ -118,9 +118,9 @@ public class IADifficile extends IA{
                 } else {
                     //System.out.println("Prof noir " + profondeur);
                     //Coup temp = new Coup(cp);
-                    Jeu j2 = j.joueCoupDuplique(cp);
+
                     //System.out.println("Coup: " + temp + ", heuristique: " + heuristique(j2));
-                    borne = Minimax(j2, Couleur.BLANC, profondeur - 1, prec, alpha, beta);
+                    borne = Minimax(j.joueCoupDuplique(cp), Couleur.BLANC, profondeur - 1, prec, alpha, beta);
                     if (borne < val) {
                         val = borne;
                         //if(profondeur == 1) System.out.println(profondeur + ": " + cp + " *** " + temp + "heuristique: " + borne);
@@ -150,7 +150,7 @@ public class IADifficile extends IA{
             }
             return val;
         }
-        return heuristique(cj.getJeu());
+        return heuristique(cj.getJeu(), profondeur);
     }
 
 

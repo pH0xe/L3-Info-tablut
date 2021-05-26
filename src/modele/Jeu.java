@@ -43,6 +43,22 @@ public class Jeu extends Observable {
         pt = new Plateau(br);
     }
 
+    public Jeu(Jeu jeu){
+        j1 = new Joueur(jeu.getJoueurBlanc());
+        j2 = new Joueur(jeu.getJoueurNoir());
+        joueurCourant = jeu.joueurCourant().getCouleur() == Couleur.BLANC ? j1 : j2;
+        pt = new Plateau(jeu.getPlateau());
+        coupsPrecedent = new Stack<>();
+        for (Coup coup : jeu.getCoupsPrecedent()) {
+                coupsPrecedent.add(new Coup(coup));
+        }
+
+        coupsSuivant = new Stack<>();
+        for (Coup coup : jeu.getCoupsSuivant()) {
+            coupsSuivant.add(new Coup(coup));
+        }
+    }
+
     public Joueur joueurCourant(){
         return joueurCourant;
     }
@@ -106,7 +122,7 @@ public class Jeu extends Observable {
                 }
             }
         }
-        this.getPlateau().deplacerPion(pt.getPion(dernier.getPion()), destL, destC);
+        this.getPlateau().deplacerPion(dernier.getPion(), destL, destC);
         joueurSuivant();
         c.remove(c.size()-1);
     }
@@ -148,19 +164,21 @@ public class Jeu extends Observable {
         };
 
         for (Operateur[] op : ops) {
-            if(checkPion(pionL, pionC, op[0], op[1], pion.getCouleur()))
-                captures.add(pt.capturerPion(new Point(op[0].faire(pionL, 1), op[1].faire(pionC, 1)), pion));
+            if (checkPion(pionL, pionC, op[0], op[1], pion.getCouleur())) {
+                Pion p = pt.capturerPion(new Point(op[0].faire(pionL, 1), op[1].faire(pionC, 1)), pion);
+                if (p != null)
+                    captures.add(p);
+            }
         }
         return captures;
     }
 
     private boolean checkPion(int l, int c, Operateur opL, Operateur opC, Couleur couleur) {
-        if ((l == 4 && c == 4 )|| (opL.faire(l,2) == 4 && opC.faire(c,2) == 4)) return true;
         if (opL.faire(l,2) > 8 || opL.faire(l,2) < 0) return false;
         if (opC.faire(c,2) > 8 || opC.faire(c,2) < 0) return false;
 
         return pt.estCaseDeCouleur(opL.faire(l,1), opC.faire(c,1), couleur.getOppose())
-                && pt.estCaseDeCouleur(opL.faire(l,2), opC.faire(c,2), couleur);
+                && (pt.estCaseDeCouleur(opL.faire(l,2), opC.faire(c,2), couleur) || ((l == 4 && c == 4 )|| (opL.faire(l,2) == 4 && opC.faire(c,2) == 4)));
     }
 
     public void annulerCoup() {
@@ -269,5 +287,18 @@ public class Jeu extends Observable {
 
     public boolean estFini() {
         return roiCapture() || roiSorti();
+    }
+
+    @Override
+    public String toString() {
+        return "Jeu{" +
+                "joueurCourant=" + joueurCourant +
+                ", j1=" + j1 +
+                ", j2=" + j2 +
+                ", pt=\n" + pt +
+                ", coupsPrecedent=" + coupsPrecedent +
+                ", coupsSuivant=" + coupsSuivant +
+                ", pionSelect=" + pionSelect +
+                '}';
     }
 }

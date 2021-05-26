@@ -39,11 +39,15 @@ public class Coup implements Serializable {
 
     public Point getDestination() {return destination;}
 
+    public void setDestination(Point destination) {
+        this.destination = destination;
+    }
+
     @Override
     public String toString() {
         return "Coup{" +
                 "pion=" + pion +
-                ", caseADeplacer=" + destination +
+                ", destination=" + destination +
                 '}';
     }
 }

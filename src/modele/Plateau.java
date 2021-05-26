@@ -36,6 +36,14 @@ public class Plateau extends Observable {
         initReaderPions(reader);
     }
 
+    public Plateau(Plateau plateau) {
+        pions = new ArrayList<>();
+        for (Pion pion : plateau.getPions()) {
+            pions.add(new Pion(pion));
+        }
+        roi = pions.stream().filter(Pion::estRoi).findFirst().orElse(null);
+    }
+
     private void initReaderPions(BoardReader reader) {
         this.pions.addAll(reader.getBlancs());
         this.pions.addAll(reader.getNoirs());
@@ -139,11 +147,11 @@ public class Plateau extends Observable {
     }
 
     public int getBlancsElimine() {
-        return (int) getBlancs().stream().filter(Pion::estPris).count();
+        return 9 - getBlancs().size();
     }
 
     public int getNoirsElimine() {
-        return (int) getNoirs().stream().filter(Pion::estPris).count();
+        return 16 - getNoirs().size();
     }
 
     public Pion getPion(Point point) {
@@ -251,7 +259,7 @@ public class Plateau extends Observable {
             }
             sb.append("\n");
         }
-        return sb.toString();
+        return sb.substring(0, sb.toString().length()-1);
     }
 
     @Override
