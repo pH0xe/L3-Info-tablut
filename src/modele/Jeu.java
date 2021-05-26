@@ -103,10 +103,10 @@ public class Jeu extends Observable {
         if(pt.peutDeplacer(pion, destination)) {
             pt.deplacerPion(pion, destination.getL(), destination.getC());
             c.setCaptures(this.pionCapture(pion));
+            joueurSuivant();
         }
         else
             Configuration.instance().logger().severe("Deplacement impossible : ( " + pion.getType() + ":" + pion.getPosition().getL() + "," + pion.getPosition().getC() + ") -> " + destination.getL() + "," + destination.getC());
-        this.joueurSuivant();
         return this;
     }
 
