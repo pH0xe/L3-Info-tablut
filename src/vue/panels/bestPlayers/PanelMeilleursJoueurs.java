@@ -34,9 +34,12 @@ public class PanelMeilleursJoueurs extends JPanel {
         add(title, gbc.toConstraints());
 
         scrollPanel = new JPanel();
-        gbc.setWeighty(0.9).setGridy(1);
+        gbc.setWeighty(0.9).incrGridy();
         JScrollPane sp = new JScrollPane(scrollPanel);
+        sp.setColumnHeaderView(initLabels());
         sp.setBorder(BorderFactory.createEmptyBorder());
+        sp.setBackground(Color.LIGHT_GRAY);
+
         int initSpeed = sp.getVerticalScrollBar().getUnitIncrement();
         sp.getVerticalScrollBar().setUnitIncrement(initSpeed * 4);
         add(sp, gbc.toConstraints());
@@ -94,6 +97,8 @@ public class PanelMeilleursJoueurs extends JPanel {
         bestP = sortScores(bestP);
         if (bestP.isEmpty()) return;
         int i = 1;
+
+        bc.incrGridy();
         for (Map.Entry<String, Integer> score : bestP.entrySet()) {
             scrollPanel.add(new ScoreEntry(score.getKey(), score.getValue(), i), bc.toConstraints());
             bc.incrGridy();
@@ -101,6 +106,25 @@ public class PanelMeilleursJoueurs extends JPanel {
         }
         scrollPanel.repaint();
         scrollPanel.revalidate();
+    }
+
+    private JPanel initLabels() {
+        JPanel panelLabel = new JPanel();
+        panelLabel.setOpaque(true);
+        panelLabel.setBackground(Color.LIGHT_GRAY);
+        panelLabel.setLayout(new GridBagLayout());
+        ConstraintBuilder bc = new ConstraintBuilder(0,0).setWeightx(1).setWeighty(1).fillBoth().setInset(5,0,5,10);
+
+        JLabel labelName = new JLabel("Nom", SwingConstants.CENTER);
+        panelLabel.add(labelName, bc.toConstraints());
+
+        JLabel labelScore = new JLabel("Nombre de victoire", SwingConstants.TRAILING);
+        panelLabel.add(labelScore, bc.toConstraints());
+
+        JLabel labelRang = new JLabel("Rang", SwingConstants.LEADING);
+        panelLabel.add(labelRang, bc.toConstraints());
+
+        return panelLabel;
     }
 
     private Map<String,Integer> sortScores(Map<String,Integer> map) {
