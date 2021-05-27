@@ -1,4 +1,4 @@
-package modele;
+package modele.Joueur;
 
 public enum Couleur {
     BLANC,NOIR;

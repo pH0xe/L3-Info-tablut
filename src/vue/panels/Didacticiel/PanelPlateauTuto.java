@@ -1,8 +1,10 @@
-package vue.panels;
+package vue.panels.Didacticiel;
 
 import controleur.CollecteurEvenements;
 import modele.*;
-import modele.Point;
+import modele.Joueur.Couleur;
+import modele.util.Point;
+import modele.pion.*;
 import vue.utils.Constants;
 import vue.utils.Images;
 
@@ -28,18 +30,14 @@ public class PanelPlateauTuto extends JPanel {
         int size = Math.min(getWidth(), getHeight());
         sizeCase = size / 9;
 
-        int hCasex = -1;
-        int hCasey = -1;
+//        int hCasex = -1;
+//        int hCasey = -1;
+        int hCaseL = jeu.getHighlightCase().getL();
+        int hCaseC = jeu.getHighlightCase().getC();
 
         initX = (getWidth() - size) / 2;
         initY = (getHeight() - size) / 2;
 
-//        jeu.setInitX(initX);
-//        jeu.setInitY(initY);
-//        jeu.setFinX(initX+9*sizeCase);
-//        jeu.setFinY(initY+9*sizeCase);
-
-        jeu.setSizeCase(size);
         g2.setColor(Constants.BOARD_STROKE);
         g2.setStroke(new BasicStroke(5));
         int y = initY;
@@ -48,18 +46,18 @@ public class PanelPlateauTuto extends JPanel {
             for (int j = 0; j < 9; j++) {
                 g2.drawImage(Images.CASE_PLATEAU, x, y, sizeCase, sizeCase, null);
                 g2.drawRect(x, y, sizeCase, sizeCase);
-                if(i == jeu.getHighlightCase().getL() && j == jeu.getHighlightCase().getC()){
-                    hCasex = x;
-                    hCasey = y;
-                }
+//                if(i == jeu.getHighlightCase().getL() && j == jeu.getHighlightCase().getC()){
+//                    hCasex = x;
+//                    hCasey = y;
+//                }
                 x += sizeCase;
             }
             y += sizeCase;
         }
 
-        if(-1 != hCasex && -1 != hCasey) {
+        if(-1 != hCaseL && -1 != hCaseC) {
             g2.setColor(Color.red);
-            g2.drawRect(hCasex, hCasey, sizeCase, sizeCase);
+            g2.drawRect(initX + hCaseC*sizeCase, initY + hCaseL*sizeCase, sizeCase, sizeCase);
             g2.setColor(Constants.BOARD_STROKE);
         }
 
@@ -70,6 +68,7 @@ public class PanelPlateauTuto extends JPanel {
         boolean tourBlanc = jeu.getJeu().joueurCourant().getCouleur() == Couleur.BLANC;
 
         for (Pion pion : blancs) {
+            if(pion.estPris()) continue;
             if (pion.getType() == TypePion.ROI)
                 drawPion(g2,pion.getPosition().getL(),pion.getPosition().getC(), Images.PION_ROI, tourBlanc);
             else
@@ -77,6 +76,7 @@ public class PanelPlateauTuto extends JPanel {
         }
 
         for (Pion pion : noirs) {
+            if(pion.estPris()) continue;
             drawPion(g2,pion.getPosition().getL(),pion.getPosition().getC(), Images.PION_NOIR, !tourBlanc);
         }
 
@@ -108,11 +108,12 @@ public class PanelPlateauTuto extends JPanel {
     private void drawCasesAccessibles(Graphics2D g2){
         Plateau pt = jeu.getJeu().getPlateau();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(Constants.HALO_CASE_ACC);
 
         int sizePoint = sizeCase/4;
         int offset = (sizeCase - sizePoint) / 2;
 
-        for(Point point : pt.getCasesAccessibles(new Pion(pt.getTypePion(jeu.getHighlightCase()), jeu.sourceCase))){
+        for(Point point : pt.getCasesAccessibles(jeu.getPionCourant(jeu.sourceCase))){
             int x = initX + (sizeCase * point.getC()) + offset;
             int y = initY + (sizeCase * point.getL()) + offset;
 

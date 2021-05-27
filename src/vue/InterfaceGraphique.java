@@ -1,9 +1,12 @@
 package vue;
 
+import controleur.AnimationChangerEtat;
 import controleur.Controleur;
 import modele.*;
-import vue.mouseAdapters.DidacticielAdapteur;
+import modele.Joueur.*;
 import vue.panels.*;
+import vue.panels.Didacticiel.PanelDidacticiel;
+import vue.panels.jeu.PanelJeu;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +15,7 @@ public class InterfaceGraphique implements Runnable {
     private Controleur controleur;
 
     private Jeu jeu;
+    private JeuTuto jeuTuto;
     private JFrame frame;
     private JPanel panelAccueil, panelOption, panelJeu;
     private PanelDidacticiel panelDidacticiel;
@@ -36,6 +40,9 @@ public class InterfaceGraphique implements Runnable {
 //        frame.setResizable(false);
         frame.setLocationRelativeTo(null);
 
+        jeuTuto = new JeuTuto(new Jeu(new Joueur("Jouer1", Couleur.BLANC), new Joueur("Jouer2", Couleur.NOIR)), 0);
+        controleur.fixerInterface(this);
+        controleur.fixerJeuTuto(jeuTuto);
 
         dialogOptionJeu = new JDialog();
         dialogOptionJeu.add(new DialogOptionJeu(controleur));
@@ -46,9 +53,11 @@ public class InterfaceGraphique implements Runnable {
         panelAccueil = new PanelAccueil(controleur);
         panelOption = new PanelOption(controleur);
         panelJeu = new PanelJeu(controleur, jeu);
-        JeuTuto j = new JeuTuto(new Jeu(new Joueur("Jouer1", Couleur.BLANC), new Joueur("Jouer2", Couleur.NOIR)), 0);
-        panelDidacticiel = new PanelDidacticiel(controleur, j);
+
+        panelDidacticiel = new PanelDidacticiel(controleur, jeuTuto);
         frame.add(panelDidacticiel);
+        Timer timer = new Timer(500, new AnimationChangerEtat(controleur));
+        controleur.fixerTimer(timer);
 
         frame.setVisible(true);
         dialogOptionJeu.setVisible(false);
@@ -57,7 +66,11 @@ public class InterfaceGraphique implements Runnable {
     public void update(){
         if(panelDidacticiel != null)
             panelDidacticiel.update();
-        System.out.println("Update Impossible");
+    }
+
+    public void addJeuTuto(JeuTuto j){
+        jeuTuto = j;
+        panelDidacticiel.addJeu(jeuTuto);
     }
 }
 

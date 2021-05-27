@@ -1,13 +1,8 @@
 package vue.mouseAdapters;
 
 import controleur.CollecteurEvenements;
-import global.Configuration;
-import modele.JeuTuto;
-import vue.panels.PanelPlateauTuto;
-import vue.utils.Labels;
+import vue.panels.Didacticiel.PanelPlateauTuto;
 
-import javax.swing.*;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 

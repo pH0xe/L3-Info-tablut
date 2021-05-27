@@ -1,15 +1,13 @@
-package vue.panels;
+package vue.panels.Didacticiel;
 
 import controleur.CollecteurEvenements;
-import controleur.Controleur;
-import modele.Jeu;
 import modele.JeuTuto;
-import vue.customComponent.ButtonBuilder;
-import vue.mouseAdapters.AccueilAdapteur;
 import vue.mouseAdapters.DidacticielAdapteur;
+import vue.panels.Didacticiel.PanelInfoTuto;
+import vue.panels.Didacticiel.PanelInstructionTuto;
+import vue.panels.Didacticiel.PanelPlateauTuto;
 import vue.utils.Constants;
 import vue.utils.ConstraintBuilder;
-import vue.utils.Labels;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,7 @@
-package modele;
+package modele.pion;
+
+import modele.Joueur.Couleur;
+import modele.util.Point;
 
 import java.util.Objects;
 
@@ -16,6 +19,8 @@ public class Pion {
     public boolean estPris(){
         return etat == EtatPion.INACTIF;
     }
+
+    public boolean estRoi() { return type == TypePion.ROI; }
 
     public void changerEtat(EtatPion etat){
         this.etat = etat;

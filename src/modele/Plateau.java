@@ -1,10 +1,15 @@
 package modele;
 
 import global.Configuration;
+import global.reader.BoardReaderText;
+import modele.pion.*;
+import modele.Joueur.*;
+import modele.util.Point;
 import structure.Observable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Plateau extends Observable {
     public final int nbLigne = 9;
@@ -66,7 +71,8 @@ public class Plateau extends Observable {
             int l = p.getPosition().getL();
             int c = p.getPosition().getC();
 
-            cases[l][c] = p.getType();
+            if(!p.estPris())
+                cases[l][c] = p.getType();
         }
 
         //Placement pion noirs
@@ -74,7 +80,8 @@ public class Plateau extends Observable {
             int l = p.getPosition().getL();
             int c = p.getPosition().getC();
 
-            cases[l][c] = p.getType();
+            if(!p.estPris())
+                cases[l][c] = p.getType();
         }
 
     }
@@ -228,5 +235,30 @@ public class Plateau extends Observable {
         p.changerEtat(EtatPion.INACTIF);
 
         Configuration.instance().logger().info("Capture du pion : " + p);
+    }
+
+    public boolean estTrone(Point point){ return point.getL() == 4 && point.getC() == 4; }
+
+    public void setPlateau(BoardReaderText br){
+        List<Pion> blancs = new ArrayList<>();
+        List<Pion> noirs = new ArrayList<>();
+        Random rn = new Random();
+        blancs.addAll(br.getBlancs());
+        noirs.addAll(br.getNoirs());
+        System.out.println("Blancs : " + blancs.size() + ", Noirs : " + noirs.size());
+        for(int i = blancs.size(); i < 9; i++){
+            Pion pion = new Pion(TypePion.BLANC, new Point(rn.nextInt(8), rn.nextInt(8)));
+            pion.changerEtat(EtatPion.INACTIF);
+            blancs.add(pion);
+        }
+        for(int i = noirs.size(); i < 16; i++){
+            Pion pion = new Pion(TypePion.NOIR, new Point(rn.nextInt(8), rn.nextInt(8)));
+            pion.changerEtat(EtatPion.INACTIF);
+            noirs.add(pion);
+        }
+        this.blancs = blancs;
+        this.noirs = noirs;
+        this.roi = br.getRoi();
+        initPlateau();
     }
 }

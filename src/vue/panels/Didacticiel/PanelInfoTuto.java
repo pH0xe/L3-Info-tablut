@@ -1,9 +1,9 @@
-package vue.panels;
+package vue.panels.Didacticiel;
 
 import controleur.CollecteurEvenements;
-import modele.Jeu;
 import modele.JeuTuto;
 import vue.customComponent.ButtonBuilder;
+import vue.mouseAdapters.RefaireTutoAdapteur;
 import vue.utils.Constants;
 import vue.utils.ConstraintBuilder;
 import vue.utils.Images;
@@ -11,9 +11,6 @@ import vue.utils.Labels;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Random;
 
 public class PanelInfoTuto extends JPanel {
     private JeuTuto jeu;
@@ -48,6 +45,7 @@ public class PanelInfoTuto extends JPanel {
                 .setIcon(Images.ANNULER_COUP).toJButton();
         btnRefaire = new ButtonBuilder().setText(Labels.JEU_REFAIRE).setBackground(Constants.BUTTON_BACKGROUND).setForeground(Constants.BUTTON_FOREGROUND)
                 .setIcon(Images.REFAIRE_COUP).toJButton();
+        btnRefaire.addMouseListener(new RefaireTutoAdapteur(controleur));
 
         cb.setWeighty(0).setIpady(30).setInset(0,10,10,10);
         cb.incrGridy();
