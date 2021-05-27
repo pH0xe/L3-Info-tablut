@@ -149,19 +149,22 @@ public class Jeu extends Observable {
         };
 
         for (Operateur[] op : ops) {
-            if(checkPion(pionL, pionC, op[0], op[1], pion.getCouleur()))
-                captures.add(pt.capturerPion(new Point(op[0].faire(pionL, 1), op[1].faire(pionC, 1))));
+            if (checkPion(pionL, pionC, op[0], op[1], pion.getCouleur())) {
+                Pion p = pt.capturerPion(new Point(op[0].faire(pionL, 1), op[1].faire(pionC, 1)));
+                if (p != null)
+                    captures.add(p);
+            }
         }
         return captures;
     }
 
     private boolean checkPion(int l, int c, Operateur opL, Operateur opC, Couleur couleur) {
-        if ((l == 4 && c == 4 )|| (opL.faire(l,2) == 4 && opC.faire(c,2) == 4)) return true;
         if (opL.faire(l,2) > 8 || opL.faire(l,2) < 0) return false;
         if (opC.faire(c,2) > 8 || opC.faire(c,2) < 0) return false;
 
         return pt.estCaseDeCouleur(opL.faire(l,1), opC.faire(c,1), couleur.getOppose())
-                && pt.estCaseDeCouleur(opL.faire(l,2), opC.faire(c,2), couleur);
+                && (pt.estCaseDeCouleur(opL.faire(l,2), opC.faire(c,2), couleur)
+                || ((l == 4 && c == 4 )|| (opL.faire(l,2) == 4 && opC.faire(c,2) == 4)));
     }
 
     public void annulerCoup() {
