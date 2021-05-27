@@ -24,6 +24,7 @@ public class Jeu extends Observable {
     private Plateau pt;
     private final Stack<Coup> coupsPrecedent, coupsSuivant;
     private Pion pionSelect;
+    private boolean estFini = false;
 
     public Jeu(Joueur j1, Joueur j2){
         this.j1 = j1;
@@ -149,7 +150,7 @@ public class Jeu extends Observable {
 
         for (Operateur[] op : ops) {
             if(checkPion(pionL, pionC, op[0], op[1], pion.getCouleur()))
-                captures.add(pt.capturerPion(new Point(op[0].faire(pionL, 1), op[1].faire(pionC, 1)), pion));
+                captures.add(pt.capturerPion(new Point(op[0].faire(pionL, 1), op[1].faire(pionC, 1))));
         }
         return captures;
     }
@@ -268,6 +269,10 @@ public class Jeu extends Observable {
     }
 
     public boolean estFini() {
-        return roiCapture() || roiSorti();
+        return estFini || roiCapture() || roiSorti();
+    }
+
+    public void setEstFini(boolean b) {
+        this.estFini = true;
     }
 }

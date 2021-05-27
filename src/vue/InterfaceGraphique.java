@@ -1,6 +1,7 @@
 package vue;
 
 import controleur.Controleur;
+import global.BestScoresUtils;
 import modele.Jeu;
 import modele.Joueur.Joueur;
 import structure.Observer;
@@ -9,6 +10,7 @@ import vue.dialog.DialogFinJeu;
 import vue.dialog.DialogOptionJeu;
 import vue.dialog.DialogSaveQuit;
 import vue.panels.PanelAccueil;
+import vue.panels.bestPlayers.PanelMeilleursJoueurs;
 import vue.panels.jeu.PanelJeu;
 import vue.panels.PanelOption;
 import vue.panels.saves.PanelSauvegarde;
@@ -27,6 +29,7 @@ public class InterfaceGraphique implements Runnable, Observer {
     private final JDialog dialogOptionJeu, dialogFinJeu;
     private final DialogFinJeu panelDialogFinJeu;
     private final DialogSaveQuit dialogSaveQuit;
+    private final PanelMeilleursJoueurs panelMeilleurs;
 
     public InterfaceGraphique(Controleur controleur) {
         this.controleur = controleur;
@@ -40,6 +43,7 @@ public class InterfaceGraphique implements Runnable, Observer {
         panelSauvegarde = new PanelSauvegarde(controleur);
         dialogSaveQuit = new DialogSaveQuit(controleur);
         panelDialogFinJeu = new DialogFinJeu(controleur);
+        panelMeilleurs = new PanelMeilleursJoueurs(controleur);
     }
 
     public static void demarrer(Controleur controleur) {
@@ -57,7 +61,7 @@ public class InterfaceGraphique implements Runnable, Observer {
 
         initDialogOption();
         initDialogFin();
-
+        BestScoresUtils.instance().addVictory("po");
         frame.add(panelAccueil);
         frame.setVisible(true);
     }
@@ -126,7 +130,7 @@ public class InterfaceGraphique implements Runnable, Observer {
     }
 
     public void afficherDialogSauvegarde(int afterAction) {
-        dialogSaveQuit.showMessage(afterAction);
+        dialogSaveQuit.showMessage(afterAction, panelJeu);
     }
 
     public void ouvrirSauvegarde() {
@@ -162,11 +166,26 @@ public class InterfaceGraphique implements Runnable, Observer {
             frame.remove(panelAccueil);
         if (panelSauvegarde.isDisplayable())
             frame.remove(panelSauvegarde);
+        if (panelMeilleurs.isDisplayable())
+            frame.remove(panelMeilleurs);
     }
 
     private void reloadFrame() {
         frame.revalidate();
         frame.repaint();
         frame.setVisible(true);
+    }
+
+    public void ouvrirMeilleursJoueurs() {
+        fermerPanels();
+        panelMeilleurs.update();
+        frame.add(panelMeilleurs);
+        reloadFrame();
+    }
+
+    public void fermerMeilleursJoueurs() {
+        fermerPanels();
+        frame.add(panelAccueil);
+        reloadFrame();
     }
 }

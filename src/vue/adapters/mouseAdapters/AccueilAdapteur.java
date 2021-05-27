@@ -31,7 +31,8 @@ public class AccueilAdapteur extends MouseAdapter {
                 controleur.ouvrirSauvegarde();
                 break;
             case (Labels.ACCUEIL_MEJOU):
-                Configuration.instance().logger().warning("[Meilleurs joueur] Non implémenté");
+                Configuration.instance().logger().warning("[Meilleurs joueur]");
+                controleur.ouvrirMeilleursJoueurs();
                 break;
             case (Labels.ACCUEIL_OPTIO):
                 Configuration.instance().logger().info("[Options]");

@@ -3,6 +3,7 @@ package controleur;
 import controleur.IA.IA;
 import controleur.IA.IADifficile;
 import controleur.IA.IAFacile;
+import global.BestScoresUtils;
 import global.Configuration;
 import global.reader.BoardReaderBinary;
 import global.writer.BoardWriterBinary;
@@ -102,11 +103,13 @@ public class Controleur implements CollecteurEvenements {
     }
 
     public void verifFin(){
-        if (jeu.roiSorti())
+        if (jeu.roiSorti()) {
             interfaceGraphique.ouvrirDialogFin(jeu.getJoueurBlanc());
-        else if (jeu.roiCapture())
+            BestScoresUtils.instance().addVictory(jeu.getJoueurBlanc().getNom());
+        } else if (jeu.roiCapture()) {
             interfaceGraphique.ouvrirDialogFin(jeu.getJoueurNoir());
-        else {
+            BestScoresUtils.instance().addVictory(jeu.getJoueurNoir().getNom());
+        } else {
             lancerTimerIA();
         }
     }
@@ -151,9 +154,11 @@ public class Controleur implements CollecteurEvenements {
 
     @Override
     public void abandonnerPartie() {
-        // TODO enregistrer VICTOIRE
         stoperIA();
         interfaceGraphique.fermerDialogOption();
+        interfaceGraphique.ouvrirDialogFin(jeu.getJoueurSuivant());
+        BestScoresUtils.instance().addVictory(jeu.getJoueurSuivant().getNom());
+        jeu.setEstFini(true);
     }
 
     @Override
@@ -212,7 +217,7 @@ public class Controleur implements CollecteurEvenements {
 
     @Override
     public void chargerSauvegarde(String filename) {
-        BoardReaderBinary br = new BoardReaderBinary("saves" + File.separator + filename);
+        BoardReaderBinary br = new BoardReaderBinary("data" + File.separator + "saves" + File.separator + filename);
         br.lirePlateau();
         jeu = new Jeu(br);
         joueurBlanc = br.getJoueurBlanc();
@@ -230,5 +235,15 @@ public class Controleur implements CollecteurEvenements {
     @Override
     public boolean estTourIA() {
         return (jeu.joueurCourant().getCouleur()==Couleur.BLANC && iaBlanc != null) || (jeu.joueurCourant().getCouleur()==Couleur.NOIR && iaNoir != null);
+    }
+
+    @Override
+    public void ouvrirMeilleursJoueurs() {
+        interfaceGraphique.ouvrirMeilleursJoueurs();
+    }
+
+    @Override
+    public void fermerMeilleursJoueurs() {
+        interfaceGraphique.fermerMeilleursJoueurs();
     }
 }
