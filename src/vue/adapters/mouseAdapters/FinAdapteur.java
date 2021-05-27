@@ -24,7 +24,7 @@ public class FinAdapteur extends MouseAdapter {
                 controleur.rejouer();
                 break;
             case (Labels.JEU_ACCUEIL):
-                Configuration.instance().logger().warning("[ACCUEIL]");
+                Configuration.instance().logger().info("[ACCUEIL]");
                 controleur.retourAccueil();
                 break;
             default:

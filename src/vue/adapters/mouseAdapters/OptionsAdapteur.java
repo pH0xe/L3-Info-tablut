@@ -29,7 +29,7 @@ public class OptionsAdapteur extends MouseAdapter {
                 Configuration.instance().logger().warning("[Son] Non implémenté");
                 break;
             case (Names.BTN_RETOUR):
-                Configuration.instance().logger().warning("[Retours]");
+                Configuration.instance().logger().info("[Retours]");
                 controleur.fermerOption(panel.getNomJoueurBlanc(), panel.getNomJoueurNoir(), panel.getTypeJB(), panel.getTypeJN());
                 break;
             default:
