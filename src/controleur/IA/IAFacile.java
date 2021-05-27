@@ -19,6 +19,6 @@ public class IAFacile extends IA{
             aJouer = ps.get(r.nextInt(ps.size()));
             jouables = p.getCasesAccessibles(aJouer);
         }while(jouables.isEmpty());
-        return new Coup(aJouer, jouables.get(r.nextInt(jouables.size())));
+        return new Coup(aJouer, jouables.get(r.nextInt(jouables.size())), aJouer.getPosition().getL(), aJouer.getPosition().getC());
     }
 }

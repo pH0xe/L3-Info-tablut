@@ -134,14 +134,16 @@ public class Controleur implements CollecteurEvenements {
 
     @Override
     public void refaireCoup() {
+        stoperIA();
         jeu.refaireCoup();
-        // TODO tempo IA
+        lancerTimerIA();
     }
 
     @Override
     public void annulerCoup() {
+        stoperIA();
         jeu.annulerCoup();
-        // TODO tempo IA
+        lancerTimerIA();
     }
 
     @Override
@@ -210,7 +212,7 @@ public class Controleur implements CollecteurEvenements {
 
     @Override
     public void supprimerSauvegarde(String filename) {
-        File file = new File("saves" + File.separator + filename);
+        File file = new File("data" + File.separator + "saves" + File.separator + filename);
         if (file.delete())
             interfaceGraphique.update();
     }

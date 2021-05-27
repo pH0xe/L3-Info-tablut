@@ -165,9 +165,20 @@ public class Jeu extends Observable {
     }
 
     public void annulerCoup() {
-        // TODO annuler le coup dans jeu
         Coup c = coupsPrecedent.pop();
+        for (Pion pion : c.getCaptures()) {
+            if (pion == null) continue;
+            pion.changerEtat(EtatPion.ACTIF);
+            pt.getPions().add(pion);
+        }
+
+        Point dest = c.getOrigine();
+
+        Pion p = pt.getPion(c.getDestination());
+        pt.deplacerPion(p, dest.getL(), dest.getC());
+        joueurSuivant();
         coupsSuivant.push(c);
+        update();
     }
 
     public void refaireCoup() {
@@ -178,6 +189,7 @@ public class Jeu extends Observable {
         if(pt.peutDeplacer(pion, destination)) {
             pt.deplacerPion(pion, destination.getL(), destination.getC());
             coupsPrecedent.push(c);
+            update();
         } else
             Configuration.instance().logger().severe("Deplacement impossible : ( " + pion.getType() + ":" + pion.getPosition().getC() + "," + pion.getPosition().getL() + ") -> " + destination.getL() + "," + destination.getC());
     }
@@ -222,7 +234,7 @@ public class Jeu extends Observable {
 
         List<Point> accessible = pt.getCasesAccessibles(pionSelect);
         if (accessible.contains(point)) {
-            Coup coup = new Coup(pionSelect, point);
+            Coup coup = new Coup(pionSelect, point, pionSelect.getPosition().getL(), pionSelect.getPosition().getC());
             joueCoup(coup);
             pionSelect = null;
             return true;
@@ -246,7 +258,7 @@ public class Jeu extends Observable {
         for (Pion pi: jouables) {
             List<Point> accessibles = pt.getCasesAccessibles(pi);
             for (Point pt: accessibles) {
-                C.add(new Coup(pi, pt));
+                C.add(new Coup(pi, pt, pi.getPosition().getL(), pi.getPosition().getC()));
             }
         }
         return C;
