@@ -13,4 +13,7 @@ public class Images {
     public static final Image FLAGS = ImageLoader.chargerImage("images/flags.png");
     public static final Image OPTION = ImageLoader.chargerImage("images/option.png");
     public static final Image CLOSE = ImageLoader.chargerImage("images/close.png");
+    public static final Image FIRST = ImageLoader.chargerImage("images/first.png");
+    public static final Image SECOND = ImageLoader.chargerImage("images/second.png");
+    public static final Image THIRD = ImageLoader.chargerImage("images/third.png");
 }

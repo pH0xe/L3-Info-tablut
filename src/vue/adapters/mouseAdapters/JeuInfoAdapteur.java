@@ -25,12 +25,12 @@ public class JeuInfoAdapteur extends MouseAdapter {
 
         switch (source.getText()) {
             case Labels.ACCUEIL_OPTIO :
-                Configuration.instance().logger().warning("[Option]");
+                Configuration.instance().logger().info("[Option]");
                 controleur.ouvrirOptionJeu();
                 break;
             case Labels.JEU_REFAIRE:
                 if (panel.refaireActif()) {
-                    Configuration.instance().logger().warning("[Refaire]");
+                    Configuration.instance().logger().info("[Refaire]");
                     controleur.refaireCoup();
                 }
                 break;

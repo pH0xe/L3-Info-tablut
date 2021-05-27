@@ -32,4 +32,7 @@ public interface CollecteurEvenements {
     void chargerSauvegarde(String filename);
     void rejouer();
     boolean estTourIA();
+    void ouvrirMeilleursJoueurs();
+
+    void fermerMeilleursJoueurs();
 }

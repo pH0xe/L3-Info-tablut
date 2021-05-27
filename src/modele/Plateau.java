@@ -13,8 +13,6 @@ import structure.Observable;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Arrays;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.Objects;
 
@@ -56,37 +54,51 @@ public class Plateau extends Observable {
     public List<Point> getCasesAccessibles(Pion pion){
         int pl = pion.getPosition().getL();
         int pc = pion.getPosition().getC();
+        boolean estRoi = pion.estRoi();
 
         List<Point> accessibles = new ArrayList<>();
         if(pl!=8) {
             for (int i = pl + 1; i < 9; i++) {
-                if (estVide(i, pc))
-                    accessibles.add(new Point(i, pc));
-                else break;
+                if (testTrone(pion, i, pc)) {
+                    if (estVide(i, pc))
+                        accessibles.add(new Point(i, pc));
+                    else break;
+                }
             }
         }
         if(pl!=0) {
             for (int i = pl - 1; i >= 0; i--) {
-                if (estVide(i, pc))
-                    accessibles.add(new Point(i, pc));
-                else break;
+                if (testTrone(pion, i, pc)) {
+                    if (estVide(i, pc))
+                        accessibles.add(new Point(i, pc));
+                    else break;
+                }
             }
         }
         if(pc!=8) {
             for (int i = pc + 1; i < 9; i++) {
-                if (estVide(pl, i))
-                    accessibles.add(new Point(pl, i));
-                else break;
+                if (testTrone(pion, pl, i)) {
+                    if (estVide(pl, i))
+                        accessibles.add(new Point(pl, i));
+                    else break;
+                }
             }
         }
         if(pc!=0) {
             for (int i = pc - 1; i >=0; i--) {
-                if (estVide(pl, i))
-                    accessibles.add(new Point(pl, i));
-                else break;
+                if (testTrone(pion, pl, i)) {
+                    if (estVide(pl, i))
+                        accessibles.add(new Point(pl, i));
+                    else break;
+                }
             }
         }
         return accessibles;
+    }
+
+    private boolean testTrone(Pion pion, int l, int c) {
+        if (pion.estRoi()) return true;
+        return l != 4 || c != 4;
     }
 
     public void deplacerPion(Pion pion, int l, int c) {
@@ -173,7 +185,7 @@ public class Plateau extends Observable {
 
     }
 
-    public Pion capturerPion(Point point, Pion pion) {
+    public Pion capturerPion(Point point) {
         Pion p = getPion(point);
         if(p.getType() == TypePion.ROI) return null;
         pions.remove(p);
