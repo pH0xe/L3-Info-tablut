@@ -61,7 +61,6 @@ public class InterfaceGraphique implements Runnable, Observer {
 
         initDialogOption();
         initDialogFin();
-        BestScoresUtils.instance().addVictory("po");
         frame.add(panelAccueil);
         frame.setVisible(true);
     }
