@@ -21,7 +21,8 @@ public class Constants {
 
     public static final Color BOARD_STROKE = new Color(70, 46, 37);
     public static final Color HALO_PION = Color.GREEN;
-    public static final Color HALO_CASE_ACC = Color.BLACK;
+    public static final Color BOARD_PREVIEW = new Color(101, 65, 55);
+    public static final Color HALO_CASE_ACC = BOARD_PREVIEW;
 
     public static final Color JEU_LABEL_BG = new Color(10, 14, 26);
     public static final Color JEU_LABEL_FG = new Color(226, 226, 226);

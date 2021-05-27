@@ -54,7 +54,7 @@ public class JeuTuto {
 
     public Pion getPionCourant(Point point){
         Plateau pt = jeu.getPlateau();
-        return pt.trouverPion(point, pt.getTypePion(point).getCouleur());
+        return pt.getPion(point);
     }
 
     public void traiteDeplacement(int l, int c, int destL, int destC){
@@ -88,11 +88,21 @@ public class JeuTuto {
         if(!(getEtat() == 10))
             getJeu().joueurSuivant();
         switch (getEtat()){
-            case 3 -> setHighlightCase(4,1);
-            case 4 -> setHighlightCase(7,0);
-            case 8 -> setHighlightCase(4,7);
-            case 10 -> setHighlightCase(2,5);
-            case 13 -> setHighlightCase(-1,-1);
+            case 3:
+                setHighlightCase(4,1);
+                break;
+            case 4:
+                setHighlightCase(7,0);
+                break;
+            case 8:
+                setHighlightCase(4,7);
+                break;
+            case 10:
+                setHighlightCase(2,5);
+                break;
+            case 13:
+                setHighlightCase(-1,-1);
+                break;
         }
         setEtatDeplace(0);
             setEtat(getEtat()+1);

@@ -12,6 +12,8 @@ public class PanelJeu extends JPanel {
 
     private final CollecteurEvenements controleur;
     private Jeu jeu;
+    private PanelPlateau panelPlateau;
+    private PanelInfoJeu panelInfoJeu;
 
     public PanelJeu(CollecteurEvenements c, Jeu jeu) {
         controleur = c;
@@ -24,12 +26,23 @@ public class PanelJeu extends JPanel {
                 .setWeighty(1)
                 .fillBoth();
 
-        JPanel panelPlateau = new PanelPlateau(controleur, jeu);
+        panelPlateau = new PanelPlateau(controleur, jeu);
         add(panelPlateau, gbc.toConstraints());
 
         gbc.setGridx(1).setWeightx(0.1);
-        JPanel panelInfoJeu = new PanelInfoJeu(controleur, jeu);
+        panelInfoJeu = new PanelInfoJeu(controleur, jeu);
         add(panelInfoJeu, gbc.toConstraints());
     }
 
+    public void update() {
+        panelInfoJeu.update();
+        panelPlateau.repaint();
+        repaint();
+    }
+
+    public void addJeu(Jeu jeu) {
+        this.jeu = jeu;
+        panelPlateau.addJeu(jeu);
+        panelInfoJeu.addJeu(jeu);
+    }
 }

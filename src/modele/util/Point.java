@@ -1,31 +1,37 @@
 package modele.util;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Point {
+public class Point implements Serializable {
     private int l;
     private int c;
 
 
-    public Point(int l, int c){
+    public Point(int l, int c) {
         this.l = l;
         this.c = c;
     }
 
-    public int getL(){
+    public Point(Point point) {
+        this.l = point.getL();
+        this.c = point.getC();
+    }
+
+    public int getL() {
         return l;
     }
 
-    public int getC(){
+    public int getC() {
         return c;
     }
 
-    public void setL(int l){
+    public void setL(int l) {
         this.l = l;
     }
 
-    public void setC(int c){
-        this.c = c ;
+    public void setC(int c) {
+        this.c = c;
     }
 
     @Override

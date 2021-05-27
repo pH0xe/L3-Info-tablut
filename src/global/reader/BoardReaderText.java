@@ -28,7 +28,6 @@ public class BoardReaderText extends BoardReader{
                         insertBlancs(new Pion(TypePion.BLANC, new Point(l,c)));
                         break;
                     case 'R':
-                        insertBlancs(new Pion(TypePion.ROI, new Point(l,c)));
                         setRoi(new Pion(TypePion.ROI, new Point(l,c)));
                         break;
                     default:

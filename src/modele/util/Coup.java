@@ -2,17 +2,55 @@ package modele.util;
 
 import modele.pion.Pion;
 
-public class Coup {
-    private Pion pion;
-    private Point caseADeplacer;
+import java.util.ArrayList;
+import java.util.List;
 
-    public Coup(Pion p, Point dest){
+import java.io.Serializable;
+
+public class Coup implements Serializable {
+    private Pion pion;
+    private Point destination;
+    private List<Pion> captures;
+    private Point origine;
+
+    public Coup(Pion p, Point dest, int lOrigine, int cOrigine){
         pion = p;
-        caseADeplacer = dest;
+        destination = dest;
+        captures = new ArrayList<>();
+        origine = new Point(lOrigine, cOrigine);
+    }
+
+    public Coup(Coup c){
+        this.pion = new Pion(c.getPion());
+        this.destination = new Point(c.getDestination());
+        this.captures = new ArrayList<>();
+        for (Pion p : c.getCaptures()){
+            captures.add(new Pion(p));
+        }
+        this.origine = new Point(c.getOrigine());
+    }
+
+    public void setCaptures(List<Pion> captures) {
+        this.captures = captures;
+    }
+
+    public List<Pion> getCaptures() {
+        return captures;
     }
 
     public Pion getPion() {return pion;}
 
-    public Point getDestination() {return caseADeplacer;}
+    public Point getDestination() {return destination;}
 
+    public Point getOrigine() {
+        return origine;
+    }
+
+    @Override
+    public String toString() {
+        return "Coup{" +
+                "pion=" + pion +
+                ", caseADeplacer=" + destination +
+                '}';
+    }
 }

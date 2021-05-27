@@ -16,8 +16,8 @@ public class Labels {
     public static final String OPTIONS_JOUNO = "Joueur noir :";
     public static final String OPTIONS_NOJBL = "Nom joueur blanc :";
     public static final String OPTIONS_NOJNO = "Nom joueur noir :";
-    public static final String OPTIONS_FIEBL = "Joueur noir";
-    public static final String OPTIONS_FIENL = "Joueur blanc";
+    public static final String OPTIONS_FIEBL = "Joueur blanc";
+    public static final String OPTIONS_FIENO = "Joueur noir";
 
     public static final String BTN_RETOUR = "Retour";
     public static final String JEU_ACCUEIL = "Accueil";
@@ -25,4 +25,5 @@ public class Labels {
     public static final String JEU_ANNULER = "Annuler";
     public static final String JEU_REFAIRE = "Refaire";
     public static final String BTN_FERMER = "Fermer";
+    public static final String BTN_REJOUER = "Rejouer";
 }

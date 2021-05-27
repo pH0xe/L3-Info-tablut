@@ -20,7 +20,7 @@ public class Configuration {
     public static BufferedOutputStream creeFichierSave() {
         try {
             String filename = DateUtils.getFileName();
-            FileOutputStream out = new FileOutputStream("saves" + File.separator + filename + ".dat");
+            FileOutputStream out = new FileOutputStream("data" + File.separator +"saves" + File.separator + filename + ".dat");
             return new BufferedOutputStream(out);
         } catch (Exception ignored) {}
 
@@ -30,7 +30,7 @@ public class Configuration {
     public static List<String> listeFichierSave() {
         List<String> res = new ArrayList<>();
         try {
-            File dir = new File("saves");
+            File dir = new File("data" + File.separator +"saves");
             for (File file : Objects.requireNonNull(dir.listFiles())) {
                 if(file.isFile() && file.getName().charAt(0) != '.')
                     res.add(file.getName());
@@ -63,7 +63,7 @@ public class Configuration {
         LocalDateTime now = LocalDateTime.now();
         String logName = dtf.format(now)+".log";
         try {
-            FileHandler fh = new FileHandler(getConfig("logDir") + "/" + logName);
+            FileHandler fh = new FileHandler("data/" + getConfig("logDir") + "/" + logName);
             fh.setFormatter(new LogFormatter());
             logger.setUseParentHandlers(false);
             logger.addHandler(fh);

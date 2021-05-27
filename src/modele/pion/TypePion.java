@@ -1,4 +1,3 @@
-
 package modele.pion;
 
 import modele.Joueur.Couleur;

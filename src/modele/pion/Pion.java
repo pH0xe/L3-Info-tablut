@@ -1,11 +1,13 @@
 package modele.pion;
 
 import modele.Joueur.Couleur;
+import modele.Joueur.Joueur;
 import modele.util.Point;
 
+import java.io.*;
 import java.util.Objects;
 
-public class Pion {
+public class Pion implements Serializable{
     private TypePion type;
     private EtatPion etat;
     private Point position;
@@ -16,11 +18,19 @@ public class Pion {
         this.etat = EtatPion.ACTIF;
     }
 
+    public Pion(Pion pion) {
+        this.type = pion.getType();
+        this.etat = pion.getEtat();
+        this.position = new Point(pion.getPosition());
+    }
+
     public boolean estPris(){
         return etat == EtatPion.INACTIF;
     }
 
-    public boolean estRoi() { return type == TypePion.ROI; }
+    public boolean estRoi() {
+        return type == TypePion.ROI;
+    }
 
     public void changerEtat(EtatPion etat){
         this.etat = etat;
@@ -33,6 +43,7 @@ public class Pion {
             return true;
         }
         catch(Exception e){
+            System.out.println("Exception: " + e);
             return false;
         }
 
@@ -53,6 +64,15 @@ public class Pion {
     public Couleur getCouleur() {
         return type.getCouleur();
     }
+
+    public boolean estBlanc() {
+        return type.getCouleur() == Couleur.BLANC;
+    }
+
+    public boolean estNoir() {
+        return type.getCouleur() == Couleur.NOIR;
+    }
+
 
     @Override
     public String toString() {

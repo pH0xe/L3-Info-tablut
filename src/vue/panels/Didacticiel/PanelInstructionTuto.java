@@ -55,11 +55,21 @@ public class PanelInstructionTuto extends JPanel {
                 instruction.setText(jeu.getJeu().joueurCourant().getNom() + " : Cliques sur la case indiquée pour deplacer le pion.");
             else{
                 switch (jeu.getEtat()){
-                    case 3 -> instruction.setText(jeu.getJeu().joueurCourant().getNom() +" a capturé un pion " + jeu.getJeu().getJoueurSuivant().getCouleur().toString().toLowerCase() + ". Un pion est eliminé s'il est entouré par 2 pions adversaires sur la ligne ou la colonne et plusieurs elimination sont possible.");
-                    case 4 -> instruction.setText(jeu.getJeu().joueurCourant().getNom() +" a capturer un pion " + jeu.getJeu().getJoueurSuivant().getCouleur().toString().toLowerCase() + ". Un pion est aussi eliminé quand il se retrouve entre un pion adversaire et la case centrale ou la trone.");
-                    case 8 -> instruction.setText(jeu.getJeu().joueurCourant().getNom() + " a gagné. Le roi est entouré par 4 pions noirs et il est capturé.");
-                    case 10 -> instruction.setText(jeu.getJeu().joueurCourant().getNom() + " a gagné. Comme les poins, quand le roi est entouré par 3 pions noirs et la case centrale ou la trone, le roi est capturé.");
-                    case 13 -> instruction.setText(jeu.getJeu().joueurCourant().getNom() + " a gagné. Le roi a réussit à s'échapper en se mettant sur une des cases de bord. \nTu as terminé le tutoriel. Bonne chance pour la prochaine partie. Cliques pour recommencer.");
+                    case 3:
+                        instruction.setText(jeu.getJeu().joueurCourant().getNom() +" a capturé un pion " + jeu.getJeu().getJoueurSuivant().getCouleur().toString().toLowerCase() + ". Un pion est eliminé s'il est entouré par 2 pions adversaires sur la ligne ou la colonne et plusieurs elimination sont possible.");
+                        break;
+                    case 4:
+                        instruction.setText(jeu.getJeu().joueurCourant().getNom() +" a capturer un pion " + jeu.getJeu().getJoueurSuivant().getCouleur().toString().toLowerCase() + ". Un pion est aussi eliminé quand il se retrouve entre un pion adversaire et la case centrale ou la trone.");
+                        break;
+                    case 8:
+                        instruction.setText(jeu.getJeu().joueurCourant().getNom() + " a gagné. Le roi est entouré par 4 pions noirs et il est capturé.");
+                        break;
+                    case 10:
+                        instruction.setText(jeu.getJeu().joueurCourant().getNom() + " a gagné. Comme les poins, quand le roi est entouré par 3 pions noirs et la case centrale ou la trone, le roi est capturé.");
+                        break;
+                    case 13:
+                        instruction.setText(jeu.getJeu().joueurCourant().getNom() + " a gagné. Le roi a réussit à s'échapper en se mettant sur une des cases de bord. \nTu as terminé le tutoriel. Bonne chance pour la prochaine partie. Cliques pour recommencer.");
+                        break;
                 }
             }
         }
