@@ -34,12 +34,20 @@ public class Controleur implements CollecteurEvenements {
     ////////////////////////////////////////////////
     // Fonctionnement tour de jeu
     ////////////////////////////////////////////////
+    /**
+     * fixe un jeu a une interface puis lance les IAs
+     */
     @Override
     public void demarrerJeu() {
         interfaceGraphique.fixerJeu(jeu);
         lancerTimerIA();
     }
 
+    /**
+     * Vérifie l'état du jeu, si la partie est en cours selectionne un pion ou joue un coup.
+     * Si joue un coup vérifie si la partie est terminé.
+     * @param point les cordonnées ligne et colonne de l'endroit cliqué
+     */
     @Override
     public void cliquePlateau(Point point) {
         if (jeu.estFini()) return;
@@ -51,22 +59,40 @@ public class Controleur implements CollecteurEvenements {
         jeu.verifierPion(point);
     }
 
+    /**
+     * Joue un coup pour l'IA 1 (Joueur Blanc)
+     */
     @Override
     public void joueIA1() {
-        tIAB.stop();
-        Coup c = iaBlanc.iaJoue(jeu);
-        jeu.joueCoup(c);
-        verifFin();
+        joueIA(iaBlanc);
     }
 
+    /**
+     * Joue un coup pour l'IA 2 (Joueur Noir)
+     */
     @Override
     public void joueIA2() {
-        tIAN.stop();
-        Coup c = iaNoir.iaJoue(jeu);
+        joueIA(iaNoir);
+    }
+
+    /**
+     * Arrete les timer des IA.
+     * Récupére le coup que l'ia passé en parametre doit jouer.
+     * Joue le coup.
+     * Vérifie la fin de la partie.
+     * @param ia l'IA devant jouer un coup
+     */
+    private void joueIA(IA ia) {
+        stoperIA();
+        Coup c = ia.iaJoue(jeu);
         jeu.joueCoup(c);
         verifFin();
     }
 
+    /**
+     * Stop les IAs.
+     * Demande au jeu de refaire le coup suivant. Puis relance la bonne IA.
+     */
     @Override
     public void refaireCoup() {
         stoperIA();
@@ -74,6 +100,9 @@ public class Controleur implements CollecteurEvenements {
         lancerTimerIA();
     }
 
+    /**
+     * Stop les IAs. Demande au jeu d'annuler le dernier coup. Puis relance la bonne IA.
+     */
     @Override
     public void annulerCoup() {
         stoperIA();
@@ -81,6 +110,9 @@ public class Controleur implements CollecteurEvenements {
         lancerTimerIA();
     }
 
+    /**
+     * Stop les IAs. Ferme la dialogue d'abandon, ouvre la dialogue de gagnant puis enregistre la victoire de l'adversaire. Indique au jeu que la partie est terminer pour bloquer les cliques plateau
+     */
     @Override
     public void abandonnerPartie() {
         stoperIA();
@@ -90,6 +122,9 @@ public class Controleur implements CollecteurEvenements {
         jeu.setEstFini(true);
     }
 
+    /**
+     * Une fois la partie terminé (sur la dialogue de fin). Permet de rejouer une partie sans repasser par l'accueil. Ferme la dialogue de fin puis créé un nouveau jeu avec les meme joueurs puis demarre la partie.
+     */
     @Override
     public void rejouer() {
         interfaceGraphique.fermerDialogFin();
@@ -97,6 +132,9 @@ public class Controleur implements CollecteurEvenements {
         demarrerJeu();
     }
 
+    /**
+     * Après un coup joué vérifie si le roi est sortie ou capturé. Si c'est le cas ouvre la dialogue de fin et enregistre la victoire. Sinon la partie continue, on relance les Timer IA si nécessaire.
+     */
     public void verifFin(){
         if (jeu.roiSorti()) {
             interfaceGraphique.ouvrirDialogFin(jeu.getJoueurBlanc());
@@ -112,11 +150,22 @@ public class Controleur implements CollecteurEvenements {
     ////////////////////////////////////////////////
     // Options
     ////////////////////////////////////////////////
+
+    /**
+     * Ouvre le menu d'option de l'accueil
+     */
     @Override
     public void ouvrirOption() {
         interfaceGraphique.ouvrirOption();
     }
 
+    /**
+     * Ferme le menu d'option et reviens a l'accueil
+     * @param nomJoueurBlanc Le nom du joueurs Blanc si il s'agit d'un humain ou la difficulté de l'IA si il s'agit d'une IA
+     * @param nomJoueurNoir Le nom du joueur Noir si il s'agit d'un humain ou la difficulté de l'IA si il s'agit d'une IA
+     * @param typeJB Le Type de IA Blanche (Humain, Facile, Difficile ou Moyenne)
+     * @param typeJN Le Type de IA Noir (Humain, Facile, Difficile ou Moyenne)
+     */
     @Override
     public void fermerOption(String nomJoueurBlanc, String nomJoueurNoir, TypeIA typeJB, TypeIA typeJN) {
         joueurBlanc.setNom(nomJoueurBlanc);
@@ -129,12 +178,21 @@ public class Controleur implements CollecteurEvenements {
     ////////////////////////////////////////////////
     // Options en jeu
     ////////////////////////////////////////////////
+
+    /**
+     * Met le jeu en Pause, Bloque les IA et empeche d'interragir avec le jeu. Ouvre la dialogue d'option en jeu (Accueil, abandon ou changement d'IA)
+     */
     @Override
     public void ouvrirOptionJeu() {
         stoperIA();
         interfaceGraphique.ouvrirDialogOption();
     }
 
+    /**
+     * Ferme la dialogue d'option, relance les IA, Met a jours la difficulté des IA et réautorise l'interraction avec le plateau.
+     * @param typeIAB Le nouveau type de L'IA Blanche
+     * @param typeIAN Le nouveau type de l'IA Noir
+     */
     @Override
     public void fermerOptionJeu(TypeIA typeIAB, TypeIA typeIAN) {
         iaBlanc = definirIa(typeIAB);
@@ -146,11 +204,19 @@ public class Controleur implements CollecteurEvenements {
     ////////////////////////////////////////////////
     // Dialogue de sauvegarde
     ////////////////////////////////////////////////
+
+    /**
+     * Affiche une dialogue pour demander si la partie doit etre enregistré avant une action sensible (Fermeture de l'app ou retour a l'accueil)
+     * @param afterAction Action devant etre fait après la sauvegarde (ou non) - retour a l'accueil ou femeture de l'application
+     */
     @Override
     public void afficherDialogSauv(int afterAction) {
         interfaceGraphique.afficherDialogSauvegarde(afterAction);
     }
 
+    /**
+     * Sauvegarde le jeu dans le répertoire data/saves dans un fichier binaire .dat a la date et heure actuel. puis retour à l'accueil.
+     */
     @Override
     public void sauvegarderAccueil() {
         BoardWriterBinary bw = new BoardWriterBinary();
@@ -160,6 +226,9 @@ public class Controleur implements CollecteurEvenements {
         retourAccueil();
     }
 
+    /**
+     * Sauvegarde le jeu dans le répertoire data/saves dans un fichier binaire .dat a la date et heure actuel. puis fermeture de l'app.
+     */
     @Override
     public void sauvegarderQuitter() {
         BoardWriterBinary bw = new BoardWriterBinary();
@@ -172,16 +241,27 @@ public class Controleur implements CollecteurEvenements {
     ////////////////////////////////////////////////
     // Sauvegardes
     ////////////////////////////////////////////////
+
+    /**
+     * Ouvre la fenetre pour lister les sauvegardes
+     */
     @Override
     public void ouvrirSauvegarde() {
         interfaceGraphique.ouvrirSauvegarde();
     }
 
+    /**
+     * Ferme la fenetre ou sont listé les sauvegardes et retourne à l'accueil
+     */
     @Override
     public void quitterSauvegarde() {
         interfaceGraphique.quitterSauvegarde();
     }
 
+    /**
+     * Supprime la sauvegarde data/saves/&lt;filename&gt;.dat
+     * @param filename le nom du fichier a supprimer
+     */
     @Override
     public void supprimerSauvegarde(String filename) {
         File file = new File("data" + File.separator + "saves" + File.separator + filename);
@@ -189,6 +269,10 @@ public class Controleur implements CollecteurEvenements {
             interfaceGraphique.update();
     }
 
+    /**
+     * Charge la sauvegarde data/saves/&lt;filename&gt;.dat pour la jouer. Récupére les données dans le fichier puis lance un jeu avec ces données.
+     * @param filename le nom du fichier a charger
+     */
     @Override
     public void chargerSauvegarde(String filename) {
         BoardReaderBinary br = new BoardReaderBinary("data" + File.separator + "saves" + File.separator + filename);
@@ -202,11 +286,18 @@ public class Controleur implements CollecteurEvenements {
     ////////////////////////////////////////////////
     // Scores
     ////////////////////////////////////////////////
+
+    /**
+     * Ouvre la fenetre des scores. Liste les meilleurs joueurs (Le plus de victoire).
+     */
     @Override
     public void ouvrirMeilleursJoueurs() {
         interfaceGraphique.ouvrirMeilleursJoueurs();
     }
 
+    /**
+     * Ferme la fenetre de score et retourne a l'accueil
+     */
     @Override
     public void fermerMeilleursJoueurs() {
         interfaceGraphique.fermerMeilleursJoueurs();
@@ -215,6 +306,11 @@ public class Controleur implements CollecteurEvenements {
     ////////////////////////////////////////////////
     // Utilitaire
     ////////////////////////////////////////////////
+
+    /**
+     * Stop les IAs, ferme les différentes dialogue, puis retourne a l'accueil. <br>
+     * Créé un nouveau jeu
+     */
     @Override
     public void retourAccueil() {
         stoperIA();
@@ -224,11 +320,18 @@ public class Controleur implements CollecteurEvenements {
         jeu = new Jeu(joueurBlanc, joueurNoir);
     }
 
+    /**
+     * Arrete l'application
+     */
     @Override
     public void fermerApp() {
         System.exit(0);
     }
 
+    /**
+     * Fixe une interface graphique a un controleur
+     * @param interfaceGraphique l'interface graphique sur lequel le controleur doit travailler
+     */
     @Override
     public void fixerInterface(InterfaceGraphique interfaceGraphique) {
         this.interfaceGraphique = interfaceGraphique;
@@ -237,6 +340,13 @@ public class Controleur implements CollecteurEvenements {
     ////////////////////////////////////////////////
     // IA
     ////////////////////////////////////////////////
+
+    /**
+     * Créé une IA en fonction du type passé en parametre
+     * @param type Le type/ difficulté de l'IA a créé.
+     * @return une nouvelle IA (peut etre <code>null</code> si il s'agit d'un humain)
+     * @nu
+     */
     public IA definirIa(TypeIA type){
         switch (type){
             case FACILE:
@@ -250,6 +360,9 @@ public class Controleur implements CollecteurEvenements {
         }
     }
 
+    /**
+     * Vérifie si il s'agit du tour d'une IA. Si c'est le cas lance le Timer concerné.
+     */
     private void lancerTimerIA() {
         if(jeu.joueurCourant().getCouleur()==Couleur.BLANC && iaBlanc != null)
             tIAB.start();
@@ -257,11 +370,18 @@ public class Controleur implements CollecteurEvenements {
             tIAN.start();
     }
 
+    /**
+     * Stop le timer des 2 IA
+     */
     private void stoperIA() {
         tIAB.stop();
         tIAN.stop();
     }
 
+    /**
+     * Indique si Il s'agit du tour d'une IA
+     * @return <code>true</code> si c'est le tour d'une IA, <code>false</code> sinon
+     */
     @Override
     public boolean estTourIA() {
         return (jeu.joueurCourant().getCouleur()==Couleur.BLANC && iaBlanc != null) || (jeu.joueurCourant().getCouleur()==Couleur.NOIR && iaNoir != null);
