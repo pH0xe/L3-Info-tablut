@@ -2,10 +2,7 @@ package vue.panels.Didacticiel;
 
 import controleur.CollecteurEvenements;
 import modele.JeuTuto;
-import vue.mouseAdapters.DidacticielAdapteur;
-import vue.panels.Didacticiel.PanelInfoTuto;
-import vue.panels.Didacticiel.PanelInstructionTuto;
-import vue.panels.Didacticiel.PanelPlateauTuto;
+import vue.adapters.mouseAdapters.DidacticielAdapteur;
 import vue.utils.Constants;
 import vue.utils.ConstraintBuilder;
 

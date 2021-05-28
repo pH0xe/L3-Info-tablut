@@ -8,18 +8,16 @@ import vue.InterfaceGraphique;
 import javax.swing.*;
 
 public interface CollecteurEvenements {
-    void clicSourisTuto(int l, int c);
-    void animationChangerEtat();
-    void clicRefaireTuto();
-    void loadPlateauTuto(String filename);
-    void stopTimer();
     void fixerInterface(InterfaceGraphique it);
     void fixerJeuTuto(JeuTuto jeu);
     void fixerTimer(Timer tm);
     void demarrerJeu();
+    void cliquePlateau(Point point);
+    void clicSourisTuto(int l, int c);
+    void clicRefaireTuto();
+
     void ouvrirOption();
     void fermerOption(String nomJoueurBlanc, String nomJoueurNoir, TypeIA typeJB, TypeIA typeJN);
-    void cliquePlateau(Point point);
 
     void joueIA1();
     void joueIA2();
@@ -43,7 +41,17 @@ public interface CollecteurEvenements {
     void chargerSauvegarde(String filename);
     void rejouer();
     boolean estTourIA();
-    void ouvrirMeilleursJoueurs();
 
+    void ouvrirMeilleursJoueurs();
     void fermerMeilleursJoueurs();
+
+    void animationChangerEtat();
+
+    void clicAnnulerTuto();
+
+    void loadPlateauTuto(String filename);
+    void stopTimer();
+    void ouvrirDidacticiel();
+    void fermerDidacticiel();
+    void retourAccueilTuto();
 }

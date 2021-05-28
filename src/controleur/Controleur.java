@@ -12,6 +12,7 @@ import global.reader.BoardReaderBinary;
 import global.writer.BoardWriterBinary;
 import modele.Joueur.Couleur;
 import modele.Joueur.Joueur;
+import modele.Plateau;
 import modele.util.Coup;
 import modele.util.Point;
 import vue.InterfaceGraphique;
@@ -98,8 +99,10 @@ public class Controleur implements CollecteurEvenements {
         interfaceGraphique.update();
         if(jt.getEtat() == 14)
             clicRefaireTuto();
-        if(jt.getEtatDeplace() == 2 && !(jt.getUnanimateEtat().contains(jt.getEtat())))
-                timer.start();
+        if(jt.getEtatDeplace() == 2 && !(jt.getUnanimateEtat().contains(jt.getEtat()))){
+//            jt.addClickPrecedent(new Point(l,c));
+            timer.start();
+        }
     }
 
     @Override
@@ -146,13 +149,20 @@ public class Controleur implements CollecteurEvenements {
     }
 
     @Override
+    public void clicAnnulerTuto() {
+        jt.annulerCoupTuto();
+        interfaceGraphique.update();
+    }
+
+    @Override
     public void loadPlateauTuto(String filename) {
         InputStream in = Configuration.charger("tutorials" + File.separator + filename);
         BoardReaderText br = new BoardReaderText(in);
         br.lirePlateau();
-        //jt.getJeu().getPlateau().setPlateau(br);
+        jt.getJeu().addPlateau(new Plateau(br));
         interfaceGraphique.update();
         Configuration.instance().logger().info("Loaded board for tutorial : " + filename);
+        System.out.println("Loaded board for tutorial : " + filename);
     }
 
     @Override
@@ -297,6 +307,11 @@ public class Controleur implements CollecteurEvenements {
     }
 
     @Override
+    public void retourAccueilTuto(){
+        interfaceGraphique.fermerDidacticiel();
+    }
+
+    @Override
     public void sauvegarderAccueil() {
         BoardWriterBinary bw = new BoardWriterBinary();
         try {
@@ -371,5 +386,15 @@ public class Controleur implements CollecteurEvenements {
     @Override
     public void fermerMeilleursJoueurs() {
         interfaceGraphique.fermerMeilleursJoueurs();
+    }
+
+    @Override
+    public void ouvrirDidacticiel() {
+        interfaceGraphique.ouvrirDidacticiel();
+    }
+
+    @Override
+    public void fermerDidacticiel() {
+        interfaceGraphique.fermerDidacticiel();
     }
 }

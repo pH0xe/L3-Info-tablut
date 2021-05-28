@@ -1,4 +1,4 @@
-package vue.mouseAdapters;
+package vue.adapters.mouseAdapters;
 
 import controleur.CollecteurEvenements;
 import vue.panels.Didacticiel.PanelPlateauTuto;

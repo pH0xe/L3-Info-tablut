@@ -51,6 +51,8 @@ public class Jeu extends Observable {
         pt = new Plateau(br);
     }
 
+    public void addPlateau(Plateau plateau){ this.pt = plateau; }
+
     public Joueur joueurCourant(){
         return joueurCourant;
     }
@@ -189,6 +191,29 @@ public class Jeu extends Observable {
         joueurSuivant();
         coupsSuivant.push(c);
         update();
+    }
+
+    public List<Point> annulerCoupTuto() {
+        Coup c = coupsPrecedent.pop();
+        for (Pion pion : c.getCaptures()) {
+            if (pion == null) continue;
+            pion.changerEtat(EtatPion.ACTIF);
+            pt.getPions().add(pion);
+        }
+
+        Point dest = c.getOrigine();
+
+        Pion p = pt.getPion(c.getDestination());
+        pt.deplacerPion(p, dest.getL(), dest.getC());
+        joueurSuivant();
+        coupsSuivant.push(c);
+        update();
+
+        List<Point> listParamTuto = new ArrayList<>();
+        listParamTuto.add(c.getOrigine());
+        listParamTuto.add(c.getDestination());
+
+        return listParamTuto;
     }
 
     public void refaireCoup() {

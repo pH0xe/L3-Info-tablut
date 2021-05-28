@@ -37,12 +37,13 @@ public class InterfaceGraphique implements Runnable, Observer {
     private final JDialog dialogOptionJeu, dialogFinJeu;
     private final DialogFinJeu panelDialogFinJeu;
     private final DialogSaveQuit dialogSaveQuit;
-    private final PanelMeilleursJoueurs panelMeilleurs;
+    private final PanelMeilleursJoueurs panelMeilleurs = null;
     private PanelDidacticiel panelDidacticiel;
 
     public InterfaceGraphique(Controleur controleur) {
         this.controleur = controleur;
         this.controleur.fixerInterface(this);
+        jeuTuto = new JeuTuto(new Jeu(new Joueur("Jouer1", Couleur.BLANC), new Joueur("Jouer2", Couleur.NOIR)), 0);
 
         dialogOptionJeu = new JDialog();
         dialogFinJeu = new JDialog();
@@ -52,13 +53,11 @@ public class InterfaceGraphique implements Runnable, Observer {
         panelSauvegarde = new PanelSauvegarde(controleur);
         dialogSaveQuit = new DialogSaveQuit(controleur);
         panelDialogFinJeu = new DialogFinJeu(controleur);
-        panelMeilleurs = new PanelMeilleursJoueurs(controleur);
-
+//        panelMeilleurs = new PanelMeilleursJoueurs(controleur);
         panelDidacticiel = new PanelDidacticiel(controleur, jeuTuto);
+
         Timer timer = new Timer(500, new AnimationChangerEtat(controleur));
         controleur.fixerTimer(timer);
-
-        jeuTuto = new JeuTuto(new Jeu(new Joueur("Jouer1", Couleur.BLANC), new Joueur("Jouer2", Couleur.NOIR)), 0);
         controleur.fixerInterface(this);
         controleur.fixerJeuTuto(jeuTuto);
     }
@@ -183,8 +182,10 @@ public class InterfaceGraphique implements Runnable, Observer {
             frame.remove(panelAccueil);
         if (panelSauvegarde.isDisplayable())
             frame.remove(panelSauvegarde);
-        if (panelMeilleurs.isDisplayable())
-            frame.remove(panelMeilleurs);
+        if (panelDidacticiel.isDisplayable())
+            frame.remove(panelDidacticiel);
+//        if (panelMeilleurs.isDisplayable())
+//            frame.remove(panelMeilleurs);
     }
 
     private void reloadFrame() {
@@ -201,6 +202,18 @@ public class InterfaceGraphique implements Runnable, Observer {
     }
 
     public void fermerMeilleursJoueurs() {
+        fermerPanels();
+        frame.add(panelAccueil);
+        reloadFrame();
+    }
+
+    public void ouvrirDidacticiel(){
+        fermerPanels();
+        frame.add(panelDidacticiel);
+        reloadFrame();
+    }
+
+    public void fermerDidacticiel(){
         fermerPanels();
         frame.add(panelAccueil);
         reloadFrame();

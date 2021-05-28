@@ -11,7 +11,6 @@ import vue.utils.Labels;
 
 import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.*;

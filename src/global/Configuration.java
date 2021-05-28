@@ -27,6 +27,15 @@ public class Configuration {
         return null;
     }
 
+    public static BufferedOutputStream creerBoardSave(String filename){
+        try {
+            FileOutputStream out = new FileOutputStream("data" + File.separator + "tutorial_saves" + File.separator + filename + ".dat");
+            return new BufferedOutputStream(out);
+        } catch (Exception ignored) {}
+
+        return null;
+    }
+
     public static List<String> listeFichierSave() {
         List<String> res = new ArrayList<>();
         try {

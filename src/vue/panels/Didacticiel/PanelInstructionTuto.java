@@ -44,8 +44,6 @@ public class PanelInstructionTuto extends JPanel {
     }
 
     public void update() {
-                System.out.println("Etat : " + jeu.getEtat() + " EtatDeplacer : " + jeu.getEtatDeplace() + " -> instruction");
-
         if(jeu.getEtat() == 0)
             instruction.setText("Bienvenue dans le tutoriel. Les " + jeu.getJeu().joueurCourant().getCouleur().toString().toLowerCase() +"s commencent. Cliquer pour demarrer.");
         else {

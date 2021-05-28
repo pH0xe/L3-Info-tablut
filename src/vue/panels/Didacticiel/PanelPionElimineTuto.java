@@ -44,6 +44,11 @@ public class PanelPionElimineTuto extends JPanel {
         repaint();
     }
 
+    public void setPionN(int pionN) {
+        this.pionN = pionN;
+        repaint();
+    }
+
     public void incrementPionB(){
         pionB += 1;
         repaint();
@@ -54,8 +59,4 @@ public class PanelPionElimineTuto extends JPanel {
         repaint();
     }
 
-    public void setPionN(int pionN) {
-        this.pionN = pionN;
-        repaint();
-    }
 }

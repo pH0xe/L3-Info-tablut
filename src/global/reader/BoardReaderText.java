@@ -1,5 +1,6 @@
 package global.reader;
 
+import modele.Joueur.Joueur;
 import modele.pion.Pion;
 import modele.pion.TypePion;
 import modele.util.Point;

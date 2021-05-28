@@ -2,6 +2,7 @@ package modele;
 
 import global.Configuration;
 import global.reader.BoardReader;
+import global.reader.BoardReaderBinary;
 import global.reader.BoardReaderText;
 import modele.Joueur.Couleur;
 import modele.pion.EtatPion;
@@ -13,6 +14,7 @@ import structure.Observable;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.Objects;
 
@@ -37,10 +39,10 @@ public class Plateau extends Observable {
     private void initReaderPions(BoardReader reader) {
         this.pions.addAll(reader.getBlancs());
         this.pions.addAll(reader.getNoirs());
-
         this.roi = reader.getRoi();
         this.pions.add(this.roi);
     }
+
 
     public void initDefaultPions() {
         String board = Configuration.instance().getConfig("defaultBoard");
@@ -139,11 +141,11 @@ public class Plateau extends Observable {
     }
 
     public List<Pion> getBlancs() {
-        return pions.stream().filter(Pion::estBlanc).filter(pion -> !pion.estPris()).collect(Collectors.toList());
+        return pions.stream().filter(Pion::estBlanc).collect(Collectors.toList());
     }
 
     public List<Pion> getNoirs() {
-        return pions.stream().filter(Pion::estNoir).filter(pion -> !pion.estPris()).collect(Collectors.toList());
+        return pions.stream().filter(Pion::estNoir).collect(Collectors.toList());
     }
 
     public Pion getRoi() {
@@ -151,11 +153,11 @@ public class Plateau extends Observable {
     }
 
     public int getBlancsElimine() {
-        return (int) getBlancs().stream().filter(Pion::estPris).count();
+        return 9 - getBlancs().size();
     }
 
     public int getNoirsElimine() {
-        return (int) getNoirs().stream().filter(Pion::estPris).count();
+        return 16 - getNoirs().size();
     }
 
     public Pion getPion(Point point) {

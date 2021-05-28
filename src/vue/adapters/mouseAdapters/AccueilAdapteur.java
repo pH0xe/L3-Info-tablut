@@ -24,7 +24,8 @@ public class AccueilAdapteur extends MouseAdapter {
                 controleur.demarrerJeu();
                 break;
             case (Labels.ACCUEIL_DIDAC):
-                Configuration.instance().logger().warning("[Didacticiel] Non implémenté");
+                Configuration.instance().logger().info("[Didacticiel]");
+                controleur.ouvrirDidacticiel();
                 break;
             case (Labels.ACCUEIL_SAUVE):
                 Configuration.instance().logger().info("[Sauvegarde]");

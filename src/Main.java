@@ -13,6 +13,7 @@ public class Main {
     public static void main(String[] args) {
         createRequiredFolder(Configuration.instance().getConfig("logDir"));
         createRequiredFolder("saves");
+        createRequiredFolder("tutorial_saves");
         InterfaceGraphique.demarrer(new Controleur());
     }
 

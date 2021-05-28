@@ -30,8 +30,6 @@ public class PanelPlateauTuto extends JPanel {
         int size = Math.min(getWidth(), getHeight());
         sizeCase = size / 9;
 
-//        int hCasex = -1;
-//        int hCasey = -1;
         int hCaseL = jeu.getHighlightCase().getL();
         int hCaseC = jeu.getHighlightCase().getC();
 
@@ -46,10 +44,6 @@ public class PanelPlateauTuto extends JPanel {
             for (int j = 0; j < 9; j++) {
                 g2.drawImage(Images.CASE_PLATEAU, x, y, sizeCase, sizeCase, null);
                 g2.drawRect(x, y, sizeCase, sizeCase);
-//                if(i == jeu.getHighlightCase().getL() && j == jeu.getHighlightCase().getC()){
-//                    hCasex = x;
-//                    hCasey = y;
-//                }
                 x += sizeCase;
             }
             y += sizeCase;
@@ -113,7 +107,7 @@ public class PanelPlateauTuto extends JPanel {
         int sizePoint = sizeCase/4;
         int offset = (sizeCase - sizePoint) / 2;
 
-        for(Point point : pt.getCasesAccessibles(jeu.getPionCourant(jeu.sourceCase))){
+        for(Point point : pt.getCasesAccessibles(jeu.getJeu().getPlateau().getPion(jeu.sourceCase))){
             int x = initX + (sizeCase * point.getC()) + offset;
             int y = initY + (sizeCase * point.getL()) + offset;
 
