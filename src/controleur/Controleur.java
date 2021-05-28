@@ -8,6 +8,8 @@ import global.writer.BoardWriterBinary;
 import modele.*;
 import modele.Joueur.Couleur;
 import modele.Joueur.Joueur;
+import modele.pion.Pion;
+import modele.pion.TypePion;
 import modele.util.Coup;
 import modele.util.Point;
 import vue.InterfaceGraphique;
