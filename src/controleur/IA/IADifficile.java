@@ -1,6 +1,7 @@
 package controleur.IA;
 
 import global.Configuration;
+import jdk.swing.interop.SwingInterOpUtils;
 import modele.ConfigJeu;
 import modele.Jeu;
 import modele.Joueur.Couleur;
@@ -9,6 +10,7 @@ import modele.pion.Pion;
 import modele.pion.TypePion;
 import modele.util.Coup;
 
+import java.time.Instant;
 import java.util.*;
 
 import static java.lang.Math.max;
@@ -18,29 +20,32 @@ public class IADifficile extends IA{
     public final int MAX = 100000;
     public final int MIN = -100000;
 
-    Map<ConfigJeu, List<Coup>> returnVal;
+    Map<ConfigJeu, Coup> returnVal;
     Set<ConfigJeu> mem;
-
+    Instant maintenant;
+    int prof;
     public IADifficile(){
         returnVal = new HashMap<>();
         mem = new HashSet<>();
+        prof=4;
     }
 
-    public int heuristique(Jeu j){
+    public int heuristique(Jeu j, int profondeur){
         Plateau p = j.getPlateau();
         Pion roi = p.getRoi();
         if(j.roiSorti()){
-            //System.out.println("Roi Sorti");
-            return MAX;
+            //System.out.println("Roi Sorti a la profondeur : " + profondeur);
+                return MAX + 12*profondeur;
+
         }
-        else if(j.roiCapture()){
+        if(j.roiCapture()){
             //System.out.println("Roi Capture");
             return MIN;
         }
-        else if(j.getPlateau().getSortiesAccessibles() >= 2){
-            return MAX - 1;
+        if(j.getPlateau().getSortiesAccessibles() >= 2){
+            return MAX + 8*profondeur-64 ;
         }
-        int autourRoiNoir = 0;
+        int adjacentRoi = 0;
         int heuristique = 0;
 
         int lRoi = roi.getPosition().getL();
@@ -48,123 +53,150 @@ public class IADifficile extends IA{
 
 
         if(( lRoi+1 == 4 && cRoi == 4) || p.estCaseDeType(lRoi+1, cRoi, TypePion.NOIR)){
-            autourRoiNoir++;
+            adjacentRoi++;
         }
 
         if(( lRoi-1 == 4 && cRoi == 4) || p.estCaseDeType(lRoi-1, cRoi, TypePion.NOIR)){
-            autourRoiNoir++;
+            adjacentRoi++;
         }
 
         if(( lRoi == 4 && cRoi+1 == 4) || p.estCaseDeType(lRoi, cRoi+1, TypePion.NOIR)){
-            autourRoiNoir++;
+            adjacentRoi++;
         }
 
         if(( lRoi == 4 && cRoi-1 == 4) || p.estCaseDeType(lRoi, cRoi-1, TypePion.NOIR)){
-            autourRoiNoir++;
+            adjacentRoi++;
         }
 
-        heuristique -= 5*autourRoiNoir;
+        heuristique -= 8*adjacentRoi;
 
         /***FIN ENCERCLEMENT ***/
 
         heuristique += 8*p.getBlancs().size();
-        heuristique -= 16*(16-p.getNoirs().size());
+        heuristique -= 6*p.getNoirs().size();
 
-        heuristique += 2 * j.getPlateau().getCasesAccessibles(roi).size();
+        heuristique += 16 * j.getPlateau().getCasesAccessibles(roi).size();
 
-        heuristique += 1024 * j.getPlateau().getSortiesAccessibles();
+        heuristique += 256 * j.getPlateau().getSortiesAccessibles();
+
+        heuristique += 4*(j.getPlateau().getNbCases(Couleur.BLANC)+j.getPlateau().getNbCases(Couleur.NOIR));
+
         return heuristique;
     }
 
-    //Configuration.instance.logger
 
-    public int Minimax(Jeu j, Couleur tj, int profondeur, List<Coup> prec, int alpha, int beta){
-
-        if(profondeur==0 || j.roiSorti() || j.roiCapture()){
-            return heuristique(j);
-        }
-        ConfigJeu cj = new ConfigJeu(j.joueurCourant(), j);
-        if(!mem.contains(cj)) {
-            List<Coup> C = j.getListeCoups();
-            int val;
-            if (tj.equals(Couleur.BLANC)) {
-                val = MIN;
-            } else {
-                val = MAX;
+    public int Minimax(Jeu j, Couleur couleur, int profondeur, List<Coup> prec, int alpha, int beta) {
+        ConfigJeu cj = new ConfigJeu(couleur, j);
+        if(Instant.now().compareTo(maintenant.plusSeconds(20)) < 0 ){
+            if (profondeur == 0 || j.roiSorti() || j.roiCapture()) {
+                return heuristique(j, profondeur);
             }
-            int borne;
-            List<Coup> coups = new ArrayList<>();
-            Coup meilleur = null;
-            for (Coup cp : C) {
-                prec.add(cp);
-                int dL = cp.getPion().getPosition().getL();
-                int dC = cp.getPion().getPosition().getC();
-                //System.out.println("Prof " + profondeur);
-                if (tj.equals(Couleur.BLANC)) {
-                    //System.out.println("Prof blanc " + profondeur);
-                    //Coup temp = new Coup(cp);
-                    borne = Minimax(j.joueCoupDuplique(cp), Couleur.NOIR, profondeur - 1, prec, alpha, beta);
-                    if (borne > val) {
-                        val = borne;
-                        meilleur = cp;
-                        //meilleur = new Coup(temp);
-                        coups.clear();
-                    } else if (borne == val) coups.add(cp);
-                    alpha = max(alpha, val);
-                    if (alpha >= beta) {
-                        j.annulerCoup(prec,dL,dC);
-                        break;
-                    }
+
+            if (!mem.contains(cj) ) {
+
+                List<Coup> C = j.getListeCoups();
+                int val;
+                if (couleur.equals(Couleur.BLANC)) {
+                    val = MIN;
                 } else {
-                    //System.out.println("Prof noir " + profondeur);
-                    //Coup temp = new Coup(cp);
-                    Jeu j2 = j.joueCoupDuplique(cp);
-                    //System.out.println("Coup: " + temp + ", heuristique: " + heuristique(j2));
-                    borne = Minimax(j2, Couleur.BLANC, profondeur - 1, prec, alpha, beta);
-                    if (borne < val) {
-                        val = borne;
-                        //if(profondeur == 1) System.out.println(profondeur + ": " + cp + " *** " + temp + "heuristique: " + borne);
-                        //System.out.println("temp in boucle : " + temp);
-                        //meilleur = new Coup(temp);
-                        meilleur = cp;
-                        //System.out.println("meilleur boucle: " + meilleur);
-                        coups.clear();
-                    } else if (borne == val) coups.add(cp);
-                    //if(profondeur==1) System.out.println(coups);
-                    beta = min(beta, val);
-                    if (beta <= alpha) {
-                        j.annulerCoup(prec, dL, dC);
-                        break;
-                    }
+                    val = MAX;
                 }
-                j.annulerCoup(prec,dL,dC);
+                int borne;
+                Coup meilleur = null;
+                Random r = new Random();
+                //r.setSeed(30102000);
+                //List<Coup> coups = new ArrayList<>();
+                for (Coup cp : C) {
+                    prec.add(cp);
+                    int dL = cp.getPion().getPosition().getL();
+                    int dC = cp.getPion().getPosition().getC();
+                    if (couleur.equals(Couleur.BLANC)) {
+                        borne = Minimax(j.joueCoupDuplique(cp), Couleur.NOIR, profondeur - 1, prec, alpha, beta);
+                        if (borne > val) {
+                            val = borne;
+                            /*coups.clear();
+                            coups.add(cp);*/
+                            meilleur = cp;
+
+                        } else if (borne == val) {
+                            if (r.nextBoolean()) {
+                                meilleur = cp;
+                            }
+                        }
+                        //alpha = max(alpha, borne);
+                        if(alpha < borne){
+                            alpha = borne;
+                            /*if(profondeur == prof){
+                                meilleur = cp;
+                            }*/
+                        }
+                        if (alpha >= beta) {
+                            j.annulerCoup(prec, dL, dC);
+                            break;
+                        }
+                    } else {
+                        Jeu j2 = j.joueCoupDuplique(cp);
+                        borne = Minimax(j2, Couleur.BLANC, profondeur - 1, prec, alpha, beta);
+                        if (borne < val) {
+                            val = borne;
+                            /*coups.clear();
+                            coups.add(cp);*/
+                            meilleur = cp;
+                        } else if (borne == val) {
+                            if (r.nextBoolean()) {
+                                meilleur = cp;
+                            }
+                        }
+                        //beta = min(beta, borne);
+                        if(beta > borne){
+                            beta = borne;
+                            /*if(profondeur == prof){
+                                meilleur = cp;
+                            }*/
+                        }
+                        if (beta <= alpha) {
+                            j.annulerCoup(prec, dL, dC);
+                            break;
+                        }
+                    }
+                    j.annulerCoup(prec, dL, dC);
+                }
+                //List<Coup> copy = new ArrayList<>(coups);
+                returnVal.put(cj, meilleur);
+
+                //mem.add(cj);
+                //coups.clear();
+                return val;
             }
-            if (meilleur == null) {
-                Configuration.instance().logger().severe("Pas de coups jouables");
-            } else {
-                //System.out.println("meilleur fin :    " + meilleur);
-                coups.add(meilleur);
-                List<Coup> copy = new ArrayList<>(coups);
-                returnVal.put(cj, copy);
-                coups.clear();
-            }
-            return val;
+            return heuristique(cj.getJeu(), profondeur);
         }
-        return heuristique(cj.getJeu());
+        return couleur.equals(Couleur.BLANC) ? MIN : MAX;
     }
 
 
     public Coup iaJoue(Jeu j){
-        Minimax(j, j.joueurCourant().getCouleur(),4, new ArrayList<>(),MIN, MAX);
-        Random r = new Random();
-        ConfigJeu cj = new ConfigJeu(j.joueurCourant(), j);
-        System.out.println("Liste coups: -----------------------");
-        List<Coup> cps = returnVal.get(cj);
-        for (Coup c: cps) {
-            System.out.println(c);
-        }
-        Coup res = cps.get(r.nextInt(cps.size()));
-        System.out.println("Taille : " + cps.size() + "   Coup choisi: " + res);
+
+
+        Couleur couleur = j.joueurCourant().getCouleur();
+
+        maintenant = Instant.now();
+        System.out.println(maintenant);
+        System.out.println(j.getPlateau().getNbCases(Couleur.BLANC));
+        //do{
+            //System.out.println("boucle " + Instant.now() + " sortie à : " +maintenant.plusSeconds(15));
+            Minimax(j, couleur, prof , new ArrayList<>(),MIN, MAX);
+          //  prof++;
+        //}
+        //while(Instant.now().compareTo(maintenant.plusSeconds(20)) < 0);
+
+
+
+        System.out.println("Temps d'éxecution " + Instant.now());
+        ConfigJeu cj = new ConfigJeu(couleur, j);
+        Coup res = returnVal.get(cj);
+
+        System.out.println(res +" "+ heuristique(cj.getJeu(),prof));
+        System.out.println(cj.getJeu().getPlateau()+ "\n Sorties accessibles : " + cj.getJeu().getPlateau().getSortiesAccessibles());
         return res;
     }
 

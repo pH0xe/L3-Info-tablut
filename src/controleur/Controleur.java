@@ -3,14 +3,11 @@ package controleur;
 import controleur.IA.IA;
 import controleur.IA.IADifficile;
 import controleur.IA.IAFacile;
-import global.Configuration;
 import global.reader.BoardReaderBinary;
 import global.writer.BoardWriterBinary;
 import modele.*;
 import modele.Joueur.Couleur;
 import modele.Joueur.Joueur;
-import modele.pion.Pion;
-import modele.pion.TypePion;
 import modele.util.Coup;
 import modele.util.Point;
 import vue.InterfaceGraphique;
@@ -26,7 +23,7 @@ public class Controleur implements CollecteurEvenements {
     private InterfaceGraphique interfaceGraphique;
     private Joueur joueurBlanc, joueurNoir;
     private IA iaBlanc, iaNoir;
-    private Timer tIAB, tIAN;
+    private Timer tIAB, tIAN, rechercheIA;
 
     public Controleur(){
         joueurBlanc = new Joueur("Joueur blanc", Couleur.BLANC);
@@ -90,6 +87,7 @@ public class Controleur implements CollecteurEvenements {
         tIAB.stop();
         Coup c = iaBlanc.iaJoue(jeu);
         jeu.joueCoup(c);
+        System.out.println("ROI : " + jeu.getPlateau().getPion(jeu.getPlateau().getRoi().getPosition()));
         verifFin();
     }
 

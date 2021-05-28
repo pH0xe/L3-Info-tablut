@@ -36,6 +36,14 @@ public class Plateau extends Observable {
         initReaderPions(reader);
     }
 
+    public Plateau(Plateau plateau) {
+        pions = new ArrayList<>();
+        for (Pion pion : plateau.getPions()) {
+            pions.add(new Pion(pion));
+        }
+        roi = pions.stream().filter(Pion::estRoi).findFirst().orElse(null);
+    }
+
     private void initReaderPions(BoardReader reader) {
         this.pions.addAll(reader.getBlancs());
         this.pions.addAll(reader.getNoirs());
@@ -46,6 +54,7 @@ public class Plateau extends Observable {
 
     public void initDefaultPions() {
         String board = Configuration.instance().getConfig("defaultBoard");
+        //String board = Configuration.instance().getConfig("endgameBoard");
         InputStream in = Configuration.charger(board);
         BoardReader reader = new BoardReaderText(in);
         reader.lirePlateau();
@@ -139,11 +148,11 @@ public class Plateau extends Observable {
     }
 
     public int getBlancsElimine() {
-        return (int) getBlancs().stream().filter(Pion::estPris).count();
+        return 9 - getBlancs().size();
     }
 
     public int getNoirsElimine() {
-        return (int) getNoirs().stream().filter(Pion::estPris).count();
+        return 16 - getNoirs().size();
     }
 
     public Pion getPion(Point point) {
@@ -251,7 +260,7 @@ public class Plateau extends Observable {
             }
             sb.append("\n");
         }
-        return sb.toString();
+        return sb.substring(0, sb.toString().length()-1);
     }
 
     @Override
@@ -265,5 +274,22 @@ public class Plateau extends Observable {
     @Override
     public int hashCode() {
         return Objects.hash(roi, pions);
+    }
+
+    public int getNbCases(Couleur c) {
+        int res = 0;
+        List<Pion> pi;
+        if(c.equals(Couleur.BLANC)){
+            pi = this.getBlancs();
+
+        }else{
+            pi = this.getNoirs();
+        }
+
+        for (Pion pio : pi) {
+            if(pio.getType() != TypePion.ROI)
+                res += getCasesAccessibles(pio).size();
+        }
+        return res;
     }
 }

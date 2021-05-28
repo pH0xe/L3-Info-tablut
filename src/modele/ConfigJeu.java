@@ -1,20 +1,22 @@
 package modele;
 
+import modele.Joueur.Couleur;
 import modele.Joueur.Joueur;
 
 import java.util.Objects;
 
 public class ConfigJeu {
-    private Joueur joueurCourant;
+    private Couleur couleur;
     private Jeu jeu;
 
-    public ConfigJeu(Joueur j, Jeu p){
-        joueurCourant=j;
-        jeu=p;
+    public ConfigJeu(Couleur c, Jeu p){
+        couleur = c;
+        jeu = p;
     }
 
-    public Joueur getJoueurCourant() {
-        return joueurCourant;
+
+    public Couleur getCouleur() {
+        return couleur;
     }
 
     public Jeu getJeu() {
@@ -26,11 +28,11 @@ public class ConfigJeu {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ConfigJeu configJeu = (ConfigJeu) o;
-        return Objects.equals(joueurCourant, configJeu.joueurCourant) && Objects.equals(jeu, configJeu.jeu);
+        return Objects.equals(couleur, configJeu.couleur) && Objects.equals(jeu, configJeu.jeu);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(joueurCourant, jeu);
+        return Objects.hash(couleur, jeu);
     }
 }
