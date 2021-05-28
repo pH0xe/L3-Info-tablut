@@ -4,22 +4,16 @@ import controleur.IA.IA;
 import controleur.IA.IADifficile;
 import controleur.IA.IAFacile;
 import global.BestScoresUtils;
-import global.Configuration;
 import global.reader.BoardReaderBinary;
 import global.writer.BoardWriterBinary;
 import modele.*;
 import modele.Joueur.Couleur;
 import modele.Joueur.Joueur;
-import modele.pion.Pion;
-import modele.pion.TypePion;
 import modele.util.Coup;
 import modele.util.Point;
 import vue.InterfaceGraphique;
 import vue.adapters.AdaptateurIA;
-
 import javax.swing.*;
-
-
 import java.io.File;
 
 public class Controleur implements CollecteurEvenements {
@@ -37,11 +31,9 @@ public class Controleur implements CollecteurEvenements {
         tIAN = new Timer(2000, new AdaptateurIA(this, 2));
     }
 
-    @Override
-    public void fixerInterface(InterfaceGraphique interfaceGraphique) {
-        this.interfaceGraphique = interfaceGraphique;
-    }
-
+    ////////////////////////////////////////////////
+    // Fonctionnement tour de jeu
+    ////////////////////////////////////////////////
     @Override
     public void demarrerJeu() {
         interfaceGraphique.fixerJeu(jeu);
@@ -49,41 +41,14 @@ public class Controleur implements CollecteurEvenements {
     }
 
     @Override
-    public void ouvrirOption() {
-        interfaceGraphique.ouvrirOption();
-    }
-
-    @Override
-    public void fermerOption(String nomJoueurBlanc, String nomJoueurNoir, TypeIA typeJB, TypeIA typeJN) {
-        joueurBlanc.setNom(nomJoueurBlanc);
-        joueurNoir.setNom(nomJoueurNoir);
-        iaBlanc = definirIa(typeJB);
-        iaNoir = definirIa(typeJN);
-        interfaceGraphique.fermerOption();
-    }
-
-    @Override
     public void cliquePlateau(Point point) {
         if (jeu.estFini()) return;
         if (estTourIA()) return;
         if (jeu.verifierCoup(point)) {
-           verifFin();
-           return;
+            verifFin();
+            return;
         }
         jeu.verifierPion(point);
-    }
-
-    public IA definirIa(TypeIA type){
-        switch (type){
-            case FACILE:
-                return new IAFacile();
-            case MOYENNE:
-                return new IAFacile();
-            case DIFFICILE:
-                return new IADifficile();
-            default:
-                return null;
-        }
     }
 
     @Override
@@ -102,36 +67,6 @@ public class Controleur implements CollecteurEvenements {
         verifFin();
     }
 
-    public void verifFin(){
-        if (jeu.roiSorti()) {
-            interfaceGraphique.ouvrirDialogFin(jeu.getJoueurBlanc());
-            BestScoresUtils.instance().addVictory(jeu.getJoueurBlanc().getNom());
-        } else if (jeu.roiCapture()) {
-            interfaceGraphique.ouvrirDialogFin(jeu.getJoueurNoir());
-            BestScoresUtils.instance().addVictory(jeu.getJoueurNoir().getNom());
-        } else {
-            lancerTimerIA();
-        }
-    }
-
-    private void lancerTimerIA() {
-        if(jeu.joueurCourant().getCouleur()==Couleur.BLANC && iaBlanc != null)
-            tIAB.start();
-        if(jeu.joueurCourant().getCouleur()==Couleur.NOIR && iaNoir != null)
-            tIAN.start();
-    }
-
-    private void stoperIA() {
-        tIAB.stop();
-        tIAN.stop();
-    }
-
-    @Override
-    public void ouvrirOptionJeu() {
-        stoperIA();
-        interfaceGraphique.ouvrirDialogOption();
-    }
-
     @Override
     public void refaireCoup() {
         stoperIA();
@@ -147,14 +82,6 @@ public class Controleur implements CollecteurEvenements {
     }
 
     @Override
-    public void fermerOptionJeu(TypeIA typeIAB, TypeIA typeIAN) {
-        iaBlanc = definirIa(typeIAB);
-        iaNoir = definirIa(typeIAN);
-        interfaceGraphique.fermerDialogOption();
-        lancerTimerIA();
-    }
-
-    @Override
     public void abandonnerPartie() {
         stoperIA();
         interfaceGraphique.fermerDialogOption();
@@ -164,12 +91,64 @@ public class Controleur implements CollecteurEvenements {
     }
 
     @Override
-    public void retourAccueil() {
-        stoperIA();
-        interfaceGraphique.fermerDialogOption();
+    public void rejouer() {
         interfaceGraphique.fermerDialogFin();
-        interfaceGraphique.retourAccueil();
         jeu = new Jeu(joueurBlanc, joueurNoir);
+        demarrerJeu();
+    }
+
+    public void verifFin(){
+        if (jeu.roiSorti()) {
+            interfaceGraphique.ouvrirDialogFin(jeu.getJoueurBlanc());
+            BestScoresUtils.instance().addVictory(jeu.getJoueurBlanc().getNom());
+        } else if (jeu.roiCapture()) {
+            interfaceGraphique.ouvrirDialogFin(jeu.getJoueurNoir());
+            BestScoresUtils.instance().addVictory(jeu.getJoueurNoir().getNom());
+        } else {
+            lancerTimerIA();
+        }
+    }
+
+    ////////////////////////////////////////////////
+    // Options
+    ////////////////////////////////////////////////
+    @Override
+    public void ouvrirOption() {
+        interfaceGraphique.ouvrirOption();
+    }
+
+    @Override
+    public void fermerOption(String nomJoueurBlanc, String nomJoueurNoir, TypeIA typeJB, TypeIA typeJN) {
+        joueurBlanc.setNom(nomJoueurBlanc);
+        joueurNoir.setNom(nomJoueurNoir);
+        iaBlanc = definirIa(typeJB);
+        iaNoir = definirIa(typeJN);
+        interfaceGraphique.fermerOption();
+    }
+
+    ////////////////////////////////////////////////
+    // Options en jeu
+    ////////////////////////////////////////////////
+    @Override
+    public void ouvrirOptionJeu() {
+        stoperIA();
+        interfaceGraphique.ouvrirDialogOption();
+    }
+
+    @Override
+    public void fermerOptionJeu(TypeIA typeIAB, TypeIA typeIAN) {
+        iaBlanc = definirIa(typeIAB);
+        iaNoir = definirIa(typeIAN);
+        interfaceGraphique.fermerDialogOption();
+        lancerTimerIA();
+    }
+
+    ////////////////////////////////////////////////
+    // Dialogue de sauvegarde
+    ////////////////////////////////////////////////
+    @Override
+    public void afficherDialogSauv(int afterAction) {
+        interfaceGraphique.afficherDialogSauvegarde(afterAction);
     }
 
     @Override
@@ -190,16 +169,9 @@ public class Controleur implements CollecteurEvenements {
         fermerApp();
     }
 
-    @Override
-    public void fermerApp() {
-        System.exit(0);
-    }
-
-    @Override
-    public void afficherDialogSauv(int afterAction) {
-        interfaceGraphique.afficherDialogSauvegarde(afterAction);
-    }
-
+    ////////////////////////////////////////////////
+    // Sauvegardes
+    ////////////////////////////////////////////////
     @Override
     public void ouvrirSauvegarde() {
         interfaceGraphique.ouvrirSauvegarde();
@@ -227,18 +199,9 @@ public class Controleur implements CollecteurEvenements {
         demarrerJeu();
     }
 
-    @Override
-    public void rejouer() {
-        interfaceGraphique.fermerDialogFin();
-        jeu = new Jeu(joueurBlanc, joueurNoir);
-        demarrerJeu();
-    }
-
-    @Override
-    public boolean estTourIA() {
-        return (jeu.joueurCourant().getCouleur()==Couleur.BLANC && iaBlanc != null) || (jeu.joueurCourant().getCouleur()==Couleur.NOIR && iaNoir != null);
-    }
-
+    ////////////////////////////////////////////////
+    // Scores
+    ////////////////////////////////////////////////
     @Override
     public void ouvrirMeilleursJoueurs() {
         interfaceGraphique.ouvrirMeilleursJoueurs();
@@ -247,5 +210,60 @@ public class Controleur implements CollecteurEvenements {
     @Override
     public void fermerMeilleursJoueurs() {
         interfaceGraphique.fermerMeilleursJoueurs();
+    }
+
+    ////////////////////////////////////////////////
+    // Utilitaire
+    ////////////////////////////////////////////////
+    @Override
+    public void retourAccueil() {
+        stoperIA();
+        interfaceGraphique.fermerDialogOption();
+        interfaceGraphique.fermerDialogFin();
+        interfaceGraphique.retourAccueil();
+        jeu = new Jeu(joueurBlanc, joueurNoir);
+    }
+
+    @Override
+    public void fermerApp() {
+        System.exit(0);
+    }
+
+    @Override
+    public void fixerInterface(InterfaceGraphique interfaceGraphique) {
+        this.interfaceGraphique = interfaceGraphique;
+    }
+
+    ////////////////////////////////////////////////
+    // IA
+    ////////////////////////////////////////////////
+    public IA definirIa(TypeIA type){
+        switch (type){
+            case FACILE:
+                return new IAFacile();
+            case MOYENNE:
+                return new IAFacile();
+            case DIFFICILE:
+                return new IADifficile();
+            default:
+                return null;
+        }
+    }
+
+    private void lancerTimerIA() {
+        if(jeu.joueurCourant().getCouleur()==Couleur.BLANC && iaBlanc != null)
+            tIAB.start();
+        if(jeu.joueurCourant().getCouleur()==Couleur.NOIR && iaNoir != null)
+            tIAN.start();
+    }
+
+    private void stoperIA() {
+        tIAB.stop();
+        tIAN.stop();
+    }
+
+    @Override
+    public boolean estTourIA() {
+        return (jeu.joueurCourant().getCouleur()==Couleur.BLANC && iaBlanc != null) || (jeu.joueurCourant().getCouleur()==Couleur.NOIR && iaNoir != null);
     }
 }
