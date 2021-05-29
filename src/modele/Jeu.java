@@ -319,6 +319,17 @@ public class Jeu extends Observable {
         return captures;
     }
 
+    /**
+     * Utilisé par {@link #pionCapture(Pion) pionCapture(pion) } pour tester si le pion a coté de la case d'origine passé en paramétre doit etre capturé ou non. <br>
+     * Le pion a 1 case doit etre de la couleur opossé a celle passé en paramètre. <br>
+     * Le pion a 2 case de l'origine doit etre de la meme couleur. <br>
+     * @param l la ligne d'origine du test
+     * @param c la colonne d'origine du test
+     * @param opL opération de décalage qui doit etre appliqué a la ligne d'origine. Permet de tester les 4 direction.
+     * @param opC opération de décalage qui doit etre appliqué a la colonne d'origine. Permet de tester les 4 direction.
+     * @param couleur couleur du pion en (l,c)
+     * @return true si le pion doit etre capturé, false sinon.
+     */
     private boolean checkPion(int l, int c, Operateur opL, Operateur opC, Couleur couleur) {
         if (opL.faire(l,2) > 8 || opL.faire(l,2) < 0) return false;
         if (opC.faire(c,2) > 8 || opC.faire(c,2) < 0) return false;
@@ -328,23 +339,45 @@ public class Jeu extends Observable {
                 || ((l == 4 && c == 4 )|| (opL.faire(l,2) == 4 && opC.faire(c,2) == 4)));
     }
 
+    /**
+     * Utilisé par {@link controleur.Controleur#cliquePlateau(Point) cliquePlateau(point)} permet de verifier la validité d'un clique. <br>
+     * Verifie la première étape du clique d'un joueur, la selection du pion a bouger.
+     * @param point le point ou ce situe le pion selectionné.
+     */
     public void verifierPion(Point point) {
         if (deMemeCouleur(point) && estClickable(point))
             setSelectionner(point);
 
     }
 
+    /**
+     * Utilisé par {@link #verifierPion(Point)} vérifie que le pion au coordonné passé en paramétre fait partie des pion séléctionnable du joueur.
+     * @param point le coordonnées du pion a vérifier
+     * @return true si le pion fait partie des pion qui peuvent etre bougé dans le tour courant, false sinon
+     */
     private boolean estClickable(Point point) {
         Pion p = pt.getPion(point);
         return getPionClickable().contains(p);
     }
 
+    /**
+     * Utilisé par {@link #verifierPion(Point)} vérifie si le pion fait parti des pion du joueur dont c'est le tour.
+     * @param point les coordonné du pion a vérifier.
+     * @return true si le pion appartient au joueur courant, false sinon
+     */
     private boolean deMemeCouleur(Point point) {
         TypePion tmp = pt.getTypePion(point);
         if (tmp == null) return false;
         return tmp.getCouleur() ==  joueurCourant.getCouleur();
     }
 
+    /**
+     * Utilisé par {@link controleur.Controleur#cliquePlateau(Point) cliquePlateau(point)} permet de verifier la validité d'un clique. <br>
+     * Verifie la seconde étape du clique d'un joueur, le déplacement du pion sélectionné. <br>
+     * Joue un coup si le clique est valide sinon ne fait rien.
+     * @param point les coordonnées du pion à vérifier
+     * @return true si un coup a été joué, false sinon.
+     */
     public boolean verifierCoup(Point point) {
         if (pionSelect == null) return false;
 
