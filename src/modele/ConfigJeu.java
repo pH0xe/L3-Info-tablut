@@ -8,10 +8,12 @@ import java.util.Objects;
 public class ConfigJeu {
     private Couleur couleur;
     private Jeu jeu;
+    private int profondeur;
 
-    public ConfigJeu(Couleur c, Jeu p){
+    public ConfigJeu(Couleur c, Jeu p, int prof){
         couleur = c;
         jeu = p;
+        profondeur = prof;
     }
 
 

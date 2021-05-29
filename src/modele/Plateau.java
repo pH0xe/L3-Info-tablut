@@ -75,14 +75,14 @@ public class Plateau extends Observable {
             }
         }
         if(pl!=0) {
-            for (int i = pl - 1; i >= 0; i--) {
+            for (int i = pl - 1; i >= 0 ; i--) {
                 if (estVide(i, pc))
                     accessibles.add(new Point(i, pc));
                 else break;
             }
         }
         if(pc!=8) {
-            for (int i = pc + 1; i < 9; i++) {
+            for (int i = pc + 1; i < 9 ; i++) {
                 if (estVide(pl, i))
                     accessibles.add(new Point(pl, i));
                 else break;
@@ -95,6 +95,8 @@ public class Plateau extends Observable {
                 else break;
             }
         }
+        if(pion.getType() != TypePion.ROI)
+            accessibles.remove(new Point(4,4));
         return accessibles;
     }
 
