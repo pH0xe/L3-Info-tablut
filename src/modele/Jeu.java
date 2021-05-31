@@ -336,7 +336,7 @@ public class Jeu extends Observable {
 
         return pt.estCaseDeCouleur(opL.faire(l,1), opC.faire(c,1), couleur.getOppose())
                 && (pt.estCaseDeCouleur(opL.faire(l,2), opC.faire(c,2), couleur)
-                || ((l == 4 && c == 4 )|| (opL.faire(l,2) == 4 && opC.faire(c,2) == 4)));
+                || ((opL.faire(l,2) == 4 && opC.faire(c,2) == 4)));
     }
 
     /**
