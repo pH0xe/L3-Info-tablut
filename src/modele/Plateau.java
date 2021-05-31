@@ -1,6 +1,7 @@
 package modele;
 
 import global.Configuration;
+import global.Operateur;
 import global.reader.BoardReader;
 import global.reader.BoardReaderText;
 import modele.Joueur.Couleur;
@@ -22,18 +23,27 @@ public class Plateau extends Observable {
     private final int nbLigne = 9;
     private final int nbColonne = 9;
 
-
+    /**
+     * Constructeur par defaut, créé le plateau a partir du fichier indiqué dans la configuration
+     */
     public Plateau() {
         pions = new ArrayList<>();
         initDefaultPions();
     }
 
-
+    /**
+     * Constructeur utilisé lors du chargment d'une sauvegarde.
+     * @param reader l'object contenant les information lu dans la sauvegarde.
+     */
     public Plateau(BoardReader reader) {
         pions = new ArrayList<>();
         initReaderPions(reader);
     }
 
+    /**
+     * Utilise les informations lu dans le {@link BoardReader} pour initialiser les pions.
+     * @param reader le BoardReader contenant les information de jeu
+     */
     private void initReaderPions(BoardReader reader) {
         this.pions.addAll(reader.getBlancs());
         this.pions.addAll(reader.getNoirs());
@@ -42,6 +52,9 @@ public class Plateau extends Observable {
         this.pions.add(this.roi);
     }
 
+    /**
+     * Créé le {@link BoardReader} contenant les information de la configuration par defaut puis iitialise les pions avec {@link #initReaderPions(BoardReader)}
+     */
     public void initDefaultPions() {
         String board = Configuration.instance().getConfig("defaultBoard");
         InputStream in = Configuration.charger(board);
@@ -54,46 +67,33 @@ public class Plateau extends Observable {
     public List<Point> getCasesAccessibles(Pion pion){
         int pl = pion.getPosition().getL();
         int pc = pion.getPosition().getC();
-        boolean estRoi = pion.estRoi();
-
+        Operateur[][] op = {
+                {Operateur.ADD, Operateur.NOTHING},
+                {Operateur.SUB, Operateur.NOTHING},
+                {Operateur.NOTHING, Operateur.ADD},
+                {Operateur.NOTHING, Operateur.SUB}
+        };
         List<Point> accessibles = new ArrayList<>();
-        if(pl!=8) {
-            for (int i = pl + 1; i < 9; i++) {
-                if (testTrone(pion, i, pc)) {
-                    if (estVide(i, pc))
-                        accessibles.add(new Point(i, pc));
+
+        for (Operateur[] operateurs : op) {
+            int l = operateurs[0].faire(pl, 1);
+            int c = operateurs[1].faire(pc, 1);
+            while (coordValide(l, c)) {
+                if (testTrone(pion, l, c)) {
+                    if (estVide(l, c))
+                        accessibles.add(new Point(l, c));
                     else break;
                 }
+                l = operateurs[0].faire(l, 1);
+                c = operateurs[1].faire(c, 1);
             }
         }
-        if(pl!=0) {
-            for (int i = pl - 1; i >= 0; i--) {
-                if (testTrone(pion, i, pc)) {
-                    if (estVide(i, pc))
-                        accessibles.add(new Point(i, pc));
-                    else break;
-                }
-            }
-        }
-        if(pc!=8) {
-            for (int i = pc + 1; i < 9; i++) {
-                if (testTrone(pion, pl, i)) {
-                    if (estVide(pl, i))
-                        accessibles.add(new Point(pl, i));
-                    else break;
-                }
-            }
-        }
-        if(pc!=0) {
-            for (int i = pc - 1; i >=0; i--) {
-                if (testTrone(pion, pl, i)) {
-                    if (estVide(pl, i))
-                        accessibles.add(new Point(pl, i));
-                    else break;
-                }
-            }
-        }
+
         return accessibles;
+    }
+
+    private boolean coordValide(int l, int c) {
+        return l >= 0 && l <= 8 && c >= 0 && c <= 8;
     }
 
     private boolean testTrone(Pion pion, int l, int c) {
