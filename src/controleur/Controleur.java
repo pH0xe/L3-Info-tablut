@@ -3,6 +3,7 @@ package controleur;
 import controleur.IA.IA;
 import controleur.IA.IADifficile;
 import controleur.IA.IAFacile;
+import controleur.IA.IAMoyenne;
 import global.reader.BoardReaderBinary;
 import global.writer.BoardWriterBinary;
 import modele.*;
@@ -76,7 +77,7 @@ public class Controleur implements CollecteurEvenements {
             case FACILE:
                 return new IAFacile();
             case MOYENNE:
-                return new IAFacile();
+                return new IAMoyenne();
             case DIFFICILE:
                 return new IADifficile();
             default:

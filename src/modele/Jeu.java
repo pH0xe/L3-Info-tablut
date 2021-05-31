@@ -261,9 +261,16 @@ public class Jeu extends Observable {
     public List<Coup> getListeCoups(){
         List<Coup> C = new ArrayList<>();
         List<Pion> jouables = this.getPionsCourant();
+        /*List<Point> roiAccess = pt.getCasesAccessibles(pt.getRoi());
+        for(Point p: roiAccess){
+            C.add(new Coup(pt.getRoi(), p));
+        }*/
+        //if(jouables.contains(pt.getRoi()))
+            //jouables.remove(pt.getRoi());
         for (Pion pi: jouables) {
             List<Point> accessibles = pt.getCasesAccessibles(pi);
             for (Point p: accessibles) {
+
                 C.add(new Coup(pi, p));
             }
         }

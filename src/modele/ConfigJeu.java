@@ -8,12 +8,13 @@ import java.util.Objects;
 public class ConfigJeu {
     private Couleur couleur;
     private Jeu jeu;
-    private int profondeur;
+    private int  profondeur, alpha,  beta;
 
-    public ConfigJeu(Couleur c, Jeu p, int prof){
+    public ConfigJeu(Couleur c, Jeu p, int profondeur){
         couleur = c;
         jeu = p;
-        profondeur = prof;
+        this.profondeur = profondeur;
+
     }
 
 
@@ -24,6 +25,14 @@ public class ConfigJeu {
     public Jeu getJeu() {
         return jeu;
     }
+
+    public int getAlpha(){return alpha;}
+
+    public int getBeta(){return beta;}
+
+    public void setAlpha(int alpha){ this.alpha = alpha; }
+
+    public void setBeta(int beta){this.beta = beta;}
 
     @Override
     public boolean equals(Object o) {
