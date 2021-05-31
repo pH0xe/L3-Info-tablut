@@ -73,6 +73,10 @@ public class Pion implements Serializable{
         return type.getCouleur() == Couleur.NOIR;
     }
 
+    public boolean posEquals(Point point) {
+        return position.equals(point);
+    }
+
 
     @Override
     public String toString() {

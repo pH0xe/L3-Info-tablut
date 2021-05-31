@@ -98,79 +98,159 @@ public class Plateau extends Observable {
         return accessibles;
     }
 
+    /**
+     * Utilisé par {@link #getCasesAccessibles(Pion)}. Permet de vérifier que les coordonné passé en parametre sont dans le plateau.
+     * @param l la ligne
+     * @param c la colonne
+     * @return true si les coordonné sont dans le plateau, false sinon.
+     */
     private boolean coordValide(int l, int c) {
         return l >= 0 && l <= 8 && c >= 0 && c <= 8;
     }
 
+    /**
+     * utilisé par {@link #getCasesAccessibles(Pion)}. Permet de vérifier si il s'agit du trone ou non.
+     * @param pion le pion sur lequel on cherche les cases accessible.
+     * @param l la ligne a tester
+     * @param c la colonne a tester
+     * @return true si il s'agit du roi ou si le coordonné sont differente du trone, false sinon.
+     */
     private boolean testTrone(Pion pion, int l, int c) {
         if (pion.estRoi()) return true;
         return l != 4 || c != 4;
     }
 
+    /**
+     * Déplace le pion passé en parametre en (l, c)
+     * @param pion le pion a déplacer
+     * @param l la ligne de destination
+     * @param c la colonne de destination
+     */
     public void deplacerPion(Pion pion, int l, int c) {
         pion.deplacerPion(l, c);
     }
 
+    /**
+     * Identique a {@link #deplacerPion(Pion, int, int)}. Utilise un objet Point pour la destination du pion.
+     * @param pion le pion a déplacer
+     * @param dest la destination du pion
+     */
     public void deplacerPion(Pion pion, Point dest) {
         deplacerPion(pion, dest.getL(), dest.getC());
     }
 
+    /**
+     * Vérifie si le pion passé en paramètre peut etre déplacé a la position dest
+     * @param pion le pion a déplacer
+     * @param dest le point de destination du pion
+     * @return true si le pion peut etre deplacé, false sinon
+     */
     public boolean peutDeplacer(Pion pion, Point dest){
         List<Point> accessible = getCasesAccessibles(pion);
         return accessible.contains(dest);
     }
 
+    /**
+     * @param point la position du pion
+     * @return renvoi le type du pion a la position point, null si il n'y a pas de pion a cette position.
+     */
     public TypePion getTypePion(Point point) {
         Pion p = getPion(point);
         if (p == null) return null;
         return p.getType();
     }
 
+    /**
+     * Identique a {@link #getTypePion(Point)}
+     * @param l la ligne du pion
+     * @param c la colonne du pion
+     * @return Renvoi le type du pion a la position (l, c), null si il n'y a pas de pion a cette position.
+     */
     public TypePion getTypePion(int l, int c) {
         return getTypePion(new Point(l,c));
     }
 
+    /**
+     * Vérifie si un pion est du meme type que le type passé en parametre
+     * @param point la position du pion a tester
+     * @param typePion le type du pion a comparer
+     * @return true si le pion est du meme type que typePion, false sinon.
+     */
     public boolean estCaseDeType(Point point, TypePion typePion) {
         return getTypePion(point) == typePion;
     }
 
+    /**
+     * Identique a {@link #estCaseDeType(Point, TypePion)}, utilise des coordonné l, c pluto qu'un point.
+     * @param l la ligne du pion
+     * @param c la colonne du pion
+     * @param typePion Le type a comparer
+     * @return true si le pion est du meme type que typePion, false sinon.
+     */
     public boolean estCaseDeType(int l, int c, TypePion typePion) {
         return estCaseDeType(new Point(l, c), typePion);
     }
 
+    /**
+     * Permet de vérifier si le pion au coordonné (l, c) est de la meme couleur que celle passé en paramètre.
+     * @param l la ligne du pion
+     * @param c la colonne du pion
+     * @param couleur la couleur a comparer
+     * @return true si le pion a la meme couleur, false sinon.
+     */
     public boolean estCaseDeCouleur(int l, int c, Couleur couleur) {
         TypePion type = getTypePion(l, c);
         if (type == null)  return false;
         return type.getCouleur() == couleur;
     }
 
+    /**
+     * Getter
+     * @return la liste des pion blancs encore actif
+     */
     public List<Pion> getBlancs() {
         return pions.stream().filter(Pion::estBlanc).filter(pion -> !pion.estPris()).collect(Collectors.toList());
     }
 
+    /**
+     * Getter
+     * @return la liste des pions noir encore actif
+     */
     public List<Pion> getNoirs() {
         return pions.stream().filter(Pion::estNoir).filter(pion -> !pion.estPris()).collect(Collectors.toList());
     }
 
+    /**
+     * Getter
+     * @return le roi
+     */
     public Pion getRoi() {
         return roi;
     }
 
+    /**
+     * Getter
+     * @return le nombre de pion blanc eliminé
+     */
     public int getBlancsElimine() {
         return (int) getBlancs().stream().filter(Pion::estPris).count();
     }
 
+    /**
+     * Getter
+     * @return le nombre de pion noir eliminé
+     */
     public int getNoirsElimine() {
         return (int) getNoirs().stream().filter(Pion::estPris).count();
     }
 
+    /**
+     * Trouve le pion au coordonnées du point et le retourne.
+     * @param point les coordonné du point a chercher
+     * @return le pion trouvé au coordonné. null si il n'y a pas de pion ou si il est pris.
+     */
     public Pion getPion(Point point) {
-        Pion res = pions.stream().filter(pion1 -> pion1.getPosition().equals(point)).findFirst().orElse(null);
-        if (res != null) {
-            if (res.estPris()) return null;
-            return res;
-        }
-        return null;
+        return pions.stream().filter(pion1 -> pion1.posEquals(point)).findFirst().orElse(null);
     }
 
     private Pion getPion(int i, int j) {
