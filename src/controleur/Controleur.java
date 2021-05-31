@@ -386,4 +386,36 @@ public class Controleur implements CollecteurEvenements {
     public boolean estTourIA() {
         return (jeu.joueurCourant().getCouleur()==Couleur.BLANC && iaBlanc != null) || (jeu.joueurCourant().getCouleur()==Couleur.NOIR && iaNoir != null);
     }
+
+    /**
+     * Permet d'obtenir le niveau actuel de l'ia blanche
+     * @return TypeIA le niveau de l'ia blanche
+     */
+    @Override
+    public TypeIA getNiveauIABlanche() {
+        return getNiveauIA(iaBlanc);
+    }
+
+    /**
+     * Permet d'obtenir le niveau actuel de l'ia noir
+     * @return TypeIA le niveau de l'ia noir
+     */
+    @Override
+    public TypeIA getNiveauIANoir() {
+        return getNiveauIA(iaNoir);
+    }
+
+    /**
+     * Permet d'obtenir le niveau actuel de l'ia passé en parametre
+     * @param ia dont il faut détérminer le niveau
+     * @return TypeIA le niveau de l'ia passé en paramétre
+     */
+    private TypeIA getNiveauIA(IA ia) {
+        if (ia instanceof IAFacile) {
+            return TypeIA.FACILE;
+        } else if (ia instanceof  IADifficile) {
+            return TypeIA.DIFFICILE;
+        }
+        return TypeIA.NONE;
+    }
 }

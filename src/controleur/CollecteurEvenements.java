@@ -44,4 +44,6 @@ public interface CollecteurEvenements {
 
     // IA
     boolean estTourIA();
+    TypeIA getNiveauIANoir();
+    TypeIA getNiveauIABlanche();
 }
