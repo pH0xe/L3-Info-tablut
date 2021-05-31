@@ -63,7 +63,13 @@ public class Plateau extends Observable {
         initReaderPions(reader);
     }
 
-
+    /**
+     * Calcul toute les cases accessibles pour un pion donné. <br>
+     * Regarde dans les 4 directions autours du pions. Tant que la case est vide cette case est accessible. Des qu'il rencontre une case occupé arrete la recherche. <br>
+     * Saute le trone. Le trone peut etre traversé mais seul le roi peut si arreter. <br>
+     * @param pion le pion depuis lequel on souhaite obtenir les cases accessibles.
+     * @return la liste des coordonné accesibles par le pion
+     */
     public List<Point> getCasesAccessibles(Pion pion){
         int pl = pion.getPosition().getL();
         int pc = pion.getPosition().getC();
