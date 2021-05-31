@@ -28,25 +28,33 @@ public class PanelDidacticiel extends JPanel {
                 .setWeighty(0.9)
                 .fillBoth();
 
-        gbc.setWeighty(0.95);
+        gbc.setWeighty(0.925).setWeightx(0.8);
         panelPlateau = new PanelPlateauTuto(controleur, jeu);
         panelPlateau.addMouseListener(new DidacticielAdapteur(controleur, panelPlateau));
         add(panelPlateau, gbc.toConstraints());
 
-        gbc.setGridy(1).setWeightx(0.9).setWeighty(0.05).fillBoth();
+        gbc.setGridy(1).setWeightx(0.8).setWeighty(0.075).fillBoth();
         panelInstruction = new PanelInstructionTuto(controleur, jeu);
+        panelInstruction.setPreferredSize(panelInstruction.getPreferredSize());
         add(panelInstruction, gbc.toConstraints());
 
-        gbc.setGridy(0).setGridx(1).setWeightx(0.1).setWeighty(1).setGridHeight(2);
+        gbc.setGridy(0).setGridx(1).setWeightx(0.2).setWeighty(1).setGridHeight(2);
         panelInfoTuto = new PanelInfoTuto(controleur, jeu);
         add(panelInfoTuto, gbc.toConstraints());
 
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+        return new Dimension(parent.getWidth(), parent.getHeight());
     }
 
     public void update(){
         panelPlateau.repaint();
         panelInstruction.update();
         panelInfoTuto.update();
+        revalidate();
         repaint();
     }
 

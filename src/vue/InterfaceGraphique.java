@@ -43,7 +43,6 @@ public class InterfaceGraphique implements Runnable, Observer {
     public InterfaceGraphique(Controleur controleur) {
         this.controleur = controleur;
         this.controleur.fixerInterface(this);
-        jeuTuto = new JeuTuto(new Jeu(new Joueur("Jouer1", Couleur.BLANC), new Joueur("Jouer2", Couleur.NOIR)), 0);
 
         dialogOptionJeu = new JDialog();
         dialogFinJeu = new JDialog();
@@ -54,12 +53,11 @@ public class InterfaceGraphique implements Runnable, Observer {
         dialogSaveQuit = new DialogSaveQuit(controleur);
         panelDialogFinJeu = new DialogFinJeu(controleur);
 //        panelMeilleurs = new PanelMeilleursJoueurs(controleur);
-        panelDidacticiel = new PanelDidacticiel(controleur, jeuTuto);
+        panelDidacticiel = new PanelDidacticiel(controleur, null);
 
-        Timer timer = new Timer(500, new AnimationChangerEtat(controleur));
+        Timer timer = new Timer(700, new AnimationChangerEtat(controleur));
         controleur.fixerTimer(timer);
         controleur.fixerInterface(this);
-        controleur.fixerJeuTuto(jeuTuto);
     }
 
     public static void demarrer(Controleur controleur) {
@@ -71,8 +69,8 @@ public class InterfaceGraphique implements Runnable, Observer {
         frame =  new JFrame("Tablut");
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowEvents(controleur, panelJeu));
-        frame.setSize(600, 600);
-        frame.setMinimumSize(new Dimension(600,600));
+        frame.setSize(700, 700);
+        frame.setMinimumSize(new Dimension(700,700));
         frame.setLocationRelativeTo(null);
         initDialogOption();
         initDialogFin();

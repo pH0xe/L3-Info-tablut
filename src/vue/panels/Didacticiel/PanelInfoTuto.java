@@ -74,7 +74,7 @@ public class PanelInfoTuto extends JPanel {
     }
 
     private void initButtonAdapters() {
-        btnRefaire.addMouseListener(new RefaireTutoAdapteur(controleur));
+//        btnRefaire.addMouseListener(new RefaireTutoAdapteur(controleur));
         btnAnnuler.addMouseListener(new AnnulerTutoAdapteur(controleur));
         btnAcceuil.addMouseListener(new AccueilTutoAdapteur(controleur));
     }
@@ -95,6 +95,8 @@ public class PanelInfoTuto extends JPanel {
 
         btnAnnuler.setEnabled(!jeu.getCoupsPrecedent().isEmpty());
         btnRefaire.setEnabled(false);
+
+        revalidate();
     }
 
     public void addJeu(JeuTuto jeu) {

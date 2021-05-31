@@ -18,7 +18,7 @@ public class JeuTuto {
     private Point highlightCase;
     public Point sourceCase;
     private boolean showCasesAccessibles;
-    private final List<Integer> unanimateEtat = new ArrayList<>(Arrays.asList(3,4,8,10,13));
+    private final List<Integer> unanimateEtat = new ArrayList<>(Arrays.asList(3,4,8,10,11));
     private final Stack<Integer> coupsPrecedent;
     private final Stack<Point> clickPrecedent;
     private final Stack<String> boardPrecedent;
@@ -88,6 +88,7 @@ public class JeuTuto {
                     if(jeu.verifierCoup(getHighlightCase())){
                         jeu.roiCapture();
                     }
+                    jeu.joueurSuivant();
                     System.out.println("[traiteDeplacement] Etat : " + getEtat() + " EtatDeplace : " + getEtatDeplace());
                     System.out.println("[traiteDeplacement] sourceCase : " + sourceCase + " highlightCase : " + getHighlightCase());
                     setShowCasesAccessibles(false);
@@ -129,10 +130,11 @@ public class JeuTuto {
             case 10:
                 setHighlightCase(2,5);
                 break;
-            case 13:
+            case 11:
                 setHighlightCase(-1,-1);
                 break;
         }
+        jeu.joueurSuivant();
         setEtatDeplace(0);
         setEtat(getEtat()+1);
     }

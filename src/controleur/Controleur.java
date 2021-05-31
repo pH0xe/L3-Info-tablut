@@ -38,6 +38,7 @@ public class Controleur implements CollecteurEvenements {
         joueurBlanc = new Joueur("Joueur blanc", Couleur.BLANC);
         joueurNoir = new Joueur("Joueur noir", Couleur.NOIR);
         jeu = new Jeu(joueurBlanc, joueurNoir);
+        jt = new JeuTuto(new Jeu(new Joueur("Jouer Blanc", Couleur.BLANC), new Joueur("Jouer Noir", Couleur.NOIR)), 0);
         tIAB = new Timer(2000, new AdaptateurIA(this, 1));
         tIAN = new Timer(2000, new AdaptateurIA(this, 2));
     }
@@ -81,12 +82,6 @@ public class Controleur implements CollecteurEvenements {
             case 11:
                 jt.traiteDeplacement(l,c, 2,8);
                 break;
-            case 12:
-                jt.traiteDeplacement(l,c, 4,2);
-                break;
-            case 13:
-                jt.traiteDeplacement(l,c, 0,8);
-                break;
         }
         if( jt.getEtat() == 0)
             jt.setEtat(1);
@@ -96,13 +91,12 @@ public class Controleur implements CollecteurEvenements {
             loadPlateauTuto("TutoBoard3.txt");
         if(jt.getEtat() == 11 && jt.getEtatDeplace() == 0)
             loadPlateauTuto("TutoBoard4.txt");
-        interfaceGraphique.update();
-        if(jt.getEtat() == 14)
-            clicRefaireTuto();
-        if(jt.getEtatDeplace() == 2 && !(jt.getUnanimateEtat().contains(jt.getEtat()))){
-//            jt.addClickPrecedent(new Point(l,c));
+        if(jt.getEtat() == 12)
+            fixerJeuTuto(new JeuTuto(new Jeu(new Joueur("Jouer Blanc", Couleur.BLANC), new Joueur("Jouer Noir", Couleur.NOIR)), 0));
+        else if(jt.getEtatDeplace() == 2 && !(jt.getUnanimateEtat().contains(jt.getEtat()))){
             timer.start();
         }
+        interfaceGraphique.update();
     }
 
     @Override
@@ -126,13 +120,8 @@ public class Controleur implements CollecteurEvenements {
             case 9:
                 jt.setHighlightCase(5,0);
                 break;
-            case 11:
-                jt.setHighlightCase(4,1);
-                break;
-            case 12:
-                jt.setHighlightCase(2,8);
-                break;
         }
+        jt.getJeu().joueurSuivant();
         jt.setEtatDeplace(0);
         interfaceGraphique.update();
         jt.setEtat(jt.getEtat()+1);
@@ -182,7 +171,10 @@ public class Controleur implements CollecteurEvenements {
     }
 
     @Override
-    public void fixerJeuTuto(JeuTuto jeu){ jt = jeu;}
+    public void fixerJeuTuto(JeuTuto jeu){
+        jt = jeu;
+        interfaceGraphique.addJeuTuto(jeu);
+    }
 
     @Override
     public void fixerTimer(Timer tm) { timer = tm; }
@@ -308,7 +300,8 @@ public class Controleur implements CollecteurEvenements {
 
     @Override
     public void retourAccueilTuto(){
-        interfaceGraphique.fermerDidacticiel();
+        fixerJeuTuto(new JeuTuto(new Jeu(new Joueur("Jouer Blanc", Couleur.BLANC), new Joueur("Jouer Noir", Couleur.NOIR)), 0));
+        fermerDidacticiel();
     }
 
     @Override
@@ -390,6 +383,7 @@ public class Controleur implements CollecteurEvenements {
 
     @Override
     public void ouvrirDidacticiel() {
+        interfaceGraphique.addJeuTuto(jt);
         interfaceGraphique.ouvrirDidacticiel();
     }
 
