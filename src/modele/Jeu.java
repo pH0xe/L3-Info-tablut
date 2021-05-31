@@ -394,20 +394,38 @@ public class Jeu extends Observable {
     ////////////////////////////////////////////////
     // Getters
     ////////////////////////////////////////////////
+
+    /**
+     * Utilisé par {@link vue.panels.jeu.PanelPlateau PanelPlateau} pour afficher les cases accessible par le pion que le joueur a sélectionné.
+     * @return La liste des coordonné des cases accessible.
+     */
     public List<Point> getClickable() {
         return pt.getCasesAccessibles(pionSelect);
     }
 
+    /**
+     * Utilisé par {@link #estClickable(Point)} et par {@link vue.panels.jeu.PanelPlateau PanelPlateau} <br>
+     * Permet de déterminer si un pion et clickable dans le tours actuel (Si il appartient au joueur courrant et qu'il y a au moins une possibilité de mouvement.
+     * @return La liste des pions déplacable
+     */
     public List<Pion> getPionClickable() {
         if (estFini()) return new ArrayList<>();
         List<Pion> pions = getPionsCourant();
         return pions.stream().filter(pion -> !pt.getCasesAccessibles(pion).isEmpty()).collect(Collectors.toList());
     }
 
+    /**
+     * Getter
+     * @return le plateau associé au jeu actuel
+     */
     public Plateau getPlateau() {
         return pt;
     }
 
+    /**
+     * Utilisé par l'{@link controleur.IA.IA IA} permet de retourner la liste complète des coups qui sont jouable dans le tour actuel.
+     * @return la liste des coup possible
+     */
     public List<Coup> getListeCoups(){
         List<Coup> C = new ArrayList<>();
         List<Pion> jouables = this.getPionsCourant();
@@ -420,18 +438,34 @@ public class Jeu extends Observable {
         return C;
     }
 
+    /**
+     * Getter
+     * @return le joueur blanc
+     */
     public Joueur getJoueurBlanc() {
         return j1;
     }
 
+    /**
+     * Getter
+     * @return le joueur noir
+     */
     public Joueur getJoueurNoir() {
         return j2;
     }
 
+    /**
+     * Getter
+      * @return l'historique des coups suivant
+     */
     public Stack<Coup> getCoupsSuivant() {
         return coupsSuivant;
     }
 
+    /**
+     * Getter
+     * @return l'historique des coups suivant
+     */
     public Stack<Coup> getCoupsPrecedent() {
         return coupsPrecedent;
     }
