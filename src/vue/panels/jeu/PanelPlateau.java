@@ -46,7 +46,12 @@ public class PanelPlateau extends JPanel {
         for (int i = 0; i < 9; i++) {
             int x = initX;
             for (int j = 0; j < 9; j++) {
-                g2.drawImage(Images.CASE_PLATEAU, x, y, sizeCase, sizeCase, null);
+                Image img;
+                if (i == 4 && j == 4)
+                    img = Images.TRONE;
+                else
+                    img = Images.CASE_PLATEAU;
+                g2.drawImage(img, x, y, sizeCase, sizeCase, null);
                 g2.drawRect(x, y, sizeCase, sizeCase);
                 x += sizeCase;
             }
