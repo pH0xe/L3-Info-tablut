@@ -107,4 +107,12 @@ public class PanelInfoJeu extends JPanel {
     public boolean refaireActif() {
         return btnRefaire.isEnabled();
     }
+
+    @Override
+    public Dimension getPreferredSize() {
+        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        int size = (frame.getWidth() / 5);
+        return new Dimension(size, size);
+    }
+
 }
