@@ -198,7 +198,8 @@ public class Controleur implements CollecteurEvenements {
         iaBlanc = definirIa(typeIAB);
         iaNoir = definirIa(typeIAN);
         interfaceGraphique.fermerDialogOption();
-        lancerTimerIA();
+        if (!jeu.estFini())
+            lancerTimerIA();
     }
 
     ////////////////////////////////////////////////
