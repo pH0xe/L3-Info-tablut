@@ -18,12 +18,15 @@ public class PanelPlateau extends JPanel {
     private Jeu jeu;
     private final CollecteurEvenements controleur;
     private int initX, initY, sizeCase;
+    private boolean isHover = false;
+    private Point hoverCoord;
 
     public PanelPlateau(CollecteurEvenements controleur, Jeu jeu) {
         this.controleur = controleur;
         this.jeu = jeu;
         setOpaque(false);
         addMouseListener(new PlateauAdapteur(controleur, this));
+        addMouseMotionListener(new PlateauAdapteur(controleur, this));
     }
 
     @Override
@@ -120,11 +123,15 @@ public class PanelPlateau extends JPanel {
             int y = initY + (sizeCase * point.getL()) + offset;
 
             g2.fillOval(x,y, sizePoint, sizePoint);
+            if (isHover && point.equals(hoverCoord)) {
+                g2.setColor(new Color(0,255,0,75));
+                g2.fillRect(x - offset, y-offset, sizeCase, sizeCase);
+                g2.setColor(Constants.BOARD_PREVIEW);
+            }
         }
 
 
     }
-
 
     public Point getCoord(int x, int y) {
         int taillePlateau = sizeCase * 9;
@@ -138,5 +145,13 @@ public class PanelPlateau extends JPanel {
 
     public void addJeu(Jeu jeu) {
         this.jeu = jeu;
+    }
+
+    public void setHover(boolean b) {
+        isHover = b;
+    }
+
+    public void setHoverCoord(Point coord) {
+        hoverCoord = coord;
     }
 }

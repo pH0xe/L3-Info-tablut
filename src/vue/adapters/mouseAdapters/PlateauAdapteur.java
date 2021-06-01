@@ -22,4 +22,20 @@ public class PlateauAdapteur extends MouseAdapter {
         if (point != null)
             controleur.cliquePlateau(point);
     }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        panel.setHover(false);
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        panel.setHover(true);
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        panel.setHoverCoord(panel.getCoord(e.getX(), e.getY()));
+        panel.repaint();
+    }
 }
