@@ -224,6 +224,7 @@ public class Jeu extends Observable {
         Point destination = c.getDestination();
         if(pt.peutDeplacer(pion, destination)) {
             pt.deplacerPion(pion, destination.getL(), destination.getC());
+            joueurSuivant();
             coupsPrecedent.push(c);
             update();
         } else
