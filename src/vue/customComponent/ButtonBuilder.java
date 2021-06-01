@@ -74,6 +74,7 @@ public class ButtonBuilder {
             btn.setOpaque(false);
             btn.setBorder(new EmptyBorder(5,15,5,15));
             btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            btn.setContentAreaFilled(false);
         }
 
         @Override

@@ -24,8 +24,8 @@ public class JeuInfoAdapteur extends MouseAdapter {
         JButton source = (JButton) e.getSource();
 
         switch (source.getText()) {
-            case Labels.ACCUEIL_OPTIO :
-                Configuration.instance().logger().info("[Option]");
+            case Labels.JEU_MENU:
+                Configuration.instance().logger().info("[Menu]");
                 controleur.ouvrirOptionJeu();
                 break;
             case Labels.JEU_REFAIRE:
