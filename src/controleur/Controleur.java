@@ -13,6 +13,8 @@ import modele.util.Coup;
 import modele.util.Point;
 import vue.InterfaceGraphique;
 import vue.adapters.AdaptateurIA;
+import vue.adapters.timers.LastMove;
+
 import javax.swing.*;
 import java.io.File;
 
@@ -21,7 +23,7 @@ public class Controleur implements CollecteurEvenements {
     private InterfaceGraphique interfaceGraphique;
     private Joueur joueurBlanc, joueurNoir;
     private IA iaBlanc, iaNoir;
-    private Timer tIAB, tIAN;
+    private Timer tIAB, tIAN, tLastMove;
 
     public Controleur(){
         joueurBlanc = new Joueur("Joueur blanc", Couleur.BLANC);
@@ -29,6 +31,8 @@ public class Controleur implements CollecteurEvenements {
         jeu = new Jeu(joueurBlanc, joueurNoir);
         tIAB = new Timer(2000, new AdaptateurIA(this, 1));
         tIAN = new Timer(2000, new AdaptateurIA(this, 2));
+        tLastMove = new Timer(2000, new LastMove(this));
+        tLastMove.start();
     }
 
     ////////////////////////////////////////////////
@@ -54,6 +58,7 @@ public class Controleur implements CollecteurEvenements {
         if (estTourIA()) return;
         if (jeu.verifierCoup(point)) {
             verifFin();
+            drawLastMove(false);
             return;
         }
         jeu.verifierPion(point);
@@ -87,6 +92,8 @@ public class Controleur implements CollecteurEvenements {
         Coup c = ia.iaJoue(jeu);
         jeu.joueCoup(c);
         verifFin();
+        tLastMove.restart();
+        drawLastMove(true);
     }
 
     /**
@@ -145,6 +152,14 @@ public class Controleur implements CollecteurEvenements {
         } else {
             lancerTimerIA();
         }
+    }
+
+    /**
+     * Affiche le dernier coup joué
+     */
+    @Override
+    public void drawLastMove(boolean show) {
+        interfaceGraphique.toggleLastMove(show);
     }
 
     ////////////////////////////////////////////////

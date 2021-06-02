@@ -13,6 +13,7 @@ public interface CollecteurEvenements {
     void annulerCoup();
     void abandonnerPartie();
     void rejouer();
+    void drawLastMove(boolean show);
 
     // Options
     void ouvrirOption();

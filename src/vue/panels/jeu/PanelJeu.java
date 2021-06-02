@@ -45,4 +45,8 @@ public class PanelJeu extends JPanel {
         panelPlateau.addJeu(jeu);
         panelInfoJeu.addJeu(jeu);
     }
+
+    public void toggleLastMove(boolean show) {
+        panelPlateau.toggleLastMove(show);
+    }
 }

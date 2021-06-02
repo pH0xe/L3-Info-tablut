@@ -103,6 +103,10 @@ public class InterfaceGraphique implements Runnable, Observer {
         update();
         reloadFrame();
     }
+    public void toggleLastMove(boolean show) {
+        panelJeu.toggleLastMove(show);
+        update();
+    }
 
     public void ouvrirOption() {
         fermerPanels();
