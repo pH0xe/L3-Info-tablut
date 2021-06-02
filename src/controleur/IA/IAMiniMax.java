@@ -12,8 +12,8 @@ import java.time.Instant;
 import java.util.*;
 
 public abstract class IAMiniMax extends IA{
-    public final int MAX = 100000;
-    public final int MIN = -100000;
+    public final int MAX = 1000000;
+    public final int MIN = -1000000;
 
     Map<ConfigJeu, List<Coup>> returnVal;
     Set<ConfigJeu> mem;
@@ -86,7 +86,7 @@ public abstract class IAMiniMax extends IA{
     public int Minimax(Jeu j, Couleur couleur, int profondeur, List<Coup> prec, int alpha, int beta) {
         ConfigJeu cj = new ConfigJeu(couleur, j, profondeur);
         int borne = couleur.equals(Couleur.BLANC) ? MIN : MAX;
-        if(Instant.now().compareTo(maintenant.plusSeconds(15)) < 0 ){
+        if(Instant.now().compareTo(maintenant.plusSeconds(10)) < 0 ){
             if (profondeur == 0 || j.roiSorti() || j.roiCapture()) {
 
                 return heuristique(j, profondeur);
@@ -107,17 +107,14 @@ public abstract class IAMiniMax extends IA{
                         borne = Minimax(j.joueCoupDuplique(cp), Couleur.NOIR, profondeur - 1, prec, alpha, beta);
                         if (borne > alpha) {
                             alpha = borne;
-                            cj.setAlpha(alpha);
-
+                            //cj.setAlpha(alpha);
                             if(profondeur == prof && dernierCoupJoue != null && cp !=dernierCoupJoue )
                                 meilleur = cp;
                                 coups.clear();
                                 coups.add(cp);
                         } else if (borne == alpha) {
-                            if (r.nextBoolean()) {
-                                coups.add(cp);
-                                meilleur = cp;
-                            }
+                            coups.add(cp);
+                            meilleur = cp;
                         }
                             /*alpha = max(alpha, borne);
                             if(alpha < borne){
@@ -135,7 +132,7 @@ public abstract class IAMiniMax extends IA{
                         borne = Minimax(j2, Couleur.BLANC, profondeur - 1, prec, alpha, beta);
                         if (borne < beta) {
                             beta = borne;
-                            cj.setBeta(beta);
+                            //cj.setBeta(beta);
 
                             if(profondeur == prof && dernierCoupJoue != null && cp !=dernierCoupJoue)
                                 meilleur = cp;

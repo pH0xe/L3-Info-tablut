@@ -32,12 +32,16 @@ public class IADifficile extends IAMiniMax{
 
 
         if(j.roiSorti()){
-                return MAX + 32*profondeur;
+            return MAX + 32*profondeur;
 
         }
         if(j.roiCapture()){
 
             return MIN - 32 * profondeur;
+        }
+
+        if(j.getPlateau().getSortiesAccessibles()>=2){
+            return MAX - 1000 + 5*profondeur;
         }
 
         int adjacentRoi = 0;
@@ -67,17 +71,23 @@ public class IADifficile extends IAMiniMax{
             heuristique -= 5*adjacentRoi;
         }
 
-        heuristique -= 20*adjacentRoi;
+        //heuristique -= 24*adjacentRoi;
 
 
-        heuristique += 8*p.getBlancs().size();
-        heuristique -= 6*p.getNoirs().size();
+        if(j.joueurCourant().getCouleur() == Couleur.BLANC){
+            heuristique += 8*p.getBlancs().size();
+            heuristique -= 6*(16-p.getNoirs().size());
+        }else{
+            heuristique -= 8*p.getNoirs().size();
+            heuristique += 6*(16-p.getBlancs().size());
+        }
 
-        heuristique += 16 * j.getPlateau().getCasesAccessibles(roi).size();
 
-        heuristique += 256 * j.getPlateau().getSortiesAccessibles() + 64*profondeur;
+        heuristique += 4 * j.getPlateau().getCasesAccessibles(roi).size();
 
-        heuristique += 4*(j.getPlateau().getNbCases(Couleur.BLANC)+j.getPlateau().getNbCases(Couleur.NOIR));
+        heuristique += 64 * j.getPlateau().getSortiesAccessibles() + 5*profondeur;
+
+        //heuristique += (j.getPlateau().getNbCases(Couleur.BLANC));
 
         return heuristique;
     }
@@ -158,18 +168,28 @@ public class IADifficile extends IAMiniMax{
         while(Instant.now().compareTo(maintenant.plusSeconds(10)) < 0 && prof <= 99);
 
 
-
+        Coup res = null;
         System.out.println("Temps d'éxecution " + Instant.now());
         ConfigJeu cj = new ConfigJeu(couleur, j, prof);
         Random r = new Random();
-        int size = returnVal.get(cj).size();
-        returnVal.get(cj).remove(dernierCoupJoue);
-        Coup res = returnVal.get(cj).get(r.nextInt(size));
 
-        dernierCoupJoue = res;
-        System.out.println(res +" ");
-        //System.out.println(cj.getJeu().getPlateau()+ "\n Sorties accessibles : " + cj.getJeu().getPlateau().getSortiesAccessibles());
+
+        returnVal.get(cj).remove(dernierCoupJoue);
+
+        int size = returnVal.get(cj).size();
+        System.out.println(size);
+        if(size > 0){
+            res = returnVal.get(cj).get(r.nextInt(size));
+            dernierCoupJoue = new Coup(res).inverseCoup();
+            System.out.println(res +" ");
+            return res;
+        }
+        else{
+            j.getListeCoups().remove(dernierCoupJoue);
+            res = j.getListeCoups().get(r.nextInt(j.getListeCoups().size()));
+        }
         returnVal.clear();
+        dernierCoupJoue = res;
         return res;
     }
 

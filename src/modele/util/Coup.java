@@ -64,4 +64,12 @@ public class Coup implements Serializable {
     public int hashCode() {
         return Objects.hash(pion, destination, captures);
     }
+
+    public Coup inverseCoup() {
+        Pion tmp = new Pion(this.getPion());
+        this.pion = new Pion(tmp.getType(), this.destination);
+        this.destination = tmp.getPosition();
+
+        return this;
+    }
 }
