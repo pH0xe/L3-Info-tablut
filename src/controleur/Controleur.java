@@ -32,7 +32,6 @@ public class Controleur implements CollecteurEvenements {
     private Joueur joueurBlanc, joueurNoir;
     private IA iaBlanc, iaNoir;
     private Timer tIAB, tIAN;
-    Timer timer = new Timer(10,null);
 
     public Controleur(){
         joueurBlanc = new Joueur("Joueur blanc", Couleur.BLANC);
@@ -93,42 +92,8 @@ public class Controleur implements CollecteurEvenements {
             loadPlateauTuto("TutoBoard4.txt");
         if(jt.getEtat() == 12)
             fixerJeuTuto(new JeuTuto(new Jeu(new Joueur("Jouer Blanc", Couleur.BLANC), new Joueur("Jouer Noir", Couleur.NOIR)), 0));
-        else if(jt.getEtatDeplace() == 2 && !(jt.getUnanimateEtat().contains(jt.getEtat()))){
-            timer.start();
-        }
         interfaceGraphique.update();
     }
-
-    @Override
-    public void animationChangerEtat() {
-        switch (jt.getEtat()){
-            case 1:
-                jt.setHighlightCase(3,0);
-                break;
-            case 2:
-                jt.setHighlightCase(4,2);
-                break;
-            case 5:
-                jt.setHighlightCase(7,1);
-                break;
-            case 6:
-                jt.setHighlightCase(6,5);
-                break;
-            case 7:
-                jt.setHighlightCase(6,2);
-                break;
-            case 9:
-                jt.setHighlightCase(5,0);
-                break;
-        }
-        jt.getJeu().joueurSuivant();
-        jt.setEtatDeplace(0);
-        interfaceGraphique.update();
-        jt.setEtat(jt.getEtat()+1);
-    }
-
-    @Override
-    public void stopTimer(){ timer.stop(); }
 
     @Override
     public void clicRefaireTuto() {
@@ -143,7 +108,6 @@ public class Controleur implements CollecteurEvenements {
         interfaceGraphique.update();
     }
 
-    @Override
     public void loadPlateauTuto(String filename) {
         InputStream in = Configuration.charger("tutorials" + File.separator + filename);
         BoardReaderText br = new BoardReaderText(in);
@@ -175,9 +139,6 @@ public class Controleur implements CollecteurEvenements {
         jt = jeu;
         interfaceGraphique.addJeuTuto(jeu);
     }
-
-    @Override
-    public void fixerTimer(Timer tm) { timer = tm; }
 
     @Override
     public void fermerOption(String nomJoueurBlanc, String nomJoueurNoir, TypeIA typeJB, TypeIA typeJN) {

@@ -1,13 +1,9 @@
 package vue;
 
-import controleur.AnimationChangerEtat;
 import controleur.Controleur;
 import modele.*;
-import modele.Joueur.*;
-import vue.panels.*;
 import vue.panels.Didacticiel.PanelDidacticiel;
 import vue.panels.jeu.PanelJeu;
-import global.BestScoresUtils;
 import modele.Jeu;
 import modele.Joueur.Joueur;
 import structure.Observer;
@@ -17,7 +13,6 @@ import vue.dialog.DialogOptionJeu;
 import vue.dialog.DialogSaveQuit;
 import vue.panels.PanelAccueil;
 import vue.panels.bestPlayers.PanelMeilleursJoueurs;
-import vue.panels.jeu.PanelJeu;
 import vue.panels.PanelOption;
 import vue.panels.saves.PanelSauvegarde;
 
@@ -37,7 +32,7 @@ public class InterfaceGraphique implements Runnable, Observer {
     private final JDialog dialogOptionJeu, dialogFinJeu;
     private final DialogFinJeu panelDialogFinJeu;
     private final DialogSaveQuit dialogSaveQuit;
-    private final PanelMeilleursJoueurs panelMeilleurs = null;
+    private final PanelMeilleursJoueurs panelMeilleurs;
     private PanelDidacticiel panelDidacticiel;
 
     public InterfaceGraphique(Controleur controleur) {
@@ -52,11 +47,9 @@ public class InterfaceGraphique implements Runnable, Observer {
         panelSauvegarde = new PanelSauvegarde(controleur);
         dialogSaveQuit = new DialogSaveQuit(controleur);
         panelDialogFinJeu = new DialogFinJeu(controleur);
-//        panelMeilleurs = new PanelMeilleursJoueurs(controleur);
+        panelMeilleurs = new PanelMeilleursJoueurs(controleur);
         panelDidacticiel = new PanelDidacticiel(controleur, null);
 
-        Timer timer = new Timer(700, new AnimationChangerEtat(controleur));
-        controleur.fixerTimer(timer);
         controleur.fixerInterface(this);
     }
 
@@ -182,8 +175,8 @@ public class InterfaceGraphique implements Runnable, Observer {
             frame.remove(panelSauvegarde);
         if (panelDidacticiel.isDisplayable())
             frame.remove(panelDidacticiel);
-//        if (panelMeilleurs.isDisplayable())
-//            frame.remove(panelMeilleurs);
+        if (panelMeilleurs.isDisplayable())
+            frame.remove(panelMeilleurs);
     }
 
     private void reloadFrame() {

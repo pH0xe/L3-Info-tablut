@@ -45,10 +45,12 @@ public class PanelInfoTuto extends JPanel {
 
         ConstraintBuilder cb = new ConstraintBuilder(0,0).setIpady(40).setWeighty(0.2).setWeightx(1).fillBoth();
         add(joueurCourant, cb.toConstraints());
+        joueurCourant.setPreferredSize(joueurCourant.getPreferredSize());
 
         pionElimi = new PanelPionElimineTuto();
         cb.setWeighty(0.5).incrGridy();
         add(pionElimi,cb.toConstraints());
+        pionElimi.setPreferredSize(pionElimi.getPreferredSize());
 
         btnAcceuil = new ButtonBuilder().setText(Labels.JEU_ACCUEIL).setBackground(Constants.BUTTON_BACKGROUND).setForeground(Constants.BUTTON_FOREGROUND)
                 .setIcon(Images.ACCUEIL).toJButton();
@@ -60,12 +62,15 @@ public class PanelInfoTuto extends JPanel {
         cb.setWeighty(0).setIpady(30).setInset(0,10,10,10);
         cb.incrGridy();
         add(btnAnnuler, cb.toConstraints());
+        btnAnnuler.setPreferredSize(btnAnnuler.getPreferredSize());
 
         cb.incrGridy();
         add(btnRefaire, cb.toConstraints());
+        btnRefaire.setPreferredSize(btnRefaire.getPreferredSize());
 
         cb.incrGridy();
         add(btnAcceuil, cb.toConstraints());
+        btnAcceuil.setPreferredSize(btnAcceuil.getPreferredSize());
 
         initButtonAdapters();
 
@@ -77,6 +82,13 @@ public class PanelInfoTuto extends JPanel {
 //        btnRefaire.addMouseListener(new RefaireTutoAdapteur(controleur));
         btnAnnuler.addMouseListener(new AnnulerTutoAdapteur(controleur));
         btnAcceuil.addMouseListener(new AccueilTutoAdapteur(controleur));
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        int size = (frame.getWidth() / 5);
+        return new Dimension(size, size);
     }
 
     public void update() {

@@ -18,7 +18,6 @@ public class JeuTuto {
     private Point highlightCase;
     public Point sourceCase;
     private boolean showCasesAccessibles;
-    private final List<Integer> unanimateEtat = new ArrayList<>(Arrays.asList(3,4,8,10,11));
     private final Stack<Integer> coupsPrecedent;
     private final Stack<Point> clickPrecedent;
     private final Stack<String> boardPrecedent;
@@ -35,8 +34,6 @@ public class JeuTuto {
     }
 
     public void addJeu(Jeu jeu){ this.jeu = jeu; }
-
-    public List<Integer> getUnanimateEtat(){ return unanimateEtat; }
 
     public Stack<Integer> getCoupsPrecedent(){ return coupsPrecedent; }
 
@@ -88,7 +85,6 @@ public class JeuTuto {
                     if(jeu.verifierCoup(getHighlightCase())){
                         jeu.roiCapture();
                     }
-                    jeu.joueurSuivant();
                     System.out.println("[traiteDeplacement] Etat : " + getEtat() + " EtatDeplace : " + getEtatDeplace());
                     System.out.println("[traiteDeplacement] sourceCase : " + sourceCase + " highlightCase : " + getHighlightCase());
                     setShowCasesAccessibles(false);
@@ -109,34 +105,45 @@ public class JeuTuto {
                     System.out.println("[traiteDeplacement] Class Jeu : Serialized -> " + filename + ".dat");
                 }
 
-                if(unanimateEtat.contains(getEtat())){
-                    traiteCasSpe();
+                switch (getEtat()){
+                    case 1:
+                        setHighlightCase(3,0);
+                        break;
+                    case 2:
+                        setHighlightCase(4,2);
+                        break;
+                    case 3:
+                        setHighlightCase(4,1);
+                        break;
+                    case 4:
+                        setHighlightCase(7,0);
+                        break;
+                    case 5:
+                        setHighlightCase(7,1);
+                        break;
+                    case 6:
+                        setHighlightCase(6,5);
+                        break;
+                    case 7:
+                        setHighlightCase(6,2);
+                        break;
+                    case 8:
+                        setHighlightCase(4,7);
+                        break;
+                    case 9:
+                        setHighlightCase(5,0);
+                        break;
+                    case 10:
+                        setHighlightCase(2,5);
+                        break;
+                    case 11:
+                        setHighlightCase(-1,-1);
+                        break;
                 }
+                setEtatDeplace(0);
+                setEtat(getEtat()+1);
                 break;
         }
-    }
-
-    public void traiteCasSpe(){
-        switch (getEtat()){
-            case 3:
-                setHighlightCase(4,1);
-                break;
-            case 4:
-                setHighlightCase(7,0);
-                break;
-            case 8:
-                setHighlightCase(4,7);
-                break;
-            case 10:
-                setHighlightCase(2,5);
-                break;
-            case 11:
-                setHighlightCase(-1,-1);
-                break;
-        }
-        jeu.joueurSuivant();
-        setEtatDeplace(0);
-        setEtat(getEtat()+1);
     }
 
     public void annulerCoupTuto(){
@@ -145,20 +152,23 @@ public class JeuTuto {
             BoardReaderBinary br = new BoardReaderBinary("data" + File.separator + "tutorial_saves" + File.separator + filename + ".dat");
             br.lirePlateau();
             jeu = new Jeu(br);
+//            jeu.joueurSuivant();
             System.out.println("[traiteDeplacement] Class Jeu : Deserialized -> " + filename + ".dat");
         }
-        if(getEtatDeplace() == 0 || (getEtatDeplace() == 2 && unanimateEtat.contains(getEtat()))){
+        if(getEtatDeplace() == 0 || getEtatDeplace() == 2){
             List<Point> listParamTuto = jeu.annulerCoupTuto();
             sourceCase = listParamTuto.get(0);
             setHighlightCase(listParamTuto.get(1).getL(), listParamTuto.get(1).getC());
             setShowCasesAccessibles(true);
             System.out.println("[annuleCoupTuto] sourceCase : " + sourceCase + " highlightCase : " + getHighlightCase());
-        } else if(getEtatDeplace() == 1){
+        } else if(getEtatDeplace() == 1)
             setShowCasesAccessibles(false);
-        }
+//        else
+//            jeu.joueurSuivant();
+        System.out.println("[annuleCoupTuto] Before -> Etat : " + getEtat() + " EtatDeplace : " + getEtatDeplace());
         setEtatDeplace(coupsPrecedent.pop());
         setEtat(coupsPrecedent.pop());
-        System.out.println("[annuleCoupTuto] Etat : " + getEtat() + " EtatDeplace : " + getEtatDeplace());
+        System.out.println("[annuleCoupTuto] After -> Etat : " + getEtat() + " EtatDeplace : " + getEtatDeplace());
         Point point = clickPrecedent.pop();
         setHighlightCase(point.getL(), point.getC());
     }

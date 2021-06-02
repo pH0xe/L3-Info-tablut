@@ -10,7 +10,6 @@ import javax.swing.*;
 public interface CollecteurEvenements {
     void fixerInterface(InterfaceGraphique it);
     void fixerJeuTuto(JeuTuto jeu);
-    void fixerTimer(Timer tm);
     void demarrerJeu();
     void cliquePlateau(Point point);
     void clicSourisTuto(int l, int c);
@@ -45,12 +44,8 @@ public interface CollecteurEvenements {
     void ouvrirMeilleursJoueurs();
     void fermerMeilleursJoueurs();
 
-    void animationChangerEtat();
-
     void clicAnnulerTuto();
 
-    void loadPlateauTuto(String filename);
-    void stopTimer();
     void ouvrirDidacticiel();
     void fermerDidacticiel();
     void retourAccueilTuto();
