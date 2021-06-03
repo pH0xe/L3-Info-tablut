@@ -3,6 +3,7 @@ package controleur;
 import controleur.IA.IA;
 import controleur.IA.IADifficile;
 import controleur.IA.IAFacile;
+import controleur.IA.IAMoyenne;
 import global.BestScoresUtils;
 import global.reader.BoardReaderBinary;
 import global.writer.BoardWriterBinary;
@@ -23,7 +24,7 @@ public class Controleur implements CollecteurEvenements {
     private InterfaceGraphique interfaceGraphique;
     private Joueur joueurBlanc, joueurNoir;
     private IA iaBlanc, iaNoir;
-    private Timer tIAB, tIAN, tLastMove;
+    private Timer tIAB, tIAN, rechercheIA, tLastMove;
 
     public Controleur(){
         joueurBlanc = new Joueur("Joueur blanc", Couleur.BLANC);
@@ -370,7 +371,7 @@ public class Controleur implements CollecteurEvenements {
             case FACILE:
                 return new IAFacile();
             case MOYENNE:
-                return new IAFacile();
+                return new IAMoyenne();
             case DIFFICILE:
                 return new IADifficile();
             default:

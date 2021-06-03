@@ -33,6 +33,7 @@ public class PanelInfoJeu extends JPanel {
         setLayout(new GridBagLayout());
 
         joueurCourant = new JTextPane();
+        joueurCourant.setEditable(false);
         joueurCourant.setBackground(Constants.JEU_LABEL_BG);
         joueurCourant.setBorder(BorderFactory.createEmptyBorder(50,0,0,0));
         style = new SimpleAttributeSet();

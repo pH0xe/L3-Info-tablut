@@ -59,6 +59,7 @@ public class DialogFinJeu extends JPanel {
 
     private void initVictoire() {
         panelGagnant = new JTextPane();
+        panelGagnant.setEditable(false);
         panelGagnant.setBackground(Constants.FRAME_BACKGROUND);
         panelGagnant.setBorder(BorderFactory.createEmptyBorder(50,0,0,0));
     }
