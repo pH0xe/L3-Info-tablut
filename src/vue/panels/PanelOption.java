@@ -18,7 +18,7 @@ import java.awt.*;
 public class PanelOption extends JPanel {
 
     private final CollecteurEvenements controleur;
-    private JButton btnMusic, btnSon, btnBack;
+    private JButton btnBack;
     private JComboBox joueurBlanc, joueurNoir;
     private JTextField nomJBlanc, nomJNoir;
     private final String[] comboboxOption = {"Humain", "IA Facile", "IA Moyenne", "IA Difficile"};
@@ -72,16 +72,14 @@ public class PanelOption extends JPanel {
                 .setGridWidth(2)
                 .setAnchor(GridBagConstraints.PAGE_START);
 
-        btnMusic = new ButtonBuilder().setBackground(Constants.BUTTON_BACKGROUND).setForeground(Constants.BUTTON_FOREGROUND).setText("On").setName(Names.OPTIONS_MUSIC).toJButton();
-        btnSon = new ButtonBuilder().setBackground(Constants.BUTTON_BACKGROUND).setForeground(Constants.BUTTON_FOREGROUND).setText("On").setName(Names.OPTIONS_SOUND).toJButton();
         joueurBlanc = new CustomComboBox(comboboxOption, Names.OPTIONS_COMBO_BLANC);
         joueurNoir = new CustomComboBox(comboboxOption, Names.OPTIONS_COMBO_NOIR);
         nomJBlanc = new CustomTextField(Labels.OPTIONS_FIEBL, Names.OPTIONS_TEXTFIELD_BLANC);
         nomJNoir = new CustomTextField(Labels.OPTIONS_FIENO, Names.OPTIONS_TEXTFIELD_NOIR);
         btnBack = new ButtonBuilder().setBackground(Constants.BUTTON_BACK_BACKGROUND).setForeground(Constants.BUTTON_BACK_FOREGROUND).setText(Labels.BTN_RETOUR).setName(Names.BTN_RETOUR).toJButton();
 
-        String[] labels = {Labels.OPTIONS_MUSIC, Labels.OPTIONS_SOUND, Labels.OPTIONS_JOUBL, Labels.OPTIONS_JOUNO, Labels.OPTIONS_NOJBL,Labels.OPTIONS_NOJNO, ""};
-        JComponent[] cps = {btnMusic, btnSon, joueurBlanc, joueurNoir, nomJBlanc, nomJNoir, btnBack};
+        String[] labels = {Labels.OPTIONS_JOUBL, Labels.OPTIONS_JOUNO, Labels.OPTIONS_NOJBL,Labels.OPTIONS_NOJNO, ""};
+        JComponent[] cps = {joueurBlanc, joueurNoir, nomJBlanc, nomJNoir, btnBack};
         labelComponent = new formPanel(labels, cps);
         panel.add(labelComponent, btnConstraints.toConstraints());
 
@@ -89,42 +87,39 @@ public class PanelOption extends JPanel {
     }
 
     private void initAdaptateur() {
-        btnMusic.addMouseListener(new OptionsAdapteur(controleur, this));
-        btnSon.addMouseListener(new OptionsAdapteur(controleur, this));
         btnBack.addMouseListener(new OptionsAdapteur(controleur, this));
     }
 
     public String getNomJoueurBlanc() {
-        if (!joueurBlanc.getSelectedItem().toString().equalsIgnoreCase("humain"))
-            return joueurBlanc.getSelectedItem().toString();
-
-        if (nomJBlanc.getText().isBlank()) return "Joueur blanc";
-        return nomJBlanc.getText();
+        return getNom(joueurBlanc, nomJBlanc);
     }
 
     public String getNomJoueurNoir() {
-        if (!joueurNoir.getSelectedItem().toString().equalsIgnoreCase("humain"))
-            return joueurNoir.getSelectedItem().toString();
+        return getNom(joueurNoir, nomJNoir);
+    }
 
-        if (nomJNoir.getText().isBlank()) return "Joueur noir";
-        return nomJNoir.getText();
+    private String getNom(JComboBox type, JTextField name) {
+        if (!type.getSelectedItem().toString().equalsIgnoreCase("humain"))
+            return type.getSelectedItem().toString();
+
+        if (name.getText().isBlank()) return "Joueur noir";
+        return name.getText();
     }
 
     public TypeIA getTypeJB() {
-        String jb = joueurBlanc.getSelectedItem().toString();
-        if (jb.equalsIgnoreCase("humain")) return TypeIA.NONE;
-        if (jb.equalsIgnoreCase("IA Facile")) return TypeIA.FACILE;
-        if (jb.equalsIgnoreCase("IA Moyenne")) return TypeIA.MOYENNE;
-        if (jb.equalsIgnoreCase("IA Difficile")) return TypeIA.DIFFICILE;
-        return TypeIA.NONE;
+        return getTypeIA(joueurBlanc);
     }
 
     public TypeIA getTypeJN() {
-        String jn = joueurNoir.getSelectedItem().toString();
-        if (jn.equalsIgnoreCase("humain")) return TypeIA.NONE;
-        if (jn.equalsIgnoreCase("IA Facile")) return TypeIA.FACILE;
-        if (jn.equalsIgnoreCase("IA Moyenne")) return TypeIA.MOYENNE;
-        if (jn.equalsIgnoreCase("IA Difficile")) return TypeIA.DIFFICILE;
+        return getTypeIA(joueurNoir);
+    }
+
+    private TypeIA getTypeIA(JComboBox cb) {
+        String type = cb.getSelectedItem().toString();
+        if (type.equalsIgnoreCase("humain")) return TypeIA.NONE;
+        if (type.equalsIgnoreCase("IA Facile")) return TypeIA.FACILE;
+        if (type.equalsIgnoreCase("IA Moyenne")) return TypeIA.MOYENNE;
+        if (type.equalsIgnoreCase("IA Difficile")) return TypeIA.DIFFICILE;
         return TypeIA.NONE;
     }
 }

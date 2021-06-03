@@ -5,7 +5,9 @@ import vue.utils.Images;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.basic.BasicButtonUI;
+import javax.swing.plaf.metal.MetalButtonUI;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -13,13 +15,8 @@ import java.io.IOException;
 public class ButtonBuilder {
     private final JButton button;
 
-    private boolean isPressed;
-    private boolean isHovered;
-
     public ButtonBuilder() {
         button = new JButton();
-        isPressed = false;
-        isHovered = false;
         button.setFocusPainted(false);
     }
 
@@ -67,7 +64,7 @@ public class ButtonBuilder {
     }
 
 
-    private static class ButtonStyle extends BasicButtonUI {
+    private static class ButtonStyle extends MetalButtonUI {
         private Image img;
 
         @Override
@@ -77,6 +74,7 @@ public class ButtonBuilder {
             btn.setOpaque(false);
             btn.setBorder(new EmptyBorder(5,15,5,15));
             btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            btn.setContentAreaFilled(false);
         }
 
         @Override
@@ -97,7 +95,7 @@ public class ButtonBuilder {
                 g.fillRoundRect(0, decalageY, w, h - decalageY, roundSize, roundSize);
             }
 
-            Color bgColor = btn.isEnabled() ? c.getBackground() : Color.lightGray;
+            Color bgColor = btn.isEnabled() ? c.getBackground() : Color.LIGHT_GRAY;
             g.setColor(bgColor);
             g.fillRoundRect(0, decalageY, w, h + decalageY - 5, roundSize, roundSize);
 
@@ -124,6 +122,11 @@ public class ButtonBuilder {
         protected void paintIcon(Graphics g, JComponent c, Rectangle iconRect) {
             iconRect.setLocation(10, (int) iconRect.getY());
             super.paintIcon(g, c, iconRect);
+        }
+
+        @Override
+        protected Color getDisabledTextColor() {
+            return Color.BLACK;
         }
     }
 

@@ -8,10 +8,10 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class FinAdapteur extends MouseAdapter {
+public class MeilleursAdapteur extends MouseAdapter {
     private final CollecteurEvenements controleur;
 
-    public FinAdapteur(CollecteurEvenements controleur) {
+    public MeilleursAdapteur(CollecteurEvenements controleur) {
         this.controleur = controleur;
     }
 
@@ -19,13 +19,9 @@ public class FinAdapteur extends MouseAdapter {
     public void mousePressed(MouseEvent e) {
         JButton source = (JButton) e.getSource();
         switch (source.getText()) {
-            case (Labels.BTN_REJOUER):
-                Configuration.instance().logger().info("[Rejouer]");
-                controleur.rejouer();
-                break;
-            case (Labels.JEU_ACCUEIL):
-                Configuration.instance().logger().info("[ACCUEIL]");
-                controleur.retourAccueil();
+            case (Labels.BTN_RETOUR):
+                Configuration.instance().logger().info("[Retour]");
+                controleur.fermerMeilleursJoueurs();
                 break;
             default:
                 Configuration.instance().logger().severe("Commande inconnue : " + source.getName());

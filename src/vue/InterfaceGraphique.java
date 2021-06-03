@@ -1,6 +1,7 @@
 package vue;
 
 import controleur.Controleur;
+import global.BestScoresUtils;
 import modele.Jeu;
 import modele.Joueur.Joueur;
 import structure.Observer;
@@ -9,6 +10,7 @@ import vue.dialog.DialogFinJeu;
 import vue.dialog.DialogOptionJeu;
 import vue.dialog.DialogSaveQuit;
 import vue.panels.PanelAccueil;
+import vue.panels.bestPlayers.PanelMeilleursJoueurs;
 import vue.panels.jeu.PanelJeu;
 import vue.panels.PanelOption;
 import vue.panels.saves.PanelSauvegarde;
@@ -24,15 +26,19 @@ public class InterfaceGraphique implements Runnable, Observer {
     private final PanelJeu panelJeu;
     private final PanelAccueil panelAccueil;
     private final PanelSauvegarde panelSauvegarde;
-    private final JDialog dialogOptionJeu, dialogFinJeu;
+    private final JDialog dialogFinJeu;
+    private final JDialog dialogOptionJeu;
+    private final DialogOptionJeu panelOptionJeu;
     private final DialogFinJeu panelDialogFinJeu;
     private final DialogSaveQuit dialogSaveQuit;
+    private final PanelMeilleursJoueurs panelMeilleurs;
 
     public InterfaceGraphique(Controleur controleur) {
         this.controleur = controleur;
         this.controleur.fixerInterface(this);
 
         dialogOptionJeu = new JDialog();
+        panelOptionJeu = new DialogOptionJeu(controleur);
         dialogFinJeu = new JDialog();
         panelAccueil = new PanelAccueil(controleur);
         panelOption = new PanelOption(controleur);
@@ -40,6 +46,7 @@ public class InterfaceGraphique implements Runnable, Observer {
         panelSauvegarde = new PanelSauvegarde(controleur);
         dialogSaveQuit = new DialogSaveQuit(controleur);
         panelDialogFinJeu = new DialogFinJeu(controleur);
+        panelMeilleurs = new PanelMeilleursJoueurs(controleur);
     }
 
     public static void demarrer(Controleur controleur) {
@@ -57,13 +64,12 @@ public class InterfaceGraphique implements Runnable, Observer {
 
         initDialogOption();
         initDialogFin();
-
         frame.add(panelAccueil);
         frame.setVisible(true);
     }
 
     private void initDialogOption() {
-        dialogOptionJeu.add(new DialogOptionJeu(controleur));
+        dialogOptionJeu.add(panelOptionJeu);
         dialogOptionJeu.setSize(400,400);
         dialogOptionJeu.setMinimumSize(new Dimension(300,500));
         dialogOptionJeu.setLocationRelativeTo(frame);
@@ -97,6 +103,10 @@ public class InterfaceGraphique implements Runnable, Observer {
         update();
         reloadFrame();
     }
+    public void toggleLastMove(boolean show) {
+        panelJeu.toggleLastMove(show);
+        update();
+    }
 
     public void ouvrirOption() {
         fermerPanels();
@@ -111,6 +121,7 @@ public class InterfaceGraphique implements Runnable, Observer {
     }
 
     public void ouvrirDialogOption() {
+        this.panelOptionJeu.update();
         this.dialogOptionJeu.setLocationRelativeTo(frame);
         this.dialogOptionJeu.setVisible(true);
     }
@@ -126,7 +137,7 @@ public class InterfaceGraphique implements Runnable, Observer {
     }
 
     public void afficherDialogSauvegarde(int afterAction) {
-        dialogSaveQuit.showMessage(afterAction);
+        dialogSaveQuit.showMessage(afterAction, panelJeu);
     }
 
     public void ouvrirSauvegarde() {
@@ -162,11 +173,26 @@ public class InterfaceGraphique implements Runnable, Observer {
             frame.remove(panelAccueil);
         if (panelSauvegarde.isDisplayable())
             frame.remove(panelSauvegarde);
+        if (panelMeilleurs.isDisplayable())
+            frame.remove(panelMeilleurs);
     }
 
     private void reloadFrame() {
         frame.revalidate();
         frame.repaint();
         frame.setVisible(true);
+    }
+
+    public void ouvrirMeilleursJoueurs() {
+        fermerPanels();
+        panelMeilleurs.update();
+        frame.add(panelMeilleurs);
+        reloadFrame();
+    }
+
+    public void fermerMeilleursJoueurs() {
+        fermerPanels();
+        frame.add(panelAccueil);
+        reloadFrame();
     }
 }
