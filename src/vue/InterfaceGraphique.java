@@ -62,8 +62,8 @@ public class InterfaceGraphique implements Runnable, Observer {
         frame =  new JFrame("Tablut");
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowEvents(controleur, panelJeu));
-        frame.setSize(700, 700);
-        frame.setMinimumSize(new Dimension(700,700));
+        frame.setSize(600, 600);
+        frame.setMinimumSize(new Dimension(600,600));
         frame.setLocationRelativeTo(null);
         initDialogOption();
         initDialogFin();

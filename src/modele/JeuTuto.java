@@ -2,12 +2,9 @@ package modele;
 
 import global.reader.BoardReaderBinary;
 import global.writer.BoardWriterBinary;
-import modele.util.Coup;
 import modele.util.Point;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
@@ -152,7 +149,6 @@ public class JeuTuto {
             BoardReaderBinary br = new BoardReaderBinary("data" + File.separator + "tutorial_saves" + File.separator + filename + ".dat");
             br.lirePlateau();
             jeu = new Jeu(br);
-//            jeu.joueurSuivant();
             System.out.println("[traiteDeplacement] Class Jeu : Deserialized -> " + filename + ".dat");
         }
         if(getEtatDeplace() == 0 || getEtatDeplace() == 2){
@@ -163,8 +159,6 @@ public class JeuTuto {
             System.out.println("[annuleCoupTuto] sourceCase : " + sourceCase + " highlightCase : " + getHighlightCase());
         } else if(getEtatDeplace() == 1)
             setShowCasesAccessibles(false);
-//        else
-//            jeu.joueurSuivant();
         System.out.println("[annuleCoupTuto] Before -> Etat : " + getEtat() + " EtatDeplace : " + getEtatDeplace());
         setEtatDeplace(coupsPrecedent.pop());
         setEtat(coupsPrecedent.pop());
