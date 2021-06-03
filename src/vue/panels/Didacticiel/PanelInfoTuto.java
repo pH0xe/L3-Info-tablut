@@ -35,6 +35,8 @@ public class PanelInfoTuto extends JPanel {
         joueurCourant = new JTextPane();
         joueurCourant.setBackground(Constants.JEU_LABEL_BG);
         joueurCourant.setBorder(BorderFactory.createEmptyBorder(50,0,0,0));
+        joueurCourant.setEditable(false);
+
         style = new SimpleAttributeSet();
         StyleConstants.setFontFamily(style, Font.SANS_SERIF);
         StyleConstants.setBackground(style, Constants.JEU_LABEL_BG);
