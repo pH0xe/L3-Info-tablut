@@ -37,7 +37,7 @@ public class Controleur implements CollecteurEvenements {
         joueurBlanc = new Joueur("Joueur blanc", Couleur.BLANC);
         joueurNoir = new Joueur("Joueur noir", Couleur.NOIR);
         jeu = new Jeu(joueurBlanc, joueurNoir);
-        jt = new JeuTuto(new Jeu(new Joueur("Jouer Blanc", Couleur.BLANC), new Joueur("Jouer Noir", Couleur.NOIR)), 0);
+        jt = new JeuTuto(new Jeu(new Joueur("Joueur Blanc", Couleur.BLANC), new Joueur("Joueur Noir", Couleur.NOIR)), 0);
         tIAB = new Timer(2000, new AdaptateurIA(this, 1));
         tIAN = new Timer(2000, new AdaptateurIA(this, 2));
     }
@@ -91,13 +91,13 @@ public class Controleur implements CollecteurEvenements {
         if(jt.getEtat() == 11 && jt.getEtatDeplace() == 0)
             loadPlateauTuto("TutoBoard4.txt");
         if(jt.getEtat() == 12)
-            fixerJeuTuto(new JeuTuto(new Jeu(new Joueur("Jouer Blanc", Couleur.BLANC), new Joueur("Jouer Noir", Couleur.NOIR)), 0));
+            fixerJeuTuto(new JeuTuto(new Jeu(new Joueur("Joueur Blanc", Couleur.BLANC), new Joueur("Joueur Noir", Couleur.NOIR)), 0));
         interfaceGraphique.update();
     }
 
     @Override
     public void clicRefaireTuto() {
-        jt = new JeuTuto(new Jeu(new Joueur("Jouer1", Couleur.BLANC), new Joueur("Jouer2", Couleur.NOIR)), 0);
+        jt = new JeuTuto(new Jeu(new Joueur("Joueur1", Couleur.BLANC), new Joueur("Joueur2", Couleur.NOIR)), 0);
         interfaceGraphique.addJeuTuto(jt);
         interfaceGraphique.update();
     }
@@ -261,7 +261,7 @@ public class Controleur implements CollecteurEvenements {
 
     @Override
     public void retourAccueilTuto(){
-        fixerJeuTuto(new JeuTuto(new Jeu(new Joueur("Jouer Blanc", Couleur.BLANC), new Joueur("Jouer Noir", Couleur.NOIR)), 0));
+        fixerJeuTuto(new JeuTuto(new Jeu(new Joueur("Joueur Blanc", Couleur.BLANC), new Joueur("Joueur Noir", Couleur.NOIR)), 0));
         fermerDidacticiel();
     }
 

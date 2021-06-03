@@ -118,7 +118,7 @@ public class PanelMeilleursJoueurs extends JPanel {
         JLabel labelName = new JLabel("Nom", SwingConstants.CENTER);
         panelLabel.add(labelName, bc.toConstraints());
 
-        JLabel labelScore = new JLabel("Nombre de victoire", SwingConstants.TRAILING);
+        JLabel labelScore = new JLabel("Nombre de victoires", SwingConstants.TRAILING);
         panelLabel.add(labelScore, bc.toConstraints());
 
         JLabel labelRang = new JLabel("Rang", SwingConstants.LEADING);
