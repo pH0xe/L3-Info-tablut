@@ -16,4 +16,6 @@ public class Images {
     public static final Image FIRST = ImageLoader.chargerImage("images/first.png");
     public static final Image SECOND = ImageLoader.chargerImage("images/second.png");
     public static final Image THIRD = ImageLoader.chargerImage("images/third.png");
+    public static final Image MENU = ImageLoader.chargerImage("images/menu.png");
+    public static final Image TRONE = ImageLoader.chargerImage("images/trone.png");
 }

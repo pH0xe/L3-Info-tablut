@@ -107,4 +107,29 @@ public class DialogOptionJeu extends JPanel {
     public TypeIA getIABlanc() {
         return getIA(joueurBlanc);
     }
+
+    public void update() {
+        TypeIA b = controleur.getNiveauIABlanche();
+        TypeIA n = controleur.getNiveauIANoir();
+
+        setCombobox(joueurBlanc, b);
+        setCombobox(joueurNoir, n);
+    }
+
+    private void setCombobox(JComboBox comboBox, TypeIA typeIA) {
+        switch (typeIA) {
+            case FACILE:
+                comboBox.setSelectedItem(comboboxOption[1]);
+                break;
+            case MOYENNE:
+                comboBox.setSelectedItem(comboboxOption[2]);
+                break;
+            case DIFFICILE:
+                comboBox.setSelectedItem(comboboxOption[3]);
+                break;
+            default:
+                comboBox.setSelectedItem(comboboxOption[0]);
+                break;
+        }
+    }
 }

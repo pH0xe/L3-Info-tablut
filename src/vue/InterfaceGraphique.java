@@ -26,7 +26,9 @@ public class InterfaceGraphique implements Runnable, Observer {
     private final PanelJeu panelJeu;
     private final PanelAccueil panelAccueil;
     private final PanelSauvegarde panelSauvegarde;
-    private final JDialog dialogOptionJeu, dialogFinJeu;
+    private final JDialog dialogFinJeu;
+    private final JDialog dialogOptionJeu;
+    private final DialogOptionJeu panelOptionJeu;
     private final DialogFinJeu panelDialogFinJeu;
     private final DialogSaveQuit dialogSaveQuit;
     private final PanelMeilleursJoueurs panelMeilleurs;
@@ -36,6 +38,7 @@ public class InterfaceGraphique implements Runnable, Observer {
         this.controleur.fixerInterface(this);
 
         dialogOptionJeu = new JDialog();
+        panelOptionJeu = new DialogOptionJeu(controleur);
         dialogFinJeu = new JDialog();
         panelAccueil = new PanelAccueil(controleur);
         panelOption = new PanelOption(controleur);
@@ -66,7 +69,7 @@ public class InterfaceGraphique implements Runnable, Observer {
     }
 
     private void initDialogOption() {
-        dialogOptionJeu.add(new DialogOptionJeu(controleur));
+        dialogOptionJeu.add(panelOptionJeu);
         dialogOptionJeu.setSize(400,400);
         dialogOptionJeu.setMinimumSize(new Dimension(300,500));
         dialogOptionJeu.setLocationRelativeTo(frame);
@@ -100,6 +103,10 @@ public class InterfaceGraphique implements Runnable, Observer {
         update();
         reloadFrame();
     }
+    public void toggleLastMove(boolean show) {
+        panelJeu.toggleLastMove(show);
+        update();
+    }
 
     public void ouvrirOption() {
         fermerPanels();
@@ -114,6 +121,7 @@ public class InterfaceGraphique implements Runnable, Observer {
     }
 
     public void ouvrirDialogOption() {
+        this.panelOptionJeu.update();
         this.dialogOptionJeu.setLocationRelativeTo(frame);
         this.dialogOptionJeu.setVisible(true);
     }
