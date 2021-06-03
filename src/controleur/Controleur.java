@@ -105,7 +105,8 @@ public class Controleur implements CollecteurEvenements {
     public void refaireCoup() {
         stoperIA();
         jeu.refaireCoup();
-        lancerTimerIA();
+        if (!jeu.estFini())
+            lancerTimerIA();
     }
 
     /**
@@ -115,7 +116,8 @@ public class Controleur implements CollecteurEvenements {
     public void annulerCoup() {
         stoperIA();
         jeu.annulerCoup();
-        lancerTimerIA();
+        if (!jeu.estFini())
+            lancerTimerIA();
     }
 
     /**
