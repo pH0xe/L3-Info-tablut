@@ -122,7 +122,6 @@ public class PanelPlateau extends JPanel {
 
     private void drawSelectable(Graphics2D g2) {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setColor(Constants.BOARD_PREVIEW);
         List<Point> clickable = jeu.getClickable();
 
         int sizePoint = sizeCase/4;
@@ -132,7 +131,12 @@ public class PanelPlateau extends JPanel {
             int x = initX + (sizeCase * point.getC()) + offset;
             int y = initY + (sizeCase * point.getL()) + offset;
 
+            g2.setColor(Constants.BOARD_PREVIEW);
             g2.fillOval(x,y, sizePoint, sizePoint);
+
+            g2.setStroke(new BasicStroke(1));
+            g2.setColor(Color.BLACK);
+            g2.drawOval(x, y, sizePoint, sizePoint);
             if (isHover && point.equals(hoverCoord)) {
                 g2.setColor(new Color(0,255,0,75));
                 g2.fillRect(x - offset, y-offset, sizeCase, sizeCase);

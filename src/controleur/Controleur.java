@@ -144,9 +144,11 @@ public class Controleur implements CollecteurEvenements {
      */
     public void verifFin(){
         if (jeu.roiSorti()) {
+            jeu.setEstFini(true);
             interfaceGraphique.ouvrirDialogFin(jeu.getJoueurBlanc());
             BestScoresUtils.instance().addVictory(jeu.getJoueurBlanc().getNom());
         } else if (jeu.roiCapture()) {
+            jeu.setEstFini(true);
             interfaceGraphique.ouvrirDialogFin(jeu.getJoueurNoir());
             BestScoresUtils.instance().addVictory(jeu.getJoueurNoir().getNom());
         } else {
