@@ -136,29 +136,22 @@ public class IAMoyenne extends IAMiniMax{
         Couleur couleur = j.joueurCourant().getCouleur();
 
         maintenant = Instant.now();
-        System.out.println(maintenant);
-        System.out.println(j.getPlateau().getNbCases(Couleur.BLANC));
         do{
-            System.out.println("MOYENNE " + prof);
             Minimax(j, couleur, prof , new ArrayList<>(),MIN, MAX);
             prof++;
         }
         while(Instant.now().compareTo(maintenant.plusSeconds(5)) < 0 && prof <= 3);
 
 
-        Coup res = null;
-        System.out.println("Coup a ne pas jouer : " + dernierCoupJoue);
-        System.out.println("Temps d'éxecution " + Instant.now());
+        Coup res;
         ConfigJeu cj = new ConfigJeu(couleur, j, prof);
         Random r = new Random();
 
         returnVal.get(cj).remove(dernierCoupJoue);
         int size = returnVal.get(cj).size();
-        System.out.println(size);
         if(size > 0){
             res = returnVal.get(cj).get(r.nextInt(size));
             dernierCoupJoue = new Coup(res).inverseCoup();
-            System.out.println(res +" ");
             return res;
         }
         else{
@@ -168,8 +161,5 @@ public class IAMoyenne extends IAMiniMax{
         returnVal.clear();
         dernierCoupJoue = res;
         return res;
-
-
-        //System.out.println(cj.getJeu().getPlateau()+ "\n Sorties accessibles : " + cj.getJeu().getPlateau().getSortiesAccessibles());return res;
     }
 }
