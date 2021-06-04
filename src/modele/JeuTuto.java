@@ -66,8 +66,6 @@ public class JeuTuto {
                     coupsPrecedent.push(getEtat());
                     coupsPrecedent.push(getEtatDeplace());
                     setShowCasesAccessibles(true);
-                    System.out.println("[traiteDeplacement] Etat : " + getEtat() + " EtatDeplace : " + getEtatDeplace());
-                    System.out.println("[traiteDeplacement] sourceCase : " + sourceCase + " highlightCase : " + getHighlightCase());
                     sourceCase = getHighlightCase();
                     setHighlightCase(destL, destC);
                     setEtatDeplace(getEtatDeplace()+1);
@@ -82,16 +80,12 @@ public class JeuTuto {
                     if(jeu.verifierCoup(getHighlightCase())){
                         jeu.roiCapture();
                     }
-                    System.out.println("[traiteDeplacement] Etat : " + getEtat() + " EtatDeplace : " + getEtatDeplace());
-                    System.out.println("[traiteDeplacement] sourceCase : " + sourceCase + " highlightCase : " + getHighlightCase());
                     setShowCasesAccessibles(false);
                     setHighlightCase(-1,-1);
                     setEtatDeplace(getEtatDeplace()+1);
                 }
                 break;
             case 2:
-                System.out.println("[traiteDeplacement] Etat : " + getEtat() + " EtatDeplace : " + getEtatDeplace());
-                System.out.println("[traiteDeplacement] sourceCase : " + sourceCase + " highlightCase : " + getHighlightCase());
                 if(getEtat() == 4 || getEtat() == 8 || getEtat() == 10){
                     String filename = "TutoBoardSave" + getEtat();
                     BoardWriterBinary bw = new BoardWriterBinary(filename);
@@ -99,7 +93,6 @@ public class JeuTuto {
                         bw.ecrireJeu(jeu);
                     } catch(Exception ignored){}
                     boardPrecedent.push(filename);
-                    System.out.println("[traiteDeplacement] Class Jeu : Serialized -> " + filename + ".dat");
                 }
 
                 switch (getEtat()){
@@ -149,20 +142,16 @@ public class JeuTuto {
             BoardReaderBinary br = new BoardReaderBinary("data" + File.separator + "tutorial_saves" + File.separator + filename + ".dat");
             br.lirePlateau();
             jeu = new Jeu(br);
-            System.out.println("[traiteDeplacement] Class Jeu : Deserialized -> " + filename + ".dat");
         }
         if(getEtatDeplace() == 0 || getEtatDeplace() == 2){
             List<Point> listParamTuto = jeu.annulerCoupTuto();
             sourceCase = listParamTuto.get(0);
             setHighlightCase(listParamTuto.get(1).getL(), listParamTuto.get(1).getC());
             setShowCasesAccessibles(true);
-            System.out.println("[annuleCoupTuto] sourceCase : " + sourceCase + " highlightCase : " + getHighlightCase());
         } else if(getEtatDeplace() == 1)
             setShowCasesAccessibles(false);
-        System.out.println("[annuleCoupTuto] Before -> Etat : " + getEtat() + " EtatDeplace : " + getEtatDeplace());
         setEtatDeplace(coupsPrecedent.pop());
         setEtat(coupsPrecedent.pop());
-        System.out.println("[annuleCoupTuto] After -> Etat : " + getEtat() + " EtatDeplace : " + getEtatDeplace());
         Point point = clickPrecedent.pop();
         setHighlightCase(point.getL(), point.getC());
     }

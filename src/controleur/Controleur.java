@@ -525,7 +525,7 @@ public class Controleur implements CollecteurEvenements {
         if(jt.getEtat() == 11 && jt.getEtatDeplace() == 0)
             loadPlateauTuto("TutoBoard4.txt");
         if(jt.getEtat() == 12)
-            fixerJeuTuto(new JeuTuto(new Jeu(new Joueur("Joueur Blanc", Couleur.BLANC), new Joueur("Joueur Noir", Couleur.NOIR)), 0));
+            retourAccueilTuto();
         interfaceGraphique.update();
     }
 
@@ -549,6 +549,6 @@ public class Controleur implements CollecteurEvenements {
         jt.getJeu().addPlateau(new Plateau(br));
         interfaceGraphique.update();
         Configuration.instance().logger().info("Loaded board for tutorial : " + filename);
-        System.out.println("Loaded board for tutorial : " + filename);
+        //System.out.println("Loaded board for tutorial : " + filename);
     }
 }
