@@ -24,7 +24,7 @@ public class PanelInstructionTuto extends JPanel {
         setBackground(Constants.INSTR_LABEL_BG);
 
         instruction = new JTextPane();
-        instruction.setText("Bienvenue dans le tutoriel. Le joueur blanc commence.");
+        instruction.setText("Bienvenue dans le tutoriel.\n\tLe joueur blanc commence.\n\t[Cliquez pour Continuer]");
 
         StyledDocument doc = instruction.getStyledDocument();
         SimpleAttributeSet center = new SimpleAttributeSet();
@@ -44,7 +44,7 @@ public class PanelInstructionTuto extends JPanel {
 
     public void update() {
         if (jeu.getEtat() == 0)
-            instruction.setText("Bienvenue dans le tutoriel. Le joueur blanc commence.");
+            instruction.setText("Bienvenue dans le tutoriel.\n\tLe joueur blanc commence.\n\t[Cliquez pour Continuer]");
         else {
             if (jeu.getEtatDeplace() == 0)
                 instruction.setText(jeu.getJeu().joueurCourant().getNom() + " : Cliquez sur la case indiquée pour choisir le pion.");
