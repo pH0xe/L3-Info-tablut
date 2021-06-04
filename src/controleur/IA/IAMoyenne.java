@@ -1,7 +1,5 @@
 package controleur.IA;
 
-import global.Configuration;
-import jdk.swing.interop.SwingInterOpUtils;
 import modele.ConfigJeu;
 import modele.Jeu;
 import modele.Joueur.Couleur;
@@ -11,19 +9,17 @@ import modele.pion.TypePion;
 import modele.util.Coup;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Random;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
+public class IAMoyenne extends IAMiniMax{
 
-public class IADifficile extends IAMiniMax{
-
-
-
-    public IADifficile(){
+    public IAMoyenne(){
         returnVal = new HashMap<>();
         mem = new HashSet<>();
-        prof=4;
+        prof=2;
     }
 
     public int heuristique(Jeu j, int profondeur){
@@ -38,10 +34,6 @@ public class IADifficile extends IAMiniMax{
         if(j.roiCapture()){
 
             return MIN - 32 * profondeur;
-        }
-
-        if(j.getPlateau().getSortiesAccessibles()>=2){
-            return MAX - 1000 + 5*profondeur;
         }
 
         int adjacentRoi = 0;
@@ -71,25 +63,76 @@ public class IADifficile extends IAMiniMax{
             heuristique -= 5*adjacentRoi;
         }
 
-
-        if(j.joueurCourant().getCouleur() == Couleur.BLANC){
-            heuristique += 8*p.getBlancs().size();
-            heuristique -= 6*(16-p.getNoirs().size());
-        }else{
-            heuristique -= 8*p.getNoirs().size();
-            heuristique += 6*(16-p.getBlancs().size());
-        }
+        heuristique -= 20*adjacentRoi;
 
 
-        heuristique += 4 * j.getPlateau().getCasesAccessibles(roi).size();
+        heuristique += 8*p.getBlancs().size();
+        heuristique -= 6*p.getNoirs().size();
 
-        heuristique += 64 * j.getPlateau().getSortiesAccessibles() + 5*profondeur;
+        heuristique += 16 * j.getPlateau().getCasesAccessibles(roi).size();
+
+        heuristique += 256 * j.getPlateau().getSortiesAccessibles() + 64*profondeur;
+
+        heuristique += 4*(j.getPlateau().getNbCases(Couleur.BLANC)+j.getPlateau().getNbCases(Couleur.NOIR));
 
         return heuristique;
+        /*Plateau p = j.getPlateau();
+        Pion roi = p.getRoi();
+
+        if(j.roiSorti()){
+            return MAX + 64*profondeur;
+
+        }
+        if(j.roiCapture()){
+
+            return MIN - 64 * profondeur;
+        }
+
+        int adjacentRoi = 0;
+        int heuristique = 0;
+
+        int lRoi = roi.getPosition().getL();
+        int cRoi = roi.getPosition().getC();
+
+
+        if(( lRoi+1 == 4 && cRoi == 4) || p.estCaseDeType(lRoi+1, cRoi, TypePion.NOIR)){
+            adjacentRoi++;
+            heuristique -= 3*adjacentRoi;
+        }
+
+        if(( lRoi-1 == 4 && cRoi == 4) || p.estCaseDeType(lRoi-1, cRoi, TypePion.NOIR)){
+            adjacentRoi++;
+            heuristique -= 3*adjacentRoi;
+        }
+
+        if(( lRoi == 4 && cRoi+1 == 4) || p.estCaseDeType(lRoi, cRoi+1, TypePion.NOIR)){
+            adjacentRoi++;
+            heuristique -= 3*adjacentRoi;
+        }
+
+        if(( lRoi == 4 && cRoi-1 == 4) || p.estCaseDeType(lRoi, cRoi-1, TypePion.NOIR)){
+            adjacentRoi++;
+            heuristique -= 3*adjacentRoi;
+        }
+
+        heuristique -= 15*adjacentRoi;
+
+        heuristique += 8*p.getBlancs().size();
+        heuristique -= 16*p.getNoirs().size();
+
+        heuristique += 16 * p.getCasesAccessibles(roi).size();
+
+        heuristique += 256 * p.getSortiesAccessibles() + 32*profondeur;
+
+        heuristique += 4*(p.getNbCases(Couleur.BLANC));
+
+        return heuristique;*/
     }
 
-    public Coup iaJoue(Jeu j){
-        prof = 4;
+    @Override
+    public Coup iaJoue(Jeu j) {
+
+        prof = 2;
         Couleur couleur = j.joueurCourant().getCouleur();
 
         maintenant = Instant.now();
@@ -97,16 +140,14 @@ public class IADifficile extends IAMiniMax{
             Minimax(j, couleur, prof , new ArrayList<>(),MIN, MAX);
             prof++;
         }
-        while(Instant.now().compareTo(maintenant.plusSeconds(10)) < 0 && prof <= 99);
+        while(Instant.now().compareTo(maintenant.plusSeconds(5)) < 0 && prof <= 3);
 
 
         Coup res;
         ConfigJeu cj = new ConfigJeu(couleur, j, prof);
         Random r = new Random();
 
-
         returnVal.get(cj).remove(dernierCoupJoue);
-
         int size = returnVal.get(cj).size();
         if(size > 0){
             res = returnVal.get(cj).get(r.nextInt(size));
@@ -121,5 +162,4 @@ public class IADifficile extends IAMiniMax{
         dernierCoupJoue = res;
         return res;
     }
-
 }

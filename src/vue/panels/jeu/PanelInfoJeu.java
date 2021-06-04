@@ -32,6 +32,7 @@ public class PanelInfoJeu extends JPanel {
         setLayout(new GridBagLayout());
 
         joueurCourant = new JTextPane();
+        joueurCourant.setEditable(false);
         joueurCourant.setBackground(Constants.JEU_LABEL_BG);
         joueurCourant.setBorder(BorderFactory.createEmptyBorder(50,0,0,0));
         style = new SimpleAttributeSet();
@@ -48,8 +49,8 @@ public class PanelInfoJeu extends JPanel {
         cb.setWeighty(0.5).incrGridy();
         add(pionElimi,cb.toConstraints());
 
-        btnOption = new ButtonBuilder().setText(Labels.ACCUEIL_OPTIO).setBackground(Constants.BUTTON_BACKGROUND).setForeground(Constants.BUTTON_FOREGROUND)
-                .setIcon(Images.OPTION).toJButton();
+        btnOption = new ButtonBuilder().setText(Labels.JEU_MENU).setBackground(Constants.BUTTON_BACKGROUND).setForeground(Constants.BUTTON_FOREGROUND)
+                .setIcon(Images.MENU).toJButton();
         btnAnnuler = new ButtonBuilder().setText(Labels.JEU_ANNULER).setBackground(Constants.BUTTON_BACKGROUND).setForeground(Constants.BUTTON_FOREGROUND)
                 .setIcon(Images.ANNULER_COUP).toJButton();
         btnRefaire = new ButtonBuilder().setText(Labels.JEU_REFAIRE).setBackground(Constants.BUTTON_BACKGROUND).setForeground(Constants.BUTTON_FOREGROUND)
@@ -106,4 +107,12 @@ public class PanelInfoJeu extends JPanel {
     public boolean refaireActif() {
         return btnRefaire.isEnabled();
     }
+
+    @Override
+    public Dimension getPreferredSize() {
+        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        int size = (frame.getWidth() / 5);
+        return new Dimension(size, size);
+    }
+
 }

@@ -26,4 +26,5 @@ public class Labels {
     public static final String JEU_REFAIRE = "Refaire";
     public static final String BTN_FERMER = "Fermer";
     public static final String BTN_REJOUER = "Rejouer";
+    public static final String JEU_MENU = "Menu";
 }
