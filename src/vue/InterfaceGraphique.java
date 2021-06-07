@@ -93,13 +93,13 @@ public class InterfaceGraphique implements Runnable, Observer {
 
     @Override
     public void update() {
-        if (panelJeu.isDisplayable()) {
+        if (panelJeu != null && panelJeu.isDisplayable()) {
             panelJeu.update();
         }
-        if (panelSauvegarde.isDisplayable()) {
+        if (panelSauvegarde != null && panelSauvegarde.isDisplayable()) {
             panelSauvegarde.update();
         }
-        if(panelDidacticiel.isDisplayable())
+        if(panelSauvegarde != null && panelDidacticiel.isDisplayable())
             panelDidacticiel.update();
     }
 

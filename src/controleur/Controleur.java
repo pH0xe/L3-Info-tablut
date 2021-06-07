@@ -444,6 +444,8 @@ public class Controleur implements CollecteurEvenements {
     private TypeIA getNiveauIA(IA ia) {
         if (ia instanceof IAFacile) {
             return TypeIA.FACILE;
+        } else if (ia instanceof IAMoyenne){
+            return TypeIA.MOYENNE;
         } else if (ia instanceof  IADifficile) {
             return TypeIA.DIFFICILE;
         }
