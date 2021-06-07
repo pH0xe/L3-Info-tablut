@@ -1,7 +1,11 @@
 package controleur;
 
 import modele.util.Point;
+import modele.Jeu;
+import modele.JeuTuto;
 import vue.InterfaceGraphique;
+
+import javax.swing.*;
 
 public interface CollecteurEvenements {
     // Fonctionnement Tour de jeu
@@ -47,4 +51,13 @@ public interface CollecteurEvenements {
     boolean estTourIA();
     TypeIA getNiveauIANoir();
     TypeIA getNiveauIABlanche();
+
+    // Tutoriel
+    void fixerJeuTuto(JeuTuto jeu);
+    void clicSourisTuto(int l, int c);
+    void clicRefaireTuto();
+    void clicAnnulerTuto();
+    void ouvrirDidacticiel();
+    void fermerDidacticiel();
+    void retourAccueilTuto();
 }

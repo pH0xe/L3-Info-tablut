@@ -16,7 +16,7 @@ public class DialogSaveQuit {
     public void showMessage(int afterAction, JComponent relativeTo) {
         int res = JOptionPane.showConfirmDialog(
                 relativeTo,
-                "Sauvegarder la partie avant de quitter ?\nSi vous cliquer sur \"non\" la progression sera definitivement perdu",
+                "Sauvegarder la partie avant de quitter ?\nSi vous cliquez sur \"non\" la progression sera definitivement perdue",
                 "Confirmation",
                 JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE);

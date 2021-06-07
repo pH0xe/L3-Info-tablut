@@ -14,6 +14,9 @@ public class BoardWriterBinary {
     public BoardWriterBinary() {
         output = Configuration.creeFichierSave();
     }
+    public BoardWriterBinary(String filename){
+        output = Configuration.creerBoardSave(filename);
+    }
 
     public void ecrireJeu(Jeu jeu) throws IOException {
         if (output == null) return;

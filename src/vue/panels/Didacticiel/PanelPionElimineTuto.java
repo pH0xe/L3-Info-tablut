@@ -1,4 +1,4 @@
-package vue.panels.jeu;
+package vue.panels.Didacticiel;
 
 import vue.utils.Constants;
 import vue.utils.Images;
@@ -6,11 +6,11 @@ import vue.utils.Images;
 import javax.swing.*;
 import java.awt.*;
 
-public class PanelPionElimine extends JPanel {
+public class PanelPionElimineTuto extends JPanel {
 
     private int pionN, pionB;
 
-    public PanelPionElimine() {
+    public PanelPionElimineTuto() {
         pionN = 0;
         pionB = 0;
     }
@@ -44,6 +44,11 @@ public class PanelPionElimine extends JPanel {
         repaint();
     }
 
+    public void setPionN(int pionN) {
+        this.pionN = pionN;
+        repaint();
+    }
+
     public void incrementPionB(){
         pionB += 1;
         repaint();
@@ -54,8 +59,4 @@ public class PanelPionElimine extends JPanel {
         repaint();
     }
 
-    public void setPionN(int pionN) {
-        this.pionN = pionN;
-        repaint();
-    }
 }

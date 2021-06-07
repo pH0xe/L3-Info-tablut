@@ -3,6 +3,7 @@ package modele;
 import global.Configuration;
 import global.Operateur;
 import global.reader.BoardReader;
+import global.reader.BoardReaderBinary;
 import global.reader.BoardReaderText;
 import modele.Joueur.Couleur;
 import modele.pion.EtatPion;
@@ -14,6 +15,7 @@ import structure.Observable;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.Objects;
 
@@ -59,7 +61,6 @@ public class Plateau extends Observable {
     private void initReaderPions(BoardReader reader) {
         this.pions.addAll(reader.getBlancs());
         this.pions.addAll(reader.getNoirs());
-
         this.roi = reader.getRoi();
         this.pions.add(this.roi);
     }

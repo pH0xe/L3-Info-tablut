@@ -1,15 +1,21 @@
 package controleur;
 
+import global.Configuration;
+import global.reader.BoardReaderText;
+import modele.Jeu;
+import modele.JeuTuto;
 import controleur.IA.IA;
 import controleur.IA.IADifficile;
 import controleur.IA.IAFacile;
 import controleur.IA.IAMoyenne;
 import global.BestScoresUtils;
+import global.Configuration;
 import global.reader.BoardReaderBinary;
+import global.reader.BoardReaderText;
 import global.writer.BoardWriterBinary;
-import modele.*;
 import modele.Joueur.Couleur;
 import modele.Joueur.Joueur;
+import modele.Plateau;
 import modele.util.Coup;
 import modele.util.Point;
 import vue.InterfaceGraphique;
@@ -19,8 +25,11 @@ import vue.adapters.timers.LastMove;
 import javax.swing.*;
 import java.io.File;
 
+import java.io.InputStream;
+
 public class Controleur implements CollecteurEvenements {
     private Jeu jeu;
+    private JeuTuto jt;
     private InterfaceGraphique interfaceGraphique;
     private Joueur joueurBlanc, joueurNoir;
     private IA iaBlanc, iaNoir;
@@ -30,6 +39,7 @@ public class Controleur implements CollecteurEvenements {
         joueurBlanc = new Joueur("Joueur blanc", Couleur.BLANC);
         joueurNoir = new Joueur("Joueur noir", Couleur.NOIR);
         jeu = new Jeu(joueurBlanc, joueurNoir);
+        jt = new JeuTuto(new Jeu(new Joueur("Joueur Blanc", Couleur.BLANC), new Joueur("Joueur Noir", Couleur.NOIR)), 0);
         tIAB = new Timer(2000, new AdaptateurIA(this, 1));
         tIAN = new Timer(2000, new AdaptateurIA(this, 2));
         tLastMove = new Timer(2000, new LastMove(this));
@@ -434,9 +444,113 @@ public class Controleur implements CollecteurEvenements {
     private TypeIA getNiveauIA(IA ia) {
         if (ia instanceof IAFacile) {
             return TypeIA.FACILE;
+        } else if (ia instanceof IAMoyenne){
+            return TypeIA.MOYENNE;
         } else if (ia instanceof  IADifficile) {
             return TypeIA.DIFFICILE;
         }
         return TypeIA.NONE;
+    }
+
+    ////////////////////////////////////////////////
+    // Tutoriel
+    ////////////////////////////////////////////////
+    @Override
+    public void ouvrirDidacticiel() {
+        interfaceGraphique.addJeuTuto(jt);
+        interfaceGraphique.ouvrirDidacticiel();
+    }
+
+    @Override
+    public void fermerDidacticiel() {
+        interfaceGraphique.fermerDidacticiel();
+    }
+
+    @Override
+    public void retourAccueilTuto(){
+        fixerJeuTuto(new JeuTuto(new Jeu(new Joueur("Joueur Blanc", Couleur.BLANC), new Joueur("Joueur Noir", Couleur.NOIR)), 0));
+        fermerDidacticiel();
+    }
+
+    @Override
+    public void fixerJeuTuto(JeuTuto jeu){
+        jt = jeu;
+        interfaceGraphique.addJeuTuto(jeu);
+    }
+
+    @Override
+    public void clicSourisTuto(int l, int c) {
+        switch (jt.getEtat()){
+            case 0:
+                jt.setHighlightCase(4,3);
+                break;
+            case 1:
+                jt.traiteDeplacement(l,c,2,3);
+                break;
+            case 2:
+                jt.traiteDeplacement(l,c,3,3);
+                break;
+            case 3:
+                jt.traiteDeplacement(l,c,4,3);
+                break;
+            case 4:
+                jt.traiteDeplacement(l,c,4,2);
+                break;
+            case 5:
+                jt.traiteDeplacement(l,c,6,0);
+                break;
+            case 6:
+                jt.traiteDeplacement(l,c,6,1);
+                break;
+            case 7:
+                jt.traiteDeplacement(l,c,5,5);
+                break;
+            case 8:
+                jt.traiteDeplacement(l,c,5,2);
+                break;
+            case 9:
+                jt.traiteDeplacement(l,c, 5,7);
+                break;
+            case 10:
+                jt.traiteDeplacement(l,c, 5,3);
+                break;
+            case 11:
+                jt.traiteDeplacement(l,c, 2,8);
+                break;
+        }
+        if( jt.getEtat() == 0)
+            jt.setEtat(1);
+        if(jt.getEtat() == 5 && jt.getEtatDeplace() == 0)
+            loadPlateauTuto("TutoBoard2.txt");
+        if(jt.getEtat() == 9 && jt.getEtatDeplace() == 0)
+            loadPlateauTuto("TutoBoard3.txt");
+        if(jt.getEtat() == 11 && jt.getEtatDeplace() == 0)
+            loadPlateauTuto("TutoBoard4.txt");
+        if(jt.getEtat() == 12)
+            retourAccueilTuto();
+        interfaceGraphique.update();
+    }
+
+    @Override
+    public void clicRefaireTuto() {
+        jt = new JeuTuto(new Jeu(new Joueur("Joueur1", Couleur.BLANC), new Joueur("Joueur2", Couleur.NOIR)), 0);
+        interfaceGraphique.addJeuTuto(jt);
+        interfaceGraphique.update();
+    }
+
+    @Override
+    public void clicAnnulerTuto() {
+        jt.annulerCoupTuto();
+        interfaceGraphique.update();
+    }
+
+    public void loadPlateauTuto(String filename) {
+        InputStream in = Configuration.charger("tutorials" + File.separator + filename);
+        BoardReaderText br = new BoardReaderText(in);
+        br.lirePlateau();
+        jt.getJeu().addPlateau(new Plateau(br));
+        interfaceGraphique.update();
+        Configuration.instance().logger().info("Loaded board for tutorial : " + filename);
+        //System.out.println("Loaded board for tutorial : " + filename);
     }
 }

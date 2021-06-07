@@ -91,18 +91,20 @@ public class PanelOption extends JPanel {
     }
 
     public String getNomJoueurBlanc() {
-        return getNom(joueurBlanc, nomJBlanc);
+        String nom = getNom(joueurBlanc, nomJBlanc);
+        return nom == null ? "Joueur Blanc" : nom;
     }
 
     public String getNomJoueurNoir() {
-        return getNom(joueurNoir, nomJNoir);
+        String nom = getNom(joueurNoir, nomJNoir);
+        return nom == null ? "Joueur Noir" : nom;
     }
 
     private String getNom(JComboBox type, JTextField name) {
         if (!type.getSelectedItem().toString().equalsIgnoreCase("humain"))
             return type.getSelectedItem().toString();
 
-        if (name.getText().isBlank()) return "Joueur noir";
+        if (name.getText().isBlank()) return null;
         return name.getText();
     }
 

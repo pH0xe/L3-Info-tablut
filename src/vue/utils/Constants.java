@@ -22,6 +22,7 @@ public class Constants {
     public static final Color BOARD_STROKE = new Color(70, 46, 37);
     public static final Color HALO_PION = Color.GREEN;
     public static final Color BOARD_PREVIEW = new Color(101, 65, 55);
+    public static final Color HALO_CASE_ACC = BOARD_PREVIEW;
 
     public static final Color JEU_LABEL_BG = new Color(10, 14, 26);
     public static final Color JEU_LABEL_FG = new Color(226, 226, 226);
@@ -29,4 +30,6 @@ public class Constants {
     public static final Font DEFAULT_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
     public static final Font BOLD_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 14);
     public static final Font ITALIC_FONT = new Font(Font.SANS_SERIF, Font.ITALIC,14);
+
+    public static final Color INSTR_LABEL_BG = new Color(224,224,224);
 }

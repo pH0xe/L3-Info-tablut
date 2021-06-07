@@ -1,6 +1,13 @@
 package modele;
 
 import global.Configuration;
+import global.reader.BoardReader;
+import global.reader.BoardReaderBinary;
+import global.reader.BoardReaderText;
+import modele.Joueur.*;
+import modele.pion.*;
+import modele.util.*;
+import structure.Observable;
 import global.Operateur;
 import global.reader.BoardReaderBinary;
 import modele.Joueur.Couleur;
@@ -77,6 +84,8 @@ public class Jeu extends Observable {
             coupsSuivant.add(new Coup(coup));
         }
     }
+
+    public void addPlateau(Plateau plateau){ this.pt = plateau; }
 
     ////////////////////////////////////////////////
     // Gestion des tours
@@ -233,6 +242,29 @@ public class Jeu extends Observable {
         joueurSuivant();
         coupsSuivant.push(c);
         update();
+    }
+
+    public List<Point> annulerCoupTuto() {
+        Coup c = coupsPrecedent.pop();
+        for (Pion pion : c.getCaptures()) {
+            if (pion == null) continue;
+            pion.changerEtat(EtatPion.ACTIF);
+            pt.getPions().add(pion);
+        }
+
+        Point dest = c.getOrigine();
+
+        Pion p = pt.getPion(c.getDestination());
+        pt.deplacerPion(p, dest.getL(), dest.getC());
+        joueurSuivant();
+        coupsSuivant.push(c);
+        update();
+
+        List<Point> listParamTuto = new ArrayList<>();
+        listParamTuto.add(c.getOrigine());
+        listParamTuto.add(c.getDestination());
+
+        return listParamTuto;
     }
 
     /**
