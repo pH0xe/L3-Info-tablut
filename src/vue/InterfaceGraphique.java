@@ -99,7 +99,7 @@ public class InterfaceGraphique implements Runnable, Observer {
         if (panelSauvegarde != null && panelSauvegarde.isDisplayable()) {
             panelSauvegarde.update();
         }
-        if(panelSauvegarde != null && panelDidacticiel.isDisplayable())
+        if(panelDidacticiel != null && panelDidacticiel.isDisplayable())
             panelDidacticiel.update();
     }
 
