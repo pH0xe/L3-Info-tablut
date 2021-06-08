@@ -1,7 +1,6 @@
 package controleur.IA;
 
 import global.Configuration;
-import jdk.swing.interop.SwingInterOpUtils;
 import modele.ConfigJeu;
 import modele.Jeu;
 import modele.Joueur.Couleur;

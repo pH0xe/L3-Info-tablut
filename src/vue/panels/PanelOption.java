@@ -104,7 +104,7 @@ public class PanelOption extends JPanel {
         if (!type.getSelectedItem().toString().equalsIgnoreCase("humain"))
             return type.getSelectedItem().toString();
 
-        if (name.getText().isBlank()) return null;
+        if (name.getText().isEmpty()) return null;
         return name.getText();
     }
 
