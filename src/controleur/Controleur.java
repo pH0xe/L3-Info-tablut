@@ -545,12 +545,17 @@ public class Controleur implements CollecteurEvenements {
     }
 
     public void loadPlateauTuto(String filename) {
-        InputStream in = Configuration.charger("tutorials" + File.separator + filename);
-        BoardReaderText br = new BoardReaderText(in);
-        br.lirePlateau();
-        jt.getJeu().addPlateau(new Plateau(br));
-        interfaceGraphique.update();
-        Configuration.instance().logger().info("Loaded board for tutorial : " + filename);
-        //System.out.println("Loaded board for tutorial : " + filename);
+        try {
+            InputStream in = Configuration.charger("tutorials/" + filename);
+            BoardReaderText br = new BoardReaderText(in);
+            br.lirePlateau();
+            jt.getJeu().addPlateau(new Plateau(br));
+            interfaceGraphique.update();
+            Configuration.instance().logger().info("Loaded board for tutorial : tutorials/" + filename);
+            //System.out.println("Loaded board for tutorial : " + filename);
+        } catch (Exception e) {
+            Configuration.instance().logger().info("Loaded board for tutorial : tutorials/" + filename);
+            e.printStackTrace();
+        }
     }
 }

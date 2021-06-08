@@ -21,7 +21,6 @@ public class BestScoresUtils implements Serializable {
             reader = new ObjectInputStream(new FileInputStream("data/bestplayers.dat"));
             scores = (Map<String, Integer>) reader.readObject();
         } catch (Exception e) {
-            e.printStackTrace();
             scores = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         }
     }
